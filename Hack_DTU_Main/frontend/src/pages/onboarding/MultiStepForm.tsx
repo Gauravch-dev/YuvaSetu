@@ -12,6 +12,7 @@ import { useOnboarding } from '@/contexts/OnboardingContext';
 import { ResumePreview } from '@/components/Resume/ResumePreview';
 import { exportResumeToPDF } from '@/lib/resume-export';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { GenieInline } from '@/features/VoiceGenie/components/GenieInline';
 
 const STEPS = [
@@ -24,6 +25,7 @@ const STEPS = [
 ];
 
 export const MultiStepForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
@@ -94,7 +96,7 @@ export const MultiStepForm = () => {
   };
 
   const handleVoiceComplete = (finalData: any) => {
-      toast.success("Voice Profile Completed!");
+      toast.success(t('onboardingSteps.voiceProfileCompleted'));
       setShowGenie(false); 
   };
 
@@ -140,7 +142,7 @@ export const MultiStepForm = () => {
         education: newEducation
       });
       // Optional: Jump to first empty step? Or just start at 1.
-      toast.success("Profile pre-filled from Voice Genie!");
+      toast.success(t('onboardingSteps.profilePreFilled'));
     }
   }, []);
 
@@ -194,7 +196,7 @@ export const MultiStepForm = () => {
 
   const handleSaveDraft = () => {
     localStorage.setItem('onboarding_draft', JSON.stringify(data));
-    toast.success("Draft saved successfully", {
+    toast.success(t('onboardingSteps.draftSaved'), {
       icon: <Save className="w-4 h-4" />
     });
   };
@@ -204,12 +206,12 @@ export const MultiStepForm = () => {
     try {
       const result = await exportResumeToPDF(data, `${data.personalInfo.fullName || 'resume'}.pdf`);
       if (result.success) {
-        toast.success("Resume downloaded successfully!");
+        toast.success(t('onboardingSteps.resumeDownloaded'));
       } else {
-        toast.error("Failed to generate PDF");
+        toast.error(t('onboardingSteps.failedPdf'));
       }
     } catch (error) {
-      toast.error("Failed to download resume");
+      toast.error(t('onboardingSteps.failedDownload'));
     } finally {
       setIsExporting(false);
     }
@@ -218,24 +220,24 @@ export const MultiStepForm = () => {
   const handleNext = async () => {
     if (currentStep === 1) {
       const { email, phone, age, linkedin, github, portfolio } = data.personalInfo;
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast.error("Please enter a valid email address"); return; }
-      if (!phone || !/^\d{10,15}$/.test(phone.replace(/[^0-9]/g, ''))) { toast.error("Please enter a valid phone number (10-15 digits)"); return; }
-      if (!age) { toast.error("Please enter your age"); return; }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast.error(t('onboardingSteps.invalidEmail')); return; }
+      if (!phone || !/^\d{10,15}$/.test(phone.replace(/[^0-9]/g, ''))) { toast.error(t('onboardingSteps.invalidPhone')); return; }
+      if (!age) { toast.error(t('onboardingSteps.enterAge')); return; }
       const ageNum = parseInt(age);
-      if (isNaN(ageNum) || ageNum < 18) { toast.error("You must be 18 or older to proceed."); return; }
+      if (isNaN(ageNum) || ageNum < 18) { toast.error(t('onboardingSteps.mustBe18')); return; }
 
       const isValidUrl = (url?: string) => {
         if (!url) return true;
         try { new URL(url.startsWith('http') ? url : `https://${url}`); return true; } catch { return false; }
       };
-      if (!isValidUrl(linkedin)) { toast.error("Invalid LinkedIn URL"); return; }
-      if (!isValidUrl(github)) { toast.error("Invalid GitHub URL"); return; }
-      if (!isValidUrl(portfolio)) { toast.error("Invalid Portfolio URL"); return; }
+      if (!isValidUrl(linkedin)) { toast.error(t('onboardingSteps.invalidLinkedin')); return; }
+      if (!isValidUrl(github)) { toast.error(t('onboardingSteps.invalidGithub')); return; }
+      if (!isValidUrl(portfolio)) { toast.error(t('onboardingSteps.invalidPortfolio')); return; }
     }
 
     if (currentStep === 2) {
       const hasInvalidYear = data.education.some(edu => !/^\d{4}$/.test(edu.year));
-      if (hasInvalidYear) { toast.error("Please enter a valid 4-digit year for education"); return; }
+      if (hasInvalidYear) { toast.error(t('onboardingSteps.invalidYear')); return; }
     }
 
     if (isLastStep) {
@@ -244,7 +246,7 @@ export const MultiStepForm = () => {
         if (!editMode) {
           const result = await exportResumeToPDF(data, `${data.personalInfo.fullName || 'resume'}.pdf`);
           if (!result.success) {
-            toast.error("Failed to generate resume PDF");
+            toast.error(t('onboardingSteps.failedResumePdf'));
             setIsExporting(false);
             return;
           }
@@ -262,23 +264,23 @@ export const MultiStepForm = () => {
           }
         } catch (error) {
           console.error('Failed to save profile', error);
-          toast.error("Failed to save profile data");
+          toast.error(t('onboardingSteps.failedSaveProfile'));
           setIsExporting(false);
           return;
         }
 
         if (editMode) {
-          toast.success("Profile updated successfully!");
+          toast.success(t('onboardingSteps.profileUpdated'));
           navigate('/dashboard');
         } else {
           setShowSuccess(true);
-          toast.success("Profile created successfully!", { icon: <PartyPopper className="w-5 h-5" /> });
+          toast.success(t('onboardingSteps.profileCreated'), { icon: <PartyPopper className="w-5 h-5" /> });
           setTimeout(() => navigate('/dashboard'), 3000);
         }
 
       } catch (error) {
         console.error('Submission error:', error);
-        toast.error("An error occurred");
+        toast.error(t('onboardingSteps.errorOccurred'));
       } finally {
         setIsExporting(false);
       }
@@ -304,9 +306,9 @@ export const MultiStepForm = () => {
           <div className="w-24 h-24 mx-auto mb-8 rounded-full bg-green-500 flex items-center justify-center shadow-xl shadow-green-500/20">
             <Check className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">You're All Set!</h1>
+          <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">{t('onboardingSteps.allSet')}</h1>
           <p className="text-xl text-slate-500 dark:text-slate-400 mb-8">
-            We've created your profile and downloaded your resume. Redirecting you to the dashboard...
+            {t('onboardingSteps.redirecting')}
           </p>
           <div className="h-1 w-32 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto overflow-hidden">
             <div className="h-full w-full bg-green-500 animate-progress origin-left" />
@@ -348,7 +350,7 @@ export const MultiStepForm = () => {
                 onClick={() => setShowGenie(!showGenie)}
                >
                    <Sparkles className="w-4 h-4 mr-2" />
-                   {showGenie ? 'Hide Genie' : 'Ask Genie'}
+                   {showGenie ? t('onboardingSteps.hideGenie') : t('onboardingSteps.askGenie')}
                </Button>
 
                <div className="relative w-10 h-10 flex items-center justify-center">
@@ -371,11 +373,11 @@ export const MultiStepForm = () => {
         <div className="flex-none px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex justify-between items-center z-20">
              {/* ... Footer Content ... */}
              <div className="flex gap-2">
-                <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1} className="text-slate-500 hover:text-slate-900">Back</Button>
-                <Button variant="ghost" onClick={handleSaveDraft} className="text-slate-500 hover:text-primary"><Save className="w-4 h-4 mr-2" /><span className="hidden sm:inline">Save</span></Button>
+                <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1} className="text-slate-500 hover:text-slate-900">{t('onboardingSteps.back')}</Button>
+                <Button variant="ghost" onClick={handleSaveDraft} className="text-slate-500 hover:text-primary"><Save className="w-4 h-4 mr-2" /><span className="hidden sm:inline">{t('onboardingSteps.save')}</span></Button>
              </div>
              <div className="flex gap-3">
-                 <Button onClick={handleNext} disabled={isExporting} className="rounded-full px-8 bg-slate-900 text-white">{isLastStep ? 'Finish' : 'Next'} <ChevronRight className="w-4 h-4 ml-2" /></Button>
+                 <Button onClick={handleNext} disabled={isExporting} className="rounded-full px-8 bg-slate-900 text-white">{isLastStep ? t('onboardingSteps.finish') : t('onboardingSteps.next')} <ChevronRight className="w-4 h-4 ml-2" /></Button>
              </div>
         </div>
       </div>
@@ -406,7 +408,7 @@ export const MultiStepForm = () => {
               <div className="absolute top-6 right-6 z-20 hidden xl:block">
                 <Button variant="secondary" size="sm" className="bg-white/80 backdrop-blur shadow-sm hover:bg-white text-slate-600 rounded-full" onClick={() => setShowPreview(!showPreview)}>
                     {showPreview ? <EyeOff className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
-                    {showPreview ? 'Hide Preview' : 'Show Preview'}
+                    {showPreview ? t('onboardingSteps.hidePreview') : t('onboardingSteps.showPreview')}
                 </Button>
               </div>
              <div ref={previewContainerRef} className="w-full h-full flex items-center justify-center p-8 lg:p-12 relative">

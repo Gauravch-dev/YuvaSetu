@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useOnboarding } from '@/contexts/OnboardingContext';
+import { useTranslation } from 'react-i18next';
 
 const SUGGESTED_SKILLS = [
   "React", "Node.js", "Python", "Java", "SQL", "TypeScript", 
@@ -11,6 +12,7 @@ const SUGGESTED_SKILLS = [
 ];
 
 export const Skills = () => {
+  const { t } = useTranslation();
   const { data, updateStepData } = useOnboarding();
   const { skills } = data;
   const [inputValue, setInputValue] = useState('');
@@ -36,13 +38,13 @@ export const Skills = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="space-y-4">
-        <Label>Add Skills</Label>
+        <Label>{t('skillsStep.addSkills')}</Label>
         <div className="flex gap-2">
           <Input 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type a skill and press Enter..."
+            placeholder={t('skillsStep.placeholder')}
             className="flex-1"
           />
           <Button 
@@ -59,7 +61,7 @@ export const Skills = () => {
       <div className="flex flex-wrap gap-2 min-h-[100px] p-4 bg-muted/30 rounded-xl border border-border">
         {skills.length === 0 && (
           <p className="text-muted-foreground w-full text-center py-4">
-            No skills added yet. Start typing above or pick from suggestions.
+            {t('skillsStep.emptyState')}
           </p>
         )}
         {skills.map((skill) => (
@@ -82,7 +84,7 @@ export const Skills = () => {
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Zap className="w-4 h-4 text-accent" />
-          <span>Suggested based on market trends</span>
+          <span>{t('skillsStep.suggested')}</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.filter(s => !skills.includes(s)).map((skill) => (

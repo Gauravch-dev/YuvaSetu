@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Home, Search, ArrowLeft, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
+  const { t } = useTranslation();
   const location = useLocation();
 
   useEffect(() => {
@@ -45,11 +47,10 @@ const NotFound = () => {
         {/* Message */}
         <div className="space-y-4">
           <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-            Page Not Found
+            {t('notFound.pageNotFound')}
           </h2>
           <p className="text-lg text-muted-foreground max-w-md mx-auto">
-            Oops! The page you're looking for seems to have wandered off. 
-            Let's get you back on track.
+            {t('notFound.message')}
           </p>
         </div>
 
@@ -58,31 +59,31 @@ const NotFound = () => {
           <Link to="/">
             <Button size="lg" className="gap-2 min-w-[180px] shadow-lg">
               <Home className="w-4 h-4" />
-              Back to Home
+              {t('notFound.backToHome')}
             </Button>
           </Link>
           <Link to="/dashboard">
             <Button variant="outline" size="lg" className="gap-2 min-w-[180px]">
               <ArrowLeft className="w-4 h-4" />
-              Go to Dashboard
+              {t('notFound.goToDashboard')}
             </Button>
           </Link>
         </div>
 
         {/* Helpful Links */}
         <div className="pt-8 border-t border-border/50 mt-8">
-          <p className="text-sm text-muted-foreground mb-4">Or try these popular pages:</p>
+          <p className="text-sm text-muted-foreground mb-4">{t('notFound.tryPopularPages')}</p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link to="/login/seeker" className="text-sm text-primary hover:underline font-medium">
-              Job Seeker Login
+              {t('notFound.jobSeekerLogin')}
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link to="/login/employer" className="text-sm text-accent hover:underline font-medium">
-              Employer Login
+              {t('notFound.employerLogin')}
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">
-              About Us
+              {t('notFound.aboutUs')}
             </Link>
           </div>
         </div>

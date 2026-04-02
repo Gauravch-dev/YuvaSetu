@@ -2,8 +2,10 @@ import { TrendingUp, BookOpen, ChevronRight, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useTranslation } from 'react-i18next';
 
 export const SkillGapWidget = () => {
+  const { t } = useTranslation();
   // Mock data - in real app would come from analysis logic
   const currentRole = "Frontend Developer";
   const targetRole = "Senior Full Stack Dev";
@@ -23,28 +25,28 @@ export const SkillGapWidget = () => {
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-lg">Skill Gap Analysis</h3>
-            <p className="text-sm text-muted-foreground">Path to <span className="font-medium text-foreground">{targetRole}</span></p>
+            <h3 className="font-bold text-lg">{t('skillGapWidget.title')}</h3>
+            <p className="text-sm text-muted-foreground">{t('skillGapWidget.pathTo', { role: targetRole })}</p>
           </div>
         </div>
         <Link to="/dashboard/skill-gap">
-          <Button variant="ghost" size="sm" className="text-muted-foreground">View Full Report</Button>
+          <Button variant="ghost" size="sm" className="text-muted-foreground">{t('skillGapWidget.viewFullReport')}</Button>
         </Link>
       </div>
 
       <div className="mb-6">
         <div className="flex justify-between text-sm mb-2">
-          <span className="font-medium">Current Match</span>
+          <span className="font-medium">{t('skillGapWidget.currentMatch')}</span>
           <span className="font-bold text-primary">{matchPercentage}%</span>
         </div>
         <Progress value={matchPercentage} className="h-2" />
         <p className="text-xs text-muted-foreground mt-2">
-          You need to master <span className="text-foreground font-medium">3 more skills</span> to reach top 10% of applicants.
+          {t('skillGapWidget.masterMore')}
         </p>
       </div>
 
       <div className="space-y-3">
-        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Top Skills to Master</h4>
+        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{t('skillGapWidget.topSkills')}</h4>
         {recommendedSkills.map((skill) => (
           <div key={skill.name} className="group flex items-center justify-between p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors border border-transparent hover:border-border cursor-pointer">
             <div className="flex items-center gap-3">
@@ -68,7 +70,7 @@ export const SkillGapWidget = () => {
 
       <Button variant="outline" className="w-full mt-6 gap-2 border-dashed">
         <Lock className="w-4 h-4" />
-        Unlock 50+ Premium Jobs
+        {t('skillGapWidget.unlockJobs')}
       </Button>
     </div>
   );

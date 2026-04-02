@@ -7,11 +7,13 @@ import { toast } from 'sonner';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, sendPasswordResetEmail, sendEmailVerification, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { registerUser, loginUser, checkForgotPassword } from '@/lib/auth-api';
+import { useTranslation } from 'react-i18next';
 
 export const LoginPage = () => {
   const { userType = 'seeker' } = useParams<{ userType: 'seeker' | 'employer' }>();
   const isSeeker = userType === 'seeker';
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -59,7 +61,7 @@ export const LoginPage = () => {
 
   const handleEmailBlur = () => {
     if (email && !validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError(t('errors.invalidEmailMessage'));
       setIsEmailValid(false);
     }
   };
@@ -89,7 +91,7 @@ export const LoginPage = () => {
           throw new Error(`You are registered as a ${userData.role === 'JOB_SEEKER' ? 'Job Seeker' : 'Employer'}. Please use the ${userData.role === 'JOB_SEEKER' ? 'Student' : 'Employer'} login.`);
         }
 
-        toast.success('Welcome back!');
+        toast.success(t('errors.welcomeBack'));
 
         if (userData.isOnboardingComplete) {
           navigate(userData.role === 'JOB_SEEKER' ? '/dashboard' : '/dashboard/employer');
@@ -105,7 +107,7 @@ export const LoginPage = () => {
           });
 
           localStorage.setItem('authToken', token);
-          toast.success('Account created!');
+          toast.success(t('errors.accountCreated'));
           navigate(userData.role === 'JOB_SEEKER' ? '/onboarding' : '/dashboard/employer');
         } else {
           await signOut(auth);
@@ -116,7 +118,7 @@ export const LoginPage = () => {
 
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message || 'Google sign in failed');
+      toast.error(error.message || t('errors.googleSignInFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -125,7 +127,7 @@ export const LoginPage = () => {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError(t('errors.invalidEmailMessage'));
       return;
     }
 
@@ -137,14 +139,14 @@ export const LoginPage = () => {
       // 2. If eligible, send Firebase reset email
       await sendPasswordResetEmail(auth, email);
 
-      toast.success('Password reset email sent!', {
-        description: 'Check your inbox for instructions.',
+      toast.success(t('errors.resetEmailSent'), {
+        description: t('errors.resetEmailSentDesc'),
       });
 
       setIsForgotPassword(false); // Go back to login
     } catch (error: any) {
       console.error(error);
-      toast.error(error.message || 'Failed to send reset email');
+      toast.error(error.message || t('errors.resetEmailFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -155,11 +157,11 @@ export const LoginPage = () => {
 
     let hasErrors = false;
     if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address');
+      setEmailError(t('errors.invalidEmailMessage'));
       hasErrors = true;
     }
     if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
+      setPasswordError(t('errors.passwordMinLength'));
       hasErrors = true;
     }
     if (hasErrors) return;
@@ -177,8 +179,8 @@ export const LoginPage = () => {
         // 1. CHECK EMAIL VERIFICATION
         if (!user.emailVerified) {
           await signOut(auth);
-          toast.error('Email not verified', {
-            description: 'Please check your inbox and verify your email before logging in.',
+          toast.error(t('errors.emailNotVerified'), {
+            description: t('errors.emailNotVerifiedDesc'),
             duration: 6000,
           });
           return;
@@ -197,7 +199,7 @@ export const LoginPage = () => {
             throw new Error(`You are registered as a ${userData.role === 'JOB_SEEKER' ? 'Job Seeker' : 'Employer'}. Please use the ${userData.role === 'JOB_SEEKER' ? 'Student' : 'Employer'} login.`);
           }
 
-          toast.success('Welcome back!');
+          toast.success(t('errors.welcomeBack'));
 
           if (userData.isOnboardingComplete) {
             navigate(userData.role === 'JOB_SEEKER' ? '/dashboard' : '/dashboard/employer');
@@ -207,7 +209,7 @@ export const LoginPage = () => {
         } catch (backendError: any) {
           await signOut(auth);
           localStorage.removeItem('authToken');
-          throw new Error('Not registered. Please sign up first.');
+          throw new Error(t('errors.notRegistered'));
         }
 
       } else {
@@ -226,8 +228,8 @@ export const LoginPage = () => {
 
         await signOut(auth);
 
-        toast.success('Account created!', {
-          description: 'We sent a verification link to your email. Please verify before logging in.',
+        toast.success(t('errors.accountCreated'), {
+          description: t('errors.accountCreatedDesc'),
           duration: 6000,
         });
 
@@ -235,11 +237,11 @@ export const LoginPage = () => {
       }
     } catch (error: any) {
       console.error(error);
-      let msg = 'Authentication failed';
-      if (error.code === 'auth/email-already-in-use') msg = 'Email already in use. Please log in.';
-      if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = 'Invalid email or password, try using google sign in';
-      if (error.code === 'auth/user-not-found') msg = 'No account found with this email. Please sign up.';
-      if (error.code === 'auth/too-many-requests') msg = 'Too many failed attempts. Please try again later.';
+      let msg = t('errors.authFailed');
+      if (error.code === 'auth/email-already-in-use') msg = t('errors.emailInUse');
+      if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') msg = t('errors.invalidCredentials');
+      if (error.code === 'auth/user-not-found') msg = t('errors.noAccount');
+      if (error.code === 'auth/too-many-requests') msg = t('errors.tooManyAttempts');
       if (error.message && !error.code) msg = error.message;
       toast.error(msg);
     } finally {
@@ -311,23 +313,23 @@ export const LoginPage = () => {
               <h1 className="font-display text-4xl md:text-5xl font-bold mb-6 text-foreground">
                 {isSeeker ? (
                   <>
-                    Find Your
+                    {t('auth.seekerTagline.title1')}
                     <br />
-                    <span className="text-primary-seeker">Dream Career</span>
+                    <span className="text-primary-seeker">{t('auth.seekerTagline.title2')}</span>
                   </>
                 ) : (
                   <>
-                    Discover
+                    {t('auth.employerTagline.title1')}
                     <br />
-                    <span className="text-primary-employer">Top Talent</span>
+                    <span className="text-primary-employer">{t('auth.employerTagline.title2')}</span>
                   </>
                 )}
               </h1>
 
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 {isSeeker
-                  ? 'Join thousands who found their perfect role through AI-powered, transparent job matching across all fields.'
-                  : 'Access qualified candidates matched to your requirements with our intelligent recruitment platform.'}
+                  ? t('auth.seekerTagline.description')
+                  : t('auth.employerTagline.description')}
               </p>
 
               {/* Stats */}
@@ -393,7 +395,7 @@ export const LoginPage = () => {
                   )}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  <span className="text-foreground font-semibold">{isSeeker ? '10,000+' : '500+'}</span> {isSeeker ? 'careers found' : 'companies hiring'}
+                  <span className="text-foreground font-semibold">{isSeeker ? '10,000+' : '500+'}</span> {isSeeker ? t('auth.seekerStats') : t('auth.employerStats')}
                 </p>
               </div>
             </div>
@@ -401,12 +403,12 @@ export const LoginPage = () => {
             {/* Role Switch at Bottom */}
             <div className="pt-8 border-t border-border">
               <p className="text-sm text-muted-foreground mb-4">
-                {isSeeker ? 'Looking to hire talent?' : 'Looking for a job?'}
+                {isSeeker ? t('auth.lookingToHire') : t('auth.lookingForJob')}
               </p>
               <Link to={isSeeker ? '/login/employer' : '/login/seeker'} className="block">
                 <Button variant="outline" className="w-full gap-2 h-12">
                   {isSeeker ? <Briefcase className="w-5 h-5" /> : <UserSearch className="w-5 h-5" />}
-                  {isSeeker ? 'Switch to Employer Portal' : 'Switch to Job Seeker Portal'}
+                  {isSeeker ? t('auth.switchToEmployer') : t('auth.switchToSeeker')}
                   <ArrowRight className="w-4 h-4 ml-auto" />
                 </Button>
               </Link>
@@ -419,20 +421,20 @@ export const LoginPage = () => {
             <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 ${isSeeker ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'
               }`}>
               {isSeeker ? <UserSearch className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
-              <span className="text-sm font-medium">{isSeeker ? 'Job Seeker' : 'Employer'}</span>
+              <span className="text-sm font-medium">{isSeeker ? t('auth.jobSeeker') : t('auth.employer')}</span>
             </div>
 
             {/* Title */}
             <div className="mb-8">
               <h2 className="font-display text-3xl font-bold mb-2 text-foreground">
-                {isForgotPassword ? 'Reset Password' : (isLogin ? 'Welcome Back!' : 'Get Started')}
+                {isForgotPassword ? t('auth.resetPassword') : (isLogin ? t('auth.welcomeBack') : t('auth.getStarted'))}
               </h2>
               <p className="text-muted-foreground">
                 {isForgotPassword
-                  ? 'Enter your email to receive password reset instructions'
+                  ? t('auth.resetInstructions')
                   : (isLogin
-                    ? `Sign in to ${isSeeker ? 'continue your career journey' : 'manage your postings'}`
-                    : `Create your account to ${isSeeker ? 'find opportunities' : 'hire talent'}`)}
+                    ? t('login.signInToContinue', { context: isSeeker ? t('login.continueCareer') : t('login.managePostings') })
+                    : t('login.createAccountTo', { context: isSeeker ? t('login.findOpportunities') : t('login.hireTalent') }))}
               </p>
             </div>
 
@@ -443,7 +445,7 @@ export const LoginPage = () => {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     type="email"
-                    placeholder="Email Address"
+                    placeholder={t('auth.emailAddress')}
                     value={email}
                     onChange={handleEmailChange}
                     onBlur={handleEmailBlur}
@@ -470,10 +472,10 @@ export const LoginPage = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Sending Link...
+                      {t('auth.sendingLink')}
                     </>
                   ) : (
-                    'Send Reset Link'
+                    t('auth.sendResetLink')
                   )}
                 </Button>
 
@@ -484,7 +486,7 @@ export const LoginPage = () => {
                   onClick={() => setIsForgotPassword(false)}
                   disabled={isLoading}
                 >
-                  Back to Login
+                  {t('auth.backToLogin')}
                 </Button>
               </form>
             ) : (
@@ -497,7 +499,7 @@ export const LoginPage = () => {
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                       <Input
                         type="text"
-                        placeholder="Full Name"
+                        placeholder={t('auth.fullName')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="pl-12 h-12"
@@ -509,7 +511,7 @@ export const LoginPage = () => {
                         <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <Input
                           type="text"
-                          placeholder="Company Name"
+                          placeholder={t('auth.companyName')}
                           value={companyName}
                           onChange={(e) => setCompanyName(e.target.value)}
                           className="pl-12 h-12"
@@ -524,7 +526,7 @@ export const LoginPage = () => {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     type="email"
-                    placeholder="Email Address"
+                    placeholder={t('auth.emailAddress')}
                     value={email}
                     onChange={handleEmailChange}
                     onBlur={handleEmailBlur}
@@ -551,7 +553,7 @@ export const LoginPage = () => {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
+                    placeholder={t('auth.password')}
                     value={password}
                     onChange={handlePasswordChange}
                     className={`pl-12 pr-12 h-12 ${passwordError ? 'border-red-500 focus-visible:ring-red-500' : ''
@@ -589,7 +591,7 @@ export const LoginPage = () => {
                     <p className={`text-xs ${passwordStrength === 'weak' ? 'text-red-500' :
                       passwordStrength === 'medium' ? 'text-yellow-600' : 'text-green-600'
                       }`}>
-                      Password strength: {passwordStrength}
+                      {t('auth.passwordStrength.label')} {t(`auth.passwordStrength.${passwordStrength}`)}
                     </p>
                   </div>
                 )}
@@ -604,14 +606,14 @@ export const LoginPage = () => {
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
                       />
-                      <span className="text-muted-foreground">Remember me</span>
+                      <span className="text-muted-foreground">{t('auth.rememberMe')}</span>
                     </label>
                     <button
                       type="button"
                       onClick={() => setIsForgotPassword(true)}
                       className={`${isSeeker ? 'text-primary' : 'text-accent'} hover:underline font-medium`}
                     >
-                      Forgot password?
+                      {t('auth.forgotPassword')}
                     </button>
                   </div>
                 )}
@@ -626,10 +628,10 @@ export const LoginPage = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      {isLogin ? 'Signing in...' : 'Creating account...'}
+                      {isLogin ? t('auth.signingIn') : t('auth.creatingAccount')}
                     </>
                   ) : (
-                    isLogin ? 'Sign In' : 'Create Account'
+                    isLogin ? t('auth.signIn') : t('auth.createAccountButton')
                   )}
                 </Button>
               </form>
@@ -638,7 +640,7 @@ export const LoginPage = () => {
             {/* Divider */}
             <div className="flex items-center gap-4 my-6">
               <div className="flex-1 h-px bg-border" />
-              <span className="text-xs text-muted-foreground uppercase">Or continue with</span>
+              <span className="text-xs text-muted-foreground uppercase">{t('auth.orContinueWith')}</span>
               <div className="flex-1 h-px bg-border" />
             </div>
 
@@ -651,19 +653,19 @@ export const LoginPage = () => {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                 </svg>
-                Sign in with Google
+                {t('auth.signInWithGoogle')}
               </Button>
             </div>
 
             {/* Toggle */}
             <p className="text-center text-sm text-muted-foreground mt-6">
-              {isLogin ? "Don't have an account?" : 'Already have an account?'}
+              {isLogin ? t('auth.dontHaveAccount') : t('auth.alreadyHaveAccount')}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
                 className={`ml-2 ${isSeeker ? 'text-primary' : 'text-accent'} hover:underline font-semibold`}
               >
-                {isLogin ? 'Sign up' : 'Sign in'}
+                {isLogin ? t('auth.signUp') : t('auth.signin')}
               </button>
             </p>
           </div>
@@ -672,7 +674,7 @@ export const LoginPage = () => {
         {/* Back Link */}
         <div className="text-center mt-6">
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            ← Back to home
+            ← {t('auth.backToHome')}
           </Link>
         </div>
       </div>

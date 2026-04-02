@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
+import { useTranslation } from 'react-i18next';
 
 export interface JobFiltersState {
     query: string;
@@ -18,6 +19,7 @@ interface JobFiltersWidgetProps {
 }
 
 export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps) => {
+    const { t } = useTranslation();
 
     const handleChange = (key: keyof JobFiltersState, value: any) => {
         setFilters({ ...filters, [key]: value });
@@ -37,12 +39,12 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
                         <Filter className="w-5 h-5" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-lg">Filter Jobs</h3>
+                        <h3 className="font-bold text-lg">{t('jobFilters.filterJobs')}</h3>
                     </div>
                 </div>
                 {hasActiveFilters && (
                     <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 px-2 text-muted-foreground hover:text-destructive">
-                        <X className="w-4 h-4 mr-1" /> Clear
+                        <X className="w-4 h-4 mr-1" /> {t('findJobs.clear')}
                     </Button>
                 )}
             </div>
@@ -50,10 +52,10 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
             <div className="space-y-4">
                 <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                        <Search className="w-4 h-4" /> Role or Keyword
+                        <Search className="w-4 h-4" /> {t('jobFilters.roleOrKeyword')}
                     </label>
                     <Input
-                        placeholder="e.g. Frontend Developer"
+                        placeholder={t('jobFilters.rolePlaceholder')}
                         className="bg-background"
                         value={filters.query}
                         onChange={(e) => handleChange('query', e.target.value)}
@@ -62,10 +64,10 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="w-4 h-4" /> Location
+                        <MapPin className="w-4 h-4" /> {t('jobFilters.locationLabel')}
                     </label>
                     <Input
-                        placeholder="e.g. Bangalore, Remote"
+                        placeholder={t('jobFilters.locationPlaceholder')}
                         className="bg-background"
                         value={filters.location}
                         onChange={(e) => handleChange('location', e.target.value)}
@@ -74,18 +76,18 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                        <Briefcase className="w-4 h-4" /> Job Type
+                        <Briefcase className="w-4 h-4" /> {t('jobFilters.jobType')}
                     </label>
                     <Select value={filters.type} onValueChange={(val) => handleChange('type', val)}>
                         <SelectTrigger className="bg-background">
-                            <SelectValue placeholder="All Types" />
+                            <SelectValue placeholder={t('jobFilters.allTypes')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Types</SelectItem>
-                            <SelectItem value="Full-time">Full-time</SelectItem>
-                            <SelectItem value="Contract">Contract</SelectItem>
-                            <SelectItem value="Freelance">Freelance</SelectItem>
-                            <SelectItem value="Internship">Internship</SelectItem>
+                            <SelectItem value="all">{t('jobFilters.allTypes')}</SelectItem>
+                            <SelectItem value="Full-time">{t('jobFilters.fullTime')}</SelectItem>
+                            <SelectItem value="Contract">{t('jobFilters.contract')}</SelectItem>
+                            <SelectItem value="Freelance">{t('jobFilters.freelance')}</SelectItem>
+                            <SelectItem value="Internship">{t('jobFilters.internship')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -94,7 +96,7 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
                 <div className="space-y-3 pt-2">
                     <div className="flex justify-between items-center text-sm">
                         <label className="font-medium flex items-center gap-2 text-muted-foreground">
-                            <Banknote className="w-4 h-4" /> Min Salary (LPA)
+                            <Banknote className="w-4 h-4" /> {t('jobFilters.minSalary')}
                         </label>
                         <span className="text-xs font-semibold text-primary">₹{filters.minSalary}L+</span>
                     </div>
@@ -110,7 +112,7 @@ export const JobFiltersWidget = ({ filters, setFilters }: JobFiltersWidgetProps)
             </div>
 
             <Button className="w-full gap-2 font-bold shadow-button" size="lg">
-                View Matches
+                {t('jobFilters.viewMatches')}
             </Button>
         </div>
     );

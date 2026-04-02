@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MapPin, Mail, Phone, Linkedin, Github, Download, ArrowLeft, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { exportResumeToPDF } from '@/lib/resume-export';
 
 // We can reuse the Profile Interface since it's just a view
 export const CandidateProfile = () => {
+    const { t } = useTranslation();
     const { id } = useParams(); // Retrieves candidate's userId from URL
     const [profile, setProfile] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +36,7 @@ export const CandidateProfile = () => {
                 }
             } catch (error) {
                 console.error("Failed to fetch candidate profile", error);
-                toast.error("Could not load candidate profile.");
+                toast.error(t('candidateProfile.loadFailed'));
             } finally {
                 setIsLoading(false);
             }
@@ -46,27 +48,27 @@ export const CandidateProfile = () => {
         if (!profile) return;
         try {
             toast.promise(
-                exportResumeToPDF(profile, `${profile.personalInfo.fullName || 'Candidate'}_Resume.pdf`),
+                exportResumeToPDF(profile, `${profile.personalInfo.fullName || t('candidateProfile.candidate')}_Resume.pdf`),
                 {
-                    loading: 'Generating PDF...',
-                    success: 'Resume downloaded!',
-                    error: 'Failed to generate PDF'
+                    loading: t('candidateProfile.generatingPdf'),
+                    success: t('candidateProfile.resumeDownloaded'),
+                    error: t('candidateProfile.pdfFailed')
                 }
             );
         } catch (error) {
-            toast.error("Failed to download");
+            toast.error(t('candidateProfile.downloadFailed'));
         }
     };
 
-    if (isLoading) return <div className="p-12 text-center text-muted-foreground animate-pulse">Loading candidate profile...</div>;
-    if (!profile) return <div className="p-12 text-center text-muted-foreground">Candidate not found.</div>;
+    if (isLoading) return <div className="p-12 text-center text-muted-foreground animate-pulse">{t('candidateProfile.loading')}</div>;
+    if (!profile) return <div className="p-12 text-center text-muted-foreground">{t('candidateProfile.notFound')}</div>;
 
     const { personalInfo, education, experience, skills, projects } = profile;
 
     return (
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in pb-12">
             <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
-                <ArrowLeft className="w-4 h-4" /> Back
+                <ArrowLeft className="w-4 h-4" /> {t('candidateProfile.back')}
             </Button>
 
             {/* Header Banner (Read Only) */}
@@ -126,7 +128,7 @@ export const CandidateProfile = () => {
 
                     <div className="flex gap-3 pb-2">
                         <Button variant="outline" size="lg" className="gap-2" onClick={handleDownloadResume}>
-                            <Download className="w-4 h-4" /> Download Resume
+                            <Download className="w-4 h-4" /> {t('candidateProfile.downloadResume')}
                         </Button>
                         {/* Maybe 'Shortlist' or 'Reject' buttons here later */}
                     </div>
@@ -138,15 +140,15 @@ export const CandidateProfile = () => {
                 <div className="md:col-span-2 space-y-8">
                     {/* About */}
                     <section className="bg-card border border-border rounded-2xl p-8 space-y-4">
-                        <h2 className="font-bold text-xl">About</h2>
+                        <h2 className="font-bold text-xl">{t('candidateProfile.about')}</h2>
                         <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                            {personalInfo.bio || "No bio available."}
+                            {personalInfo.bio || t('candidateProfile.noBio')}
                         </p>
                     </section>
 
                     {/* Experience */}
                     <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-                        <h2 className="font-bold text-xl">Work Experience</h2>
+                        <h2 className="font-bold text-xl">{t('candidateProfile.workExperience')}</h2>
                         <div className="space-y-8">
                             {experience?.map((exp: any, i: number) => (
                                 <div key={i} className="relative pl-8 border-l-2 border-border/50 space-y-2">
@@ -158,13 +160,13 @@ export const CandidateProfile = () => {
                                     </p>
                                 </div>
                             ))}
-                            {!experience?.length && <p className="text-muted-foreground">No experience listed.</p>}
+                            {!experience?.length && <p className="text-muted-foreground">{t('candidateProfile.noExperience')}</p>}
                         </div>
                     </section>
 
                     {/* Education */}
                     <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-                        <h2 className="font-bold text-xl">Education</h2>
+                        <h2 className="font-bold text-xl">{t('candidateProfile.education')}</h2>
                         <div className="space-y-6">
                             {education?.map((edu: any, i: number) => (
                                 <div key={i} className="flex justify-between items-start">
@@ -178,20 +180,20 @@ export const CandidateProfile = () => {
                                     </div>
                                 </div>
                             ))}
-                            {!education?.length && <p className="text-muted-foreground">No education listed.</p>}
+                            {!education?.length && <p className="text-muted-foreground">{t('candidateProfile.noEducation')}</p>}
                         </div>
                     </section>
 
                     {/* Projects */}
                     <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-                        <h2 className="font-bold text-xl">Projects</h2>
+                        <h2 className="font-bold text-xl">{t('candidateProfile.projects')}</h2>
                         <div className="grid gap-6">
                             {projects?.map((proj: any, i: number) => (
                                 <div key={i} className="p-4 rounded-xl bg-muted/30 border border-border space-y-3">
                                     <div className="flex justify-between items-start">
                                         <h3 className="font-bold text-lg">{proj.title}</h3>
                                         {proj.link && (
-                                            <a href={proj.link} target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm">View Project</a>
+                                            <a href={proj.link} target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm">{t('candidateProfile.viewProject')}</a>
                                         )}
                                     </div>
                                     <p className="text-sm text-muted-foreground">{proj.description}</p>
@@ -204,7 +206,7 @@ export const CandidateProfile = () => {
                                     )}
                                 </div>
                             ))}
-                            {!projects?.length && <p className="text-muted-foreground">No projects listed.</p>}
+                            {!projects?.length && <p className="text-muted-foreground">{t('candidateProfile.noProjects')}</p>}
                         </div>
                     </section>
 
@@ -214,21 +216,21 @@ export const CandidateProfile = () => {
                 <div className="space-y-8">
                     {/* Skills */}
                     <section className="bg-card border border-border rounded-2xl p-6 space-y-4">
-                        <h2 className="font-bold text-lg">Skills</h2>
+                        <h2 className="font-bold text-lg">{t('candidateProfile.skills')}</h2>
                         <div className="flex flex-wrap gap-2">
                             {skills?.map((skill: string) => (
                                 <Badge key={skill} variant="secondary" className="px-3 py-1 font-normal bg-muted/50 hover:bg-muted text-foreground">
                                     {skill}
                                 </Badge>
                             ))}
-                            {!skills?.length && <p className="text-sm text-muted-foreground">No skills listed.</p>}
+                            {!skills?.length && <p className="text-sm text-muted-foreground">{t('candidateProfile.noSkills')}</p>}
                         </div>
                     </section>
 
                     {/* Languages */}
                     {personalInfo.languages && (
                         <section className="bg-card border border-border rounded-2xl p-6 space-y-4">
-                            <h2 className="font-bold text-lg">Languages</h2>
+                            <h2 className="font-bold text-lg">{t('candidateProfile.languages')}</h2>
                             <div className="space-y-3">
                                 {personalInfo.languages.split(',').map((lang: string, i: number) => (
                                     <div key={i} className="flex justify-between text-sm">

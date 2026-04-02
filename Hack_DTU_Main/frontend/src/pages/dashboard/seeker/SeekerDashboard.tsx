@@ -6,6 +6,7 @@ import { JobCardSkeleton } from "@/components/dashboard/JobCardSkeleton";
 import { useState, useEffect, useMemo } from "react";
 import { fetchRecommendedJobs, getJobSeekerProfile, fetchDashboardStats } from "@/lib/auth-api";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from 'react-i18next';
 
 export const SeekerDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,7 @@ export const SeekerDashboard = () => {
   const [stats, setStats] = useState({ applied: 0, shortlisted: 0, interviews: 0, rejected: 0 });
   const [recommendedJobs, setRecommendedJobs] = useState<any[]>([]);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   // Filter State
   const [filters, setFilters] = useState<JobFiltersState>({
@@ -44,8 +46,7 @@ export const SeekerDashboard = () => {
         }
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
-        // Toast only on fatal error, stats/recs might partially fail
-        toast({ title: "Error", description: "Failed to load dashboard data", variant: "destructive" });
+        toast({ title: t('seekerDashboard.error'), description: t('errors.loadFailed'), variant: "destructive" });
       } finally {
         setIsLoading(false);
       }
@@ -123,20 +124,19 @@ export const SeekerDashboard = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in relative">
       {/* Welcome & Stats Section */}
-      {/* Welcome & Stats Section */}
       <div className="flex flex-col xl:flex-row justify-between items-end gap-6">
         <div className="w-full xl:w-auto">
           <h1 className="font-display text-3xl font-bold mb-2">
-            Welcome back, <span className="text-primary">{profileName}</span>!
+            {t('seekerDashboard.welcomeBack', { name: profileName })}
           </h1>
           <p className="text-muted-foreground">
-            Here are the best jobs matching your resume.
+            {t('seekerDashboard.bestJobs')}
           </p>
         </div>
 
         {/* Application Status Widget */}
         <div className="w-full xl:w-auto bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 rounded-2xl p-4 flex flex-wrap gap-4 items-center justify-between xl:justify-end">
-          <h3 className="font-bold text-sm text-muted-foreground mr-2 hidden xl:block">Application Status:</h3>
+          <h3 className="font-bold text-sm text-muted-foreground mr-2 hidden xl:block">{t('seekerDashboard.applicationStatus')}</h3>
           <div className="flex gap-3 flex-wrap">
             <div className="flex items-center gap-3 bg-background/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -144,7 +144,7 @@ export const SeekerDashboard = () => {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-foreground">{stats.applied}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Applied</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t('seekerDashboard.applied')}</div>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-background/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-green-500/30 transition-colors">
@@ -153,7 +153,7 @@ export const SeekerDashboard = () => {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-green-600">{stats.shortlisted}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Shortlisted</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t('seekerDashboard.shortlisted')}</div>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-background/70 backdrop-blur-sm px-4 py-2.5 rounded-xl border border-border/50 hover:border-purple-500/30 transition-colors relative">
@@ -162,7 +162,7 @@ export const SeekerDashboard = () => {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-purple-600">{stats.interviews}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Interviews</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t('seekerDashboard.interviews')}</div>
               </div>
               {stats.interviews > 0 && <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-ping" />}
               {stats.interviews > 0 && <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full" />}
@@ -173,7 +173,7 @@ export const SeekerDashboard = () => {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-red-500">{stats.rejected}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-semibold">Rejected</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-semibold">{t('seekerDashboard.rejected')}</div>
               </div>
             </div>
           </div>
@@ -191,9 +191,13 @@ export const SeekerDashboard = () => {
             <Sparkles className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-foreground mb-1">AI-Recommended Jobs</h3>
+            <h3 className="text-xl font-bold text-foreground mb-1">{t('seekerDashboard.aiRecommended')}</h3>
             <p className="text-muted-foreground">
-              Our AI has analyzed your profile and found <span className="font-bold text-primary">{filteredJobs.length} matches</span> based on your skills!
+              {t('seekerDashboard.aiAnalyzed', { count: filteredJobs.length }).split('<1>').map((part, i) => {
+                if (i === 0) return part;
+                const [highlighted, rest] = part.split('</1>');
+                return <span key={i}><span className="font-bold text-primary">{highlighted}</span>{rest}</span>;
+              })}
             </p>
           </div>
         </div>
@@ -204,9 +208,9 @@ export const SeekerDashboard = () => {
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="font-bold text-xl">
-              {filteredJobs.length > 0 ? "Recommended Jobs" : "No Jobs Found"}
+              {filteredJobs.length > 0 ? t('seekerDashboard.recommendedJobs') : t('seekerDashboard.noJobsFound')}
             </h2>
-            <span className="text-sm text-muted-foreground">{filteredJobs.length} Results</span>
+            <span className="text-sm text-muted-foreground">{t('seekerDashboard.results', { count: filteredJobs.length })}</span>
           </div>
 
           <div className="grid gap-4">
@@ -217,8 +221,8 @@ export const SeekerDashboard = () => {
             ) : (
               <div className="flex flex-col items-center justify-center p-12 text-center border border-dashed rounded-2xl">
                 <Frown className="w-12 h-12 text-muted-foreground mb-4 opacity-50" />
-                <h3 className="text-lg font-bold">No jobs match your filters</h3>
-                <p className="text-muted-foreground">Try adjusting your search criteria or clearing filters.</p>
+                <h3 className="text-lg font-bold">{t('seekerDashboard.noJobsMatchFilters')}</h3>
+                <p className="text-muted-foreground">{t('seekerDashboard.tryAdjustingFilters')}</p>
               </div>
             )}
           </div>

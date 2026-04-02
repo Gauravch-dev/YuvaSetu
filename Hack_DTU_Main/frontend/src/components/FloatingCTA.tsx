@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { ArrowUp, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 export const FloatingCTA = () => {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [isNearFooter, setIsNearFooter] = useState(false);
 
@@ -43,14 +45,14 @@ export const FloatingCTA = () => {
         onClick={() => window.location.href = '/login/seeker'}
       >
         <Briefcase className="w-5 h-5" />
-        <span className="hidden sm:inline">Find Jobs</span>
+        <span className="hidden sm:inline">{t('floatingCta.findJobs')}</span>
       </Button>
 
       {/* Scroll to Top Button */}
       <button
         onClick={scrollToTop}
         className="w-12 h-12 rounded-full bg-card border-2 border-border hover:border-primary flex items-center justify-center shadow-3d-hover transition-all duration-300 hover:scale-110 group"
-        aria-label="Scroll to top"
+        aria-label={t('floatingCta.scrollToTop')}
       >
         <ArrowUp className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
       </button>

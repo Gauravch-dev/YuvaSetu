@@ -4,11 +4,13 @@ import { FileUp, Keyboard, ArrowRight, Sparkles, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GenieOverlay } from '../../features/VoiceGenie';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export const OnboardingChoice = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [hoveredOption, setHoveredOption] = useState<'resume' | 'manual' | 'voice' | null>(null);
   const [isGenieOpen, setIsGenieOpen] = useState(false);
 
@@ -25,10 +27,16 @@ export const OnboardingChoice = () => {
     <div className="space-y-12 text-center">
       <div className="space-y-4 max-w-2xl mx-auto">
         <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-          Let's Build Your <span className="text-primary">Profile</span>
+          {t('onboarding.buildProfile').split(t('common.appName')).length > 1
+            ? t('onboarding.buildProfile')
+            : <>
+                {t('onboarding.buildProfile').replace('Profile', '')}
+                <span className="text-primary">{t('onboarding.buildProfile').includes('Profile') ? 'Profile' : ''}</span>
+              </>
+          }
         </h1>
         <p className="text-lg text-muted-foreground">
-          Choose how you want to get started. We'll help you create a standout profile either way.
+          {t('onboarding.chooseMethod')}
         </p>
       </div>
 
@@ -50,10 +58,10 @@ export const OnboardingChoice = () => {
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-display text-2xl font-bold">Upload Resume</h3>
+              <h3 className="font-display text-2xl font-bold">{t('onboarding.uploadResume')}</h3>
               <p className="text-muted-foreground">
-                We'll magically extract your details. <br />
-                Fastest way.
+                {t('onboarding.uploadResumeDesc')} <br />
+                {t('onboarding.fastestWay')}
               </p>
             </div>
 
@@ -62,7 +70,7 @@ export const OnboardingChoice = () => {
                 variant="outline"
                 className={`w-full gap-2 transition-all duration-300 ${hoveredOption === 'resume' ? 'border-blue-500 text-blue-600 bg-blue-50' : ''}`}
               >
-                Auto-Fill
+                {t('onboarding.autoFill')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
@@ -83,7 +91,7 @@ export const OnboardingChoice = () => {
            <div className="absolute -top-4 left-1/2 -translate-x-1/2">
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-semibold shadow-lg animate-pulse">
               <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-              Voice AI
+              {t('onboarding.voiceAI')}
             </div>
           </div>
 
@@ -94,10 +102,10 @@ export const OnboardingChoice = () => {
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-display text-2xl font-bold">Voice Interview</h3>
+              <h3 className="font-display text-2xl font-bold">{t('onboarding.voiceInterview')}</h3>
               <p className="text-muted-foreground">
-                Chat with "Genie" to build your profile. <br />
-                Fun & interactive!
+                {t('onboarding.voiceInterviewDesc')} <br />
+                {t('onboarding.funInteractive')}
               </p>
             </div>
 
@@ -106,7 +114,7 @@ export const OnboardingChoice = () => {
                 variant="outline"
                 className={`w-full gap-2 transition-all duration-300 ${hoveredOption === 'voice' ? 'border-purple-500 text-purple-600 bg-purple-50' : ''}`}
               >
-                Start Talking
+                {t('onboarding.startTalking')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
@@ -130,10 +138,10 @@ export const OnboardingChoice = () => {
             </div>
 
             <div className="space-y-2">
-              <h3 className="font-display text-2xl font-bold">Fill Manually</h3>
+              <h3 className="font-display text-2xl font-bold">{t('onboarding.fillManually')}</h3>
               <p className="text-muted-foreground">
-                Control every detail step-by-step. <br />
-                Classic mode.
+                {t('onboarding.fillManuallyDesc')} <br />
+                {t('onboarding.classicMode')}
               </p>
             </div>
 
@@ -142,7 +150,7 @@ export const OnboardingChoice = () => {
                 variant="outline"
                 className={`w-full gap-2 transition-all duration-300 ${hoveredOption === 'manual' ? 'border-primary text-primary bg-primary/10' : ''}`}
               >
-                Enter Details
+                {t('onboarding.enterDetails')}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
@@ -151,24 +159,20 @@ export const OnboardingChoice = () => {
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Already have an account? <Link to="/login/seeker" className="text-primary hover:underline font-medium">Log in</Link>
+        {t('onboarding.alreadyHaveAccount')} <Link to="/login/seeker" className="text-primary hover:underline font-medium">{t('onboarding.logIn')}</Link>
       </p>
 
       {/* Voice Genie Overlay */}
       {isGenieOpen && (
-        <GenieOverlay 
+        <GenieOverlay
           onClose={() => setIsGenieOpen(false)}
           onComplete={(data) => {
              setIsGenieOpen(false);
-             // Here we would effectively submit the "form" or navigate to review
-             // For now, we mock it by navigating to the form with pre-filled state
              console.log("Voice Data Captured:", data);
              toast({
-               title: "Awesome!",
-               description: "We've captured your details. Redirecting to review...",
+               title: t('onboarding.awesome'),
+               description: t('onboarding.capturedDetails'),
              });
-             // Navigate to Form step with data
-             // In a real app, we'd map 'data' to the form schema
              navigate('/onboarding/form', { state: { ...location.state, voiceData: data } });
           }}
         />

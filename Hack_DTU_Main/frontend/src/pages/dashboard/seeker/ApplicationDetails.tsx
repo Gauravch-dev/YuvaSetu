@@ -1,4 +1,5 @@
 
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Building2, MapPin, Calendar, CheckCircle2, XCircle, Timer, Clock, Loader2, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -60,6 +61,7 @@ const getTimelineEvents = (status: string, appliedAt: string) => {
 
 
 export const ApplicationDetails = () => {
+  const { t } = useTranslation();
   const { id } = useParams(); // This is jobId
   const navigate = useNavigate();
 
@@ -79,7 +81,7 @@ export const ApplicationDetails = () => {
   const app = applications?.find((a: any) => a.jobId === id);
 
   if (!app) {
-    return <div className="p-8 text-center text-muted-foreground">Application not found</div>;
+    return <div className="p-8 text-center text-muted-foreground">{t('applicationDetails.notFound')}</div>;
   }
 
   const timeline = getTimelineEvents(app.status, app.appliedAt);
@@ -91,7 +93,7 @@ export const ApplicationDetails = () => {
         className="gap-2 pl-0 hover:bg-transparent hover:text-primary"
         onClick={() => navigate('/dashboard/applications')}
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Applications
+        <ArrowLeft className="w-4 h-4" /> {t('applicationDetails.backToApplications')}
       </Button>
 
       <div className="bg-card border border-border rounded-xl p-8 shadow-sm">
@@ -108,7 +110,7 @@ export const ApplicationDetails = () => {
                   <MapPin className="w-4 h-4" /> {app.location}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" /> Applied on {new Date(app.appliedAt).toLocaleDateString()}
+                  <Clock className="w-4 h-4" /> {t('applicationDetails.appliedOn')} {new Date(app.appliedAt).toLocaleDateString()}
                 </div>
               </div>
             </div>
@@ -125,7 +127,7 @@ export const ApplicationDetails = () => {
         <Separator className="my-8" />
 
         <div className="space-y-6">
-          <h2 className="text-xl font-bold">Application Status & Timeline</h2>
+          <h2 className="text-xl font-bold">{t('applicationDetails.statusTimeline')}</h2>
 
           <div className="relative pl-6 border-l-2 border-muted ml-4 space-y-12">
             {timeline.map((event, index) => (
@@ -155,7 +157,7 @@ export const ApplicationDetails = () => {
 
                   {event.status === 'current' && (
                     <div className="mt-2 text-sm font-semibold text-primary flex items-center gap-2">
-                      <Timer className="w-4 h-4" /> In Progress - Awaiting update
+                      <Timer className="w-4 h-4" /> {t('applicationDetails.inProgress')}
                     </div>
                   )}
                 </div>

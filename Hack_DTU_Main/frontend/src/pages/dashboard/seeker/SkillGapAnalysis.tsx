@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +16,7 @@ interface SkillGapResult {
 }
 
 export const SkillGapAnalysis = () => {
+  const { t } = useTranslation();
   const { jobId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -28,7 +30,7 @@ export const SkillGapAnalysis = () => {
     const fetchData = async () => {
        const token = localStorage.getItem('authToken') || localStorage.getItem('idToken');
        if (!token) {
-          toast({ title: "Auth Error", description: "Please login first", variant: "destructive" });
+          toast({ title: t('skillGap.authError'), description: t('skillGap.pleaseLogin'), variant: "destructive" });
           return;
        }
 
@@ -39,7 +41,7 @@ export const SkillGapAnalysis = () => {
             setResult(data);
           } catch (error) {
             console.error(error);
-            toast({ title: "Analysis Failed", description: "AI could not process this request.", variant: "destructive" });
+            toast({ title: t('skillGap.analysisFailed'), description: t('skillGap.aiError'), variant: "destructive" });
           } finally {
             setAnalyzing(false);
           }
@@ -67,16 +69,16 @@ export const SkillGapAnalysis = () => {
            
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20 shadow-sm">
             <Sparkles className="w-4 h-4" />
-            AI-Powered Career Growth
+            {t('skillGap.badge')}
           </div>
           
           <div>
             <h1 className="text-4xl md:text-5xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 pb-2">
-              Skill Gap Analysis
+              {t('skillGap.title')}
             </h1>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-2 leading-relaxed">
-              Bridge the gap between where you are and where you want to be. <br className="hidden md:block"/>
-              Select a target role to get a personalized roadmap.
+              {t('skillGap.subtitle')} <br className="hidden md:block"/>
+              {t('skillGap.selectRole')}
             </p>
           </div>
         </div>
@@ -103,7 +105,7 @@ export const SkillGapAnalysis = () => {
                  </CardHeader>
                  <CardContent className="relative flex-1 flex flex-col justify-end space-y-6">
                     <div className="space-y-3">
-                       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Top Skills Required</p>
+                       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t('skillGap.topSkillsRequired')}</p>
                        <div className="flex flex-wrap gap-2">
                           {job.skills?.slice(0, 3).map((skill: string, i: number) => (
                              <Badge key={i} variant="secondary" className="bg-slate-100 dark:bg-slate-800 hover:bg-white text-slate-700 dark:text-slate-300 border-transparent">{skill}</Badge>
@@ -113,7 +115,7 @@ export const SkillGapAnalysis = () => {
                     </div>
                     <Button onClick={() => navigate(`/dashboard/skill-gap/${job._id}`)} className="w-full gap-2 bg-primary text-primary-foreground hover:bg-primary/90 group-hover:scale-[1.02] transition-all shadow-lg shadow-primary/20">
                        <Zap className="w-4 h-4 fill-current" />
-                       Analyze Skill Gap
+                       {t('skillGap.analyzeSkillGap')}
                     </Button>
                  </CardContent>
               </Card>
@@ -137,10 +139,10 @@ export const SkillGapAnalysis = () => {
         </div>
         <div className="relative z-10 max-w-md space-y-2">
           <h2 className="text-3xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
-             Analyzing Profile
+             {t('skillGap.analyzingProfile')}
           </h2>
           <p className="text-muted-foreground text-lg">
-             Our AI is comparing your skills against the job requirements to find your superpowers and gaps...
+             {t('skillGap.analyzingDesc')}
           </p>
         </div>
       </div>
@@ -154,9 +156,9 @@ export const SkillGapAnalysis = () => {
            <div className="w-24 h-24 bg-red-50 dark:bg-red-900/10 rounded-full flex items-center justify-center mb-6">
               <AlertCircle className="w-10 h-10 text-red-500" />
            </div>
-           <h3 className="text-xl font-bold mb-2">Analysis Unavailable</h3>
-           <p className="text-muted-foreground mb-6">We couldn't generate a report for this job at the moment.</p>
-           <Button onClick={() => navigate(-1)} variant="outline">Go Back</Button>
+           <h3 className="text-xl font-bold mb-2">{t('skillGap.analysisUnavailable')}</h3>
+           <p className="text-muted-foreground mb-6">{t('skillGap.analysisUnavailableDesc')}</p>
+           <Button onClick={() => navigate(-1)} variant="outline">{t('skillGap.goBack')}</Button>
         </div>
      );
   }
@@ -169,24 +171,24 @@ export const SkillGapAnalysis = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-border pb-8">
         <div>
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 pl-0 hover:pl-2 transition-all gap-2 text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="w-4 h-4" /> Back to Jobs
+            <ArrowLeft className="w-4 h-4" /> {t('skillGap.backToJobs')}
           </Button>
           <div className="flex items-center gap-3">
              <div className="p-3 bg-gradient-to-br from-primary to-purple-600 rounded-2xl shadow-lg shadow-primary/20 text-white">
                 <Zap className="w-8 h-8 fill-white/20" />
              </div>
              <div>
-                <h1 className="text-3xl md:text-4xl font-display font-bold">Analysis Report</h1>
-                <p className="text-muted-foreground">Detailed breakdown of your compatibility.</p>
+                <h1 className="text-3xl md:text-4xl font-display font-bold">{t('skillGap.analysisReport')}</h1>
+                <p className="text-muted-foreground">{t('skillGap.detailedBreakdown')}</p>
              </div>
           </div>
         </div>
         <div className="flex gap-3">
            <Button variant="outline" className="gap-2">
-              <Share2 className="w-4 h-4" /> Share
+              <Share2 className="w-4 h-4" /> {t('skillGap.share')}
            </Button>
            <Button className="gap-2 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25">
-              <Download className="w-4 h-4" /> Download PDF
+              <Download className="w-4 h-4" /> {t('skillGap.downloadPdf')}
            </Button>
         </div>
       </div>
@@ -196,8 +198,8 @@ export const SkillGapAnalysis = () => {
         <Card className="md:col-span-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-primary/10 shadow-xl shadow-primary/5 overflow-hidden relative">
           <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-primary via-purple-500 to-primary" />
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xl">Match Score</CardTitle>
-            <CardDescription>Based on AI analysis</CardDescription>
+            <CardTitle className="text-xl">{t('skillGap.matchScore')}</CardTitle>
+            <CardDescription>{t('skillGap.basedOnAi')}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-8 relative">
             {/* Custom SVG Gradient */}
@@ -229,7 +231,7 @@ export const SkillGapAnalysis = () => {
                     (result?.score || 0) > 50 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
                     'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                  }`}>
-                    {(result?.score || 0) > 80 ? 'Excellent' : (result?.score || 0) > 50 ? 'Good' : 'Poor'} Match
+                    {(result?.score || 0) > 80 ? t('skillGap.excellent') : (result?.score || 0) > 50 ? t('skillGap.good') : t('skillGap.poor')} Match
                  </span>
               </div>
             </div>
@@ -248,8 +250,8 @@ export const SkillGapAnalysis = () => {
                    <Target className="w-5 h-5" />
                 </div>
                 <div>
-                   <h3 className="text-xl font-bold">Missing Critical Skills</h3>
-                   <p className="text-muted-foreground">Prioritize learning these to boost your score.</p>
+                   <h3 className="text-xl font-bold">{t('skillGap.missingSkills')}</h3>
+                   <p className="text-muted-foreground">{t('skillGap.prioritizeLearning')}</p>
                 </div>
              </div>
              
@@ -258,8 +260,8 @@ export const SkillGapAnalysis = () => {
                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
                       <Sparkles className="w-8 h-8" />
                    </div>
-                   <h4 className="text-lg font-bold text-green-700 dark:text-green-400">Perfect Skill Match!</h4>
-                   <p className="text-green-600/80 dark:text-green-400/70">Your profile matches all the required skills for this job.</p>
+                   <h4 className="text-lg font-bold text-green-700 dark:text-green-400">{t('skillGap.perfectMatch')}</h4>
+                   <p className="text-green-600/80 dark:text-green-400/70">{t('skillGap.perfectMatchDesc')}</p>
                 </div>
              ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -269,9 +271,9 @@ export const SkillGapAnalysis = () => {
                          <div>
                             <div className="flex items-center gap-2">
                                <h4 className="font-bold text-foreground group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">{skill.name}</h4>
-                               {skill.importance === 'High' && <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">High Priority</Badge>}
+                               {skill.importance === 'High' && <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">{t('skillGap.highPriority')}</Badge>}
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1">{skill.category} • Expected by Industry</p>
+                            <p className="text-sm text-muted-foreground mt-1">{skill.category} • {t('skillGap.expectedByIndustry')}</p>
                          </div>
                       </div>
                    ))}
@@ -287,8 +289,8 @@ export const SkillGapAnalysis = () => {
                        <BookOpen className="w-5 h-5" />
                     </div>
                     <div>
-                       <h3 className="text-xl font-bold">Personalized Learning Plan</h3>
-                       <p className="text-muted-foreground">Curated resources to close your gaps.</p>
+                       <h3 className="text-xl font-bold">{t('skillGap.learningPlan')}</h3>
+                       <p className="text-muted-foreground">{t('skillGap.learningPlanDesc')}</p>
                     </div>
                  </div>
 
@@ -312,7 +314,7 @@ export const SkillGapAnalysis = () => {
                                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{item.description}</p>
                                 </div>
                                 <div className="mt-4 flex items-center gap-2 text-sm font-medium text-primary">
-                                   Start Learning <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                                   {t('skillGap.startLearning')} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                                 </div>
                              </div>
                           </div>

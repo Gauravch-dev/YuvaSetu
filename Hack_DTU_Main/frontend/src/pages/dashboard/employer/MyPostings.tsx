@@ -3,10 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fetchJobs } from '@/lib/auth-api';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export const MyPostings = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,12 +47,12 @@ export const MyPostings = () => {
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold mb-2">My Job Postings</h1>
-          <p className="text-muted-foreground">Manage all your job listings and track applicants.</p>
+          <h1 className="font-display text-3xl font-bold mb-2">{t('myPostings.myJobPostings')}</h1>
+          <p className="text-muted-foreground">{t('myPostings.manageListings')}</p>
         </div>
         <Button variant="employer" className="gap-2 shadow-button" onClick={() => navigate('/dashboard/employer/post-job')}>
           <Plus className="w-4 h-4" />
-          Post New Job
+          {t('employerDashboard.postNewJob')}
         </Button>
       </div>
 
@@ -59,7 +61,7 @@ export const MyPostings = () => {
         <div className="flex-1 relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
-            placeholder="Search job postings..."
+            placeholder={t('myPostings.searchPlaceholder')}
             className="pl-9 bg-background"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -68,26 +70,26 @@ export const MyPostings = () => {
         <div className="flex gap-4 w-full md:w-auto">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder={t('myPostings.status')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL">All Statuses</SelectItem>
-              <SelectItem value="PUBLISHED">Published</SelectItem>
-              <SelectItem value="DRAFT">Draft</SelectItem>
-              <SelectItem value="CLOSED">Closed</SelectItem>
+              <SelectItem value="ALL">{t('myPostings.allStatuses')}</SelectItem>
+              <SelectItem value="PUBLISHED">{t('myPostings.published')}</SelectItem>
+              <SelectItem value="DRAFT">{t('myPostings.draft')}</SelectItem>
+              <SelectItem value="CLOSED">{t('myPostings.closed')}</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Job Type" />
+              <SelectValue placeholder={t('myPostings.jobType')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="ALL">All Types</SelectItem>
-              <SelectItem value="Full-time">Full-time</SelectItem>
-              <SelectItem value="Part-time">Part-time</SelectItem>
-              <SelectItem value="Contract">Contract</SelectItem>
-              <SelectItem value="Internship">Internship</SelectItem>
+              <SelectItem value="ALL">{t('myPostings.allTypes')}</SelectItem>
+              <SelectItem value="Full-time">{t('postJob.fullTime')}</SelectItem>
+              <SelectItem value="Part-time">{t('postJob.partTime')}</SelectItem>
+              <SelectItem value="Contract">{t('postJob.contract')}</SelectItem>
+              <SelectItem value="Internship">{t('postJob.internship')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -101,7 +103,7 @@ export const MyPostings = () => {
           </div>
         ) : filteredJobs.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No job postings found matching your filters.</p>
+            <p>{t('myPostings.noPostingsFound')}</p>
           </div>
         ) : (
           filteredJobs.map((job) => (
@@ -122,7 +124,7 @@ export const MyPostings = () => {
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span>{job.location || 'Remote'}</span>
+                    <span>{job.location || t('myPostings.remote')}</span>
                     <span>•</span>
                     <span>{job.type}</span>
                     <span>•</span>
@@ -136,7 +138,7 @@ export const MyPostings = () => {
                       <Users className="w-4 h-4 text-accent" />
                       <span className="text-2xl font-bold text-accent">{job.candidates ? job.candidates.length : 0}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground uppercase">Applicants</p>
+                    <p className="text-xs text-muted-foreground uppercase">{t('employerDashboard.applicants')}</p>
                   </div>
                   <Button
                     variant="outline"
@@ -148,7 +150,7 @@ export const MyPostings = () => {
                     }}
                   >
                     <Eye className="w-4 h-4" />
-                    View Details
+                    {t('myPostings.viewDetails')}
                   </Button>
                 </div>
               </div>
@@ -156,10 +158,10 @@ export const MyPostings = () => {
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
-                  <span>Closing date: Open</span>
+                  <span>{t('myPostings.closingDateOpen')}</span>
                 </div>
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate('/dashboard/employer/post-job', { state: { jobId: job._id } }); }}>Edit</Button>
+                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate('/dashboard/employer/post-job', { state: { jobId: job._id } }); }}>{t('postJob.edit')}</Button>
                 </div>
               </div>
             </div>

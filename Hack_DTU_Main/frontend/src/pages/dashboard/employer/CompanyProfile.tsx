@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +11,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 export const CompanyProfile = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -61,8 +63,8 @@ export const CompanyProfile = () => {
       // Updated: Use separate Employer Endpoint
       await updateEmployerProfile(token, formData);
 
-      toast.success('Profile updated successfully!', {
-        description: 'Your company details have been saved.'
+      toast.success(t('companyProfile.profileUpdated'), {
+        description: t('companyProfile.detailsSaved')
       });
 
       // Real-time Update Trigger
@@ -74,7 +76,7 @@ export const CompanyProfile = () => {
       }, 500);
 
     } catch (error: any) {
-      toast.error('Failed to save profile', { description: error.message });
+      toast.error(t('companyProfile.saveFailed'), { description: error.message });
     } finally {
       setIsLoading(false);
     }
@@ -83,8 +85,8 @@ export const CompanyProfile = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
       <div>
-        <h1 className="font-display text-3xl font-bold mb-2">Company Profile</h1>
-        <p className="text-muted-foreground">Update your company details and branding. Required for posting jobs.</p>
+        <h1 className="font-display text-3xl font-bold mb-2">{t('companyProfile.title')}</h1>
+        <p className="text-muted-foreground">{t('companyProfile.subtitle')}</p>
       </div>
 
       <div className="bg-card border border-border rounded-xl p-8 shadow-sm space-y-8">
@@ -100,8 +102,8 @@ export const CompanyProfile = () => {
             {isLoading && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-1">Company Logo</h3>
-            <p className="text-sm text-muted-foreground mb-4">Recommended size 400x400px</p>
+            <h3 className="font-bold text-lg mb-1">{t('companyProfile.companyLogo')}</h3>
+            <p className="text-sm text-muted-foreground mb-4">{t('companyProfile.recommendedSize')}</p>
             <div className="flex gap-3">
               <input
                 type="file"
@@ -122,9 +124,9 @@ export const CompanyProfile = () => {
                     const url = await uploadFile(file, token);
 
                     setFormData(prev => ({ ...prev, logoUrl: url }));
-                    toast.success("Logo uploaded!");
+                    toast.success(t('companyProfile.logoUploaded'));
                   } catch (err) {
-                    toast.error("Upload failed");
+                    toast.error(t('companyProfile.uploadFailed'));
                     console.error(err);
                   } finally {
                     setIsLoading(false);
@@ -132,7 +134,7 @@ export const CompanyProfile = () => {
                 }}
               />
               <Button variant="outline" size="sm" className="gap-2" onClick={() => document.getElementById('logo-upload')?.click()}>
-                <Upload className="w-3 h-3" /> Upload Logo
+                <Upload className="w-3 h-3" /> {t('companyProfile.uploadLogo')}
               </Button>
             </div>
           </div>
@@ -140,11 +142,11 @@ export const CompanyProfile = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="companyName">Company Name</Label>
-            <Input id="companyName" value={formData.companyName} onChange={handleChange} placeholder="TechCorp Solutions" />
+            <Label htmlFor="companyName">{t('companyProfile.companyName')}</Label>
+            <Input id="companyName" value={formData.companyName} onChange={handleChange} placeholder={t('companyProfile.companyNamePlaceholder')} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="website">Website URL</Label>
+            <Label htmlFor="website">{t('companyProfile.websiteUrl')}</Label>
             <div className="relative">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input id="website" className="pl-9" value={formData.website} onChange={handleChange} placeholder="https://techcorp.com" />
@@ -153,39 +155,39 @@ export const CompanyProfile = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">About Company</Label>
+          <Label htmlFor="description">{t('companyProfile.aboutCompany')}</Label>
           <Textarea
             id="description"
             className="min-h-[120px]"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Tell candidates about your mission and culture..."
+            placeholder={t('companyProfile.aboutPlaceholder')}
           />
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
-            <Input id="industry" value={formData.industry} onChange={handleChange} placeholder="Information Technology" />
+            <Label htmlFor="industry">{t('companyProfile.industry')}</Label>
+            <Input id="industry" value={formData.industry} onChange={handleChange} placeholder={t('companyProfile.industryPlaceholder')} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="size">Company Size</Label>
-            <Input id="size" value={formData.size} onChange={handleChange} placeholder="e.g. 50-200 Employees" />
+            <Label htmlFor="size">{t('companyProfile.companySize')}</Label>
+            <Input id="size" value={formData.size} onChange={handleChange} placeholder={t('companyProfile.companySizePlaceholder')} />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="location">Headquarters</Label>
+          <Label htmlFor="location">{t('companyProfile.headquarters')}</Label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input id="location" className="pl-9" value={formData.location} onChange={handleChange} placeholder="City, Country" />
+            <Input id="location" className="pl-9" value={formData.location} onChange={handleChange} placeholder={t('companyProfile.locationPlaceholder')} />
           </div>
         </div>
 
         <div className="pt-4 flex justify-end">
           <Button variant="employer" size="lg" onClick={handleSave} disabled={isLoading}>
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-            Save Changes
+            {t('companyProfile.saveChanges')}
           </Button>
         </div>
       </div>

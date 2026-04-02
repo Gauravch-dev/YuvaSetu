@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Company data - add logo files to /public/companies/ folder
 const companies = [
@@ -23,6 +24,7 @@ const companies = [
 const duplicatedCompanies = [...companies, ...companies];
 
 export const CompanyCarousel = () => {
+  const { t } = useTranslation();
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
   const handleImageError = (companyName: string) => {
@@ -35,13 +37,13 @@ export const CompanyCarousel = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            Trusted Partners
+            {t('companyCarousel.badge')}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">
-            Top Companies <span className="text-primary">Hiring</span>
+            {t('companyCarousel.titlePrefix')} <span className="text-primary">{t('companyCarousel.titleHighlight')}</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of job seekers who found their dream roles through partnerships with leading organizations
+            {t('companyCarousel.subtitle')}
           </p>
         </div>
 
@@ -99,15 +101,15 @@ export const CompanyCarousel = () => {
         <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-16">
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">500+</div>
-            <p className="text-sm text-muted-foreground">Companies</p>
+            <p className="text-sm text-muted-foreground">{t('companyCarousel.companies')}</p>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">10k+</div>
-            <p className="text-sm text-muted-foreground">Active Jobs</p>
+            <p className="text-sm text-muted-foreground">{t('companyCarousel.activeJobs')}</p>
           </div>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">95%</div>
-            <p className="text-sm text-muted-foreground">Success Rate</p>
+            <p className="text-sm text-muted-foreground">{t('companyCarousel.successRate')}</p>
           </div>
         </div>
       </div>

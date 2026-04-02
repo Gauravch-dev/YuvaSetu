@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { ConfidenceBar } from '@/components/Resume/ConfidenceBar';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 export const ResumeUpload = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { parseResume, isParsing, parsingConfidence, parsingWarnings } = useOnboarding();
   const [file, setFile] = useState<File | null>(null);
@@ -41,11 +43,11 @@ export const ResumeUpload = () => {
   const validateAndSetFile = async (selectedFile: File) => {
     // Only allow PDF for deterministic parsing
     if (selectedFile.type !== 'application/pdf') {
-      toast.error('Please upload a PDF file for best results.');
+      toast.error(t('resumeUpload.uploadPdf'));
       return;
     }
     if (selectedFile.size > 5 * 1024 * 1024) {
-      toast.error('File too large. Max size is 5MB.');
+      toast.error(t('resumeUpload.fileTooLarge'));
       return;
     }
 
@@ -58,13 +60,13 @@ export const ResumeUpload = () => {
       setHasAttemptedParsing(true);
 
       if (result.sectionsFound.includes('AI Analyzed')) {
-        toast.success('Resume analyzed by OnDemand AI (High Accuracy)');
+        toast.success(t('resumeUpload.analyzedByAI'));
       } else if (result.confidence >= 70) {
-        toast.success('Resume parsed successfully! Please review the data.');
+        toast.success(t('resumeUpload.parsedSuccess'));
       } else if (result.confidence >= 30) {
-        toast.warning('Some sections need review. Please check all fields.');
+        toast.warning(t('resumeUpload.needsReview'));
       } else {
-        toast.error('Could not reliably parse resume. Please fill manually.');
+        toast.error(t('resumeUpload.parseFailed'));
       }
     } catch (error) {
       console.error('Parse error:', error);
@@ -83,10 +85,9 @@ export const ResumeUpload = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div className="text-center space-y-4">
-        <h1 className="font-display text-4xl font-bold">Upload Your Resume</h1>
+        <h1 className="font-display text-4xl font-bold">{t('resumeUpload.title')}</h1>
         <p className="text-muted-foreground text-lg">
-          We'll extract your details to pre-fill the form. <br />
-          You can review and edit everything before submission.
+          {t('resumeUpload.subtitle')}
         </p>
       </div>
 
@@ -122,8 +123,8 @@ export const ResumeUpload = () => {
               </div>
             </div>
             <div>
-              <h3 className="font-semibold text-xl mb-2">Analyzing Resume...</h3>
-              <p className="text-muted-foreground animate-pulse">Extracting text and detecting sections...</p>
+              <h3 className="font-semibold text-xl mb-2">{t('resumeUpload.analyzing')}</h3>
+              <p className="text-muted-foreground animate-pulse">{t('resumeUpload.extracting')}</p>
             </div>
           </div>
         ) : file ? (
@@ -136,7 +137,7 @@ export const ResumeUpload = () => {
               <p className="text-sm text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
             </div>
             <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); setFile(null); setHasAttemptedParsing(false); }}>
-              Change File
+              {t('resumeUpload.changeFile')}
             </Button>
           </div>
         ) : (
@@ -145,8 +146,8 @@ export const ResumeUpload = () => {
               <Upload className="w-10 h-10 text-primary" />
             </div>
             <div className="space-y-2">
-              <h3 className="font-semibold text-xl">Click to upload or drag and drop</h3>
-              <p className="text-muted-foreground">PDF only (max. 5MB)</p>
+              <h3 className="font-semibold text-xl">{t('resumeUpload.clickToUpload')}</h3>
+              <p className="text-muted-foreground">{t('resumeUpload.pdfOnly')}</p>
             </div>
           </div>
         )}
@@ -163,7 +164,7 @@ export const ResumeUpload = () => {
       {/* Action Buttons */}
       <div className="flex justify-between items-center pt-4">
         <Button variant="ghost" onClick={() => navigate('/onboarding')} disabled={isParsing}>
-          Back
+          {t('onboardingSteps.back')}
         </Button>
 
         <div className="flex gap-3">
@@ -172,7 +173,7 @@ export const ResumeUpload = () => {
             onClick={handleManualEntry}
             disabled={isParsing}
           >
-            Fill Manually
+            {t('resumeUpload.fillManually')}
           </Button>
           <Button
             variant="seeker"
@@ -184,10 +185,10 @@ export const ResumeUpload = () => {
             {isParsing ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Processing...
+                {t('resumeUpload.processing')}
               </>
             ) : (
-              'Continue to Review'
+              t('resumeUpload.continueToReview')
             )}
           </Button>
         </div>

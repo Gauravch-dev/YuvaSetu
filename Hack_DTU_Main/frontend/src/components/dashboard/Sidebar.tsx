@@ -1,29 +1,30 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Briefcase, BookOpen, Send, User, Settings, LogOut, Users, Building2, TrendingUp, FileText, PenTool } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const SEEKER_NAV = [
-  { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
-
-  { icon: Send, label: 'Applications', href: '/dashboard/applications' },
-  { icon: TrendingUp, label: 'Skill Gap', href: '/dashboard/skill-gap' },
-  { icon: PenTool, label: 'Mock Tests', href: '/dashboard/upskill' },
-  { icon: User, label: 'My Profile', href: '/dashboard/profile' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
-
-];
-
-const EMPLOYER_NAV = [
-  { icon: LayoutDashboard, label: 'Overview', href: '/dashboard/employer' },
-  { icon: Briefcase, label: 'Post a Job', href: '/dashboard/employer/post-job' },
-  { icon: FileText, label: 'My Postings', href: '/dashboard/employer/postings' },
-  { icon: Building2, label: 'Company Profile', href: '/dashboard/employer/profile' },
-  { icon: Settings, label: 'Settings', href: '/dashboard/employer/settings' },
-];
+import { useTranslation } from 'react-i18next';
 
 export const DashboardSidebar = () => {
   const location = useLocation();
   const isEmployer = location.pathname.includes('/employer');
+  const { t } = useTranslation();
+
+  const SEEKER_NAV = [
+    { icon: LayoutDashboard, label: t('sidebar.overview'), href: '/dashboard' },
+    { icon: Send, label: t('sidebar.applications'), href: '/dashboard/applications' },
+    { icon: TrendingUp, label: t('sidebar.skillGap'), href: '/dashboard/skill-gap' },
+    { icon: PenTool, label: t('sidebar.mockTests'), href: '/dashboard/upskill' },
+    { icon: User, label: t('sidebar.myProfile'), href: '/dashboard/profile' },
+    { icon: Settings, label: t('sidebar.settings'), href: '/dashboard/settings' },
+  ];
+
+  const EMPLOYER_NAV = [
+    { icon: LayoutDashboard, label: t('sidebar.overview'), href: '/dashboard/employer' },
+    { icon: Briefcase, label: t('sidebar.postAJob'), href: '/dashboard/employer/post-job' },
+    { icon: FileText, label: t('sidebar.myPostings'), href: '/dashboard/employer/postings' },
+    { icon: Building2, label: t('sidebar.companyProfile'), href: '/dashboard/employer/profile' },
+    { icon: Settings, label: t('sidebar.settings'), href: '/dashboard/employer/settings' },
+  ];
+
   const navItems = isEmployer ? EMPLOYER_NAV : SEEKER_NAV;
 
   return (
@@ -50,8 +51,8 @@ export const DashboardSidebar = () => {
               to={item.href}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium",
-                isActive 
-                  ? "bg-primary text-primary-foreground shadow-button" 
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-button"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
@@ -66,7 +67,7 @@ export const DashboardSidebar = () => {
       <div className="p-4 border-t border-border">
         <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">Sign Out</span>
+          <span className="font-medium">{t('sidebar.signOut')}</span>
         </Link>
       </div>
     </div>

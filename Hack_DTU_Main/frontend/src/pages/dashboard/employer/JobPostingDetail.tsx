@@ -6,11 +6,13 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
 import { fetchJobById, updateJob, fetchRecommendedCandidates } from '@/lib/auth-api';
 import { fetchJobCandidates, updateApplicationStatus } from '@/lib/api/jobs';
 
 export const JobPostingDetail = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const { toast } = useToast();
@@ -48,7 +50,7 @@ export const JobPostingDetail = () => {
 
       } catch (error) {
         console.error(error);
-        toast({ title: "Error", description: "Failed to load job details", variant: "destructive" });
+        toast({ title: t('jobPostingDetail.error'), description: t('jobPostingDetail.loadFailed'), variant: "destructive" });
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +59,7 @@ export const JobPostingDetail = () => {
   }, [id]);
 
   const handleCloseJob = async () => {
-    if (!confirm("Are you sure you want to close this job listing? No new applications will be accepted.")) return;
+    if (!confirm(t('jobPostingDetail.confirmCloseJob'))) return;
 
     setIsUpdating(true);
     try {
@@ -65,11 +67,11 @@ export const JobPostingDetail = () => {
       if (token && id) {
         const updatedJob = await updateJob(token, id, { status: 'CLOSED' });
         setJob(updatedJob);
-        toast({ title: "Success", description: "Job listing closed successfully." });
+        toast({ title: t('jobPostingDetail.success'), description: t('jobPostingDetail.jobClosed') });
       }
     } catch (error) {
       console.error(error);
-      toast({ title: "Error", description: "Failed to close job listing.", variant: "destructive" });
+      toast({ title: t('jobPostingDetail.error'), description: t('jobPostingDetail.closeJobFailed'), variant: "destructive" });
     } finally {
       setIsUpdating(false);
     }
@@ -87,9 +89,9 @@ export const JobPostingDetail = () => {
         c.userId === userId ? { ...c, status: newStatus } : c
       ));
 
-      toast({ title: "Updated", description: `Candidate status changed to ${newStatus}` });
+      toast({ title: t('jobPostingDetail.updated'), description: t('jobPostingDetail.statusChangedTo', { status: newStatus }) });
     } catch (error) {
-      toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
+      toast({ title: t('jobPostingDetail.error'), description: t('jobPostingDetail.updateStatusFailed'), variant: "destructive" });
     }
   };
 
@@ -104,8 +106,8 @@ export const JobPostingDetail = () => {
   if (!job) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
-        <p className="text-muted-foreground">Job not found.</p>
-        <Button onClick={() => navigate('/dashboard/employer')}>Back to Dashboard</Button>
+        <p className="text-muted-foreground">{t('jobPostingDetail.jobNotFound')}</p>
+        <Button onClick={() => navigate('/dashboard/employer')}>{t('jobPostingDetail.backToDashboard')}</Button>
       </div>
     );
   }
@@ -116,7 +118,7 @@ export const JobPostingDetail = () => {
       <div className="flex justify-between items-center">
         <Button variant="ghost" className="gap-2" onClick={() => navigate('/dashboard/employer')}>
           <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+          {t('jobPostingDetail.backToDashboard')}
         </Button>
         {/* Close Job Button */}
         {job.status !== 'CLOSED' && (
@@ -127,7 +129,7 @@ export const JobPostingDetail = () => {
             disabled={isUpdating}
           >
             {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Archive className="w-4 h-4" />}
-            Close Job Posting
+            {t('jobPostingDetail.closeJobPosting')}
           </Button>
         )}
       </div>
@@ -145,7 +147,7 @@ export const JobPostingDetail = () => {
                 <Banknote className="w-4 h-4" /> {job.salary}
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4" /> Posted {new Date(job.createdAt).toLocaleDateString()}
+                <Clock className="w-4 h-4" /> {t('jobPostingDetail.posted')} {new Date(job.createdAt).toLocaleDateString()}
               </span>
             </div>
           </div>
@@ -162,14 +164,14 @@ export const JobPostingDetail = () => {
 
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-3">Job Description</h3>
+            <h3 className="font-bold text-lg mb-3">{t('jobPostingDetail.jobDescription')}</h3>
             <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{job.description}</p>
           </div>
           <div>
-            <h3 className="font-bold text-lg mb-3">Requirements</h3>
+            <h3 className="font-bold text-lg mb-3">{t('jobPostingDetail.requirements')}</h3>
             <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap mb-4">{job.requirements}</p>
 
-            <h3 className="font-bold text-lg mb-3">Required Skills</h3>
+            <h3 className="font-bold text-lg mb-3">{t('jobPostingDetail.requiredSkills')}</h3>
             <div className="flex flex-wrap gap-2">
               {job.skills.map((skill: string) => (
                 <Badge key={skill} variant="secondary">{skill}</Badge>
@@ -184,24 +186,24 @@ export const JobPostingDetail = () => {
         <TabsList className="mb-4">
           <TabsTrigger value="suggestions" className="gap-2">
             <Sparkles className="w-4 h-4 text-primary" />
-            Top AI Matches <Badge variant="secondary" className="ml-2">{suggestedCandidates.length}</Badge>
+            {t('jobPostingDetail.topAiMatches')} <Badge variant="secondary" className="ml-2">{suggestedCandidates.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="applicants">
-            Applicants <Badge variant="secondary" className="ml-2">{candidates.length}</Badge>
+            {t('jobPostingDetail.applicants')} <Badge variant="secondary" className="ml-2">{candidates.length}</Badge>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="suggestions">
           <div className="bg-card border border-border rounded-3xl overflow-hidden p-6 space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="font-bold text-xl">Recommended Candidates</h2>
-              <p className="text-sm text-muted-foreground">Sorted by semantic match score.</p>
+              <h2 className="font-bold text-xl">{t('jobPostingDetail.recommendedCandidates')}</h2>
+              <p className="text-sm text-muted-foreground">{t('jobPostingDetail.sortedByMatch')}</p>
             </div>
 
             {suggestedCandidates.length === 0 ? (
               <div className="text-center py-12 border border-dashed rounded-xl">
                 <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
-                <p className="text-muted-foreground">No recommendations found yet. Candidates must have updated profiles.</p>
+                <p className="text-muted-foreground">{t('jobPostingDetail.noRecommendations')}</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 gap-4">
@@ -213,7 +215,7 @@ export const JobPostingDetail = () => {
                           {candidate.personalInfo?.fullName?.[0] || <User className="w-4 h-4" />}
                         </div>
                         <div>
-                          <h3 className="font-bold">{candidate.personalInfo?.fullName || "Anonymous User"}</h3>
+                          <h3 className="font-bold">{candidate.personalInfo?.fullName || t('jobPostingDetail.anonymousUser')}</h3>
                           <p className="text-xs text-muted-foreground">{candidate.personalInfo?.email}</p>
                         </div>
                       </div>
@@ -233,7 +235,7 @@ export const JobPostingDetail = () => {
                       className="w-full"
                       onClick={() => navigate(`/dashboard/employer/candidate/${candidate.userId}`)}
                     >
-                      View Profile
+                      {t('jobPostingDetail.viewProfile')}
                     </Button>
                   </div>
                 ))}
@@ -245,7 +247,7 @@ export const JobPostingDetail = () => {
         <TabsContent value="applicants">
           <div className="bg-card border border-border rounded-3xl overflow-hidden p-6">
             {candidates.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">No applicants yet.</div>
+              <div className="text-center py-12 text-muted-foreground">{t('jobPostingDetail.noApplicants')}</div>
             ) : (
               <div className="grid gap-4">
                 {candidates.map((candidate) => (
@@ -255,7 +257,7 @@ export const JobPostingDetail = () => {
                         {candidate.avatar ? <img src={candidate.avatar} className="w-full h-full object-cover" /> : (candidate.name?.charAt(0) || 'U')}
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg">{candidate.name || 'Unknown Candidate'}</h3>
+                        <h3 className="font-bold text-lg">{candidate.name || t('jobPostingDetail.unknownCandidate')}</h3>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <span>Applied {new Date(candidate.appliedAt).toLocaleDateString()}</span>
                           <span>•</span>
@@ -278,20 +280,20 @@ export const JobPostingDetail = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="APPLIED">Applied</SelectItem>
-                          <SelectItem value="SHORTLISTED">Shortlisted</SelectItem>
-                          <SelectItem value="INTERVIEW">Interview</SelectItem>
-                          <SelectItem value="OFFER">Offer</SelectItem>
-                          <SelectItem value="REJECTED">Rejected</SelectItem>
+                          <SelectItem value="APPLIED">{t('jobPostingDetail.statusApplied')}</SelectItem>
+                          <SelectItem value="SHORTLISTED">{t('jobPostingDetail.statusShortlisted')}</SelectItem>
+                          <SelectItem value="INTERVIEW">{t('jobPostingDetail.statusInterview')}</SelectItem>
+                          <SelectItem value="OFFER">{t('jobPostingDetail.statusOffer')}</SelectItem>
+                          <SelectItem value="REJECTED">{t('jobPostingDetail.statusRejected')}</SelectItem>
                         </SelectContent>
                       </Select>
 
                       <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/employer/candidate/${candidate.userId}`)}>
-                        View Profile
+                        {t('jobPostingDetail.viewProfile')}
                       </Button>
                       {candidate.resumeUrl && (
                         <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open(candidate.resumeUrl, '_blank')}>
-                          <FileText className="w-4 h-4" /> Resume
+                          <FileText className="w-4 h-4" /> {t('jobPostingDetail.resume')}
                         </Button>
                       )}
                     </div>

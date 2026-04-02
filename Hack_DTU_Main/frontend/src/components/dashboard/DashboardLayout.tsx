@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { DashboardSidebar } from './Sidebar';
 import { DashboardHeader } from './Header';
 
 export const DashboardLayout = () => {
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isEmployer = location.pathname.includes('/employer');
@@ -25,7 +27,7 @@ export const DashboardLayout = () => {
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen transition-all duration-300">
         <DashboardHeader 
           onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-          title={isEmployer ? "Employer Dashboard" : "User Dashboard"}
+          title={isEmployer ? t('dashboardLayout.employerDashboard') : t('dashboardLayout.userDashboard')}
         />
         
         <main className="flex-1 p-4 md:p-8 animate-fade-in">
@@ -37,8 +39,8 @@ export const DashboardLayout = () => {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden bg-background/95 backdrop-blur-sm p-4">
           <div className="flex justify-between items-center mb-8">
-            <span className="font-bold text-xl">Menu</span>
-            <button onClick={() => setIsMobileMenuOpen(false)}>Close</button>
+            <span className="font-bold text-xl">{t('dashboardLayout.menu')}</span>
+            <button onClick={() => setIsMobileMenuOpen(false)}>{t('dashboardLayout.close')}</button>
           </div>
           {/* Reuse nav links logic here in future */}
         </div>

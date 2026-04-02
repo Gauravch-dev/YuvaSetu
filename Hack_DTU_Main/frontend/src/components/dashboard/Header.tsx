@@ -8,43 +8,46 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useEffect } from 'react';
-
-const MOCK_NOTIFICATIONS = [
-  {
-    id: 1,
-    title: "Application Viewed",
-    message: "TechCorp has viewed your application for Senior Frontend Engineer.",
-    time: "2 hours ago",
-    read: false,
-    icon: <CheckCircle2 className="w-4 h-4 text-blue-500" />
-  },
-  {
-    id: 2,
-    title: "New Job Match",
-    message: "A new job matching your profile: Product Designer at DesignStudio.",
-    time: "5 hours ago",
-    read: false,
-    icon: <Bell className="w-4 h-4 text-yellow-500" />
-  },
-  {
-    id: 3,
-    title: "Profile Update",
-    message: "Your profile was successfully updated.",
-    time: "1 day ago",
-    read: true,
-    icon: <Check className="w-4 h-4 text-green-500" />
-  },
-  {
-    id: 4,
-    title: "Application Status",
-    message: "Your application for Backend Engineer at FinTech Solutions has been shortlisted.",
-    time: "2 days ago",
-    read: true,
-    icon: <Clock className="w-4 h-4 text-purple-500" />
-  }
-];
+import { useTranslation } from 'react-i18next';
 
 export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => void, title?: string }) => {
+  const { t } = useTranslation();
+
+  const MOCK_NOTIFICATIONS = [
+    {
+      id: 1,
+      title: t('header.applicationViewed'),
+      message: "TechCorp has viewed your application for Senior Frontend Engineer.",
+      time: "2 hours ago",
+      read: false,
+      icon: <CheckCircle2 className="w-4 h-4 text-blue-500" />
+    },
+    {
+      id: 2,
+      title: t('header.newJobMatch'),
+      message: "A new job matching your profile: Product Designer at DesignStudio.",
+      time: "5 hours ago",
+      read: false,
+      icon: <Bell className="w-4 h-4 text-yellow-500" />
+    },
+    {
+      id: 3,
+      title: t('header.profileUpdate'),
+      message: "Your profile was successfully updated.",
+      time: "1 day ago",
+      read: true,
+      icon: <Check className="w-4 h-4 text-green-500" />
+    },
+    {
+      id: 4,
+      title: t('header.applicationStatus'),
+      message: "Your application for Backend Engineer at FinTech Solutions has been shortlisted.",
+      time: "2 days ago",
+      read: true,
+      icon: <Clock className="w-4 h-4 text-purple-500" />
+    }
+  ];
+
   const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -70,7 +73,7 @@ export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => vo
           if (userData) {
             setUserProfile({
               name: userData.personalInfo?.fullName || userData.companyProfile?.companyName || userData.name || "User",
-              role: userData.role === 'EMPLOYER' ? 'Employer' : 'Job Seeker',
+              role: userData.role === 'EMPLOYER' ? t('auth.employer') : t('auth.jobSeeker'),
               profilePicture: userData.personalInfo?.profilePicture || userData.companyProfile?.logoUrl
             });
           }
@@ -121,7 +124,7 @@ export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => vo
           </PopoverTrigger>
           <PopoverContent className="w-80 p-0" align="end">
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h4 className="font-semibold leading-none">Notifications</h4>
+              <h4 className="font-semibold leading-none">{t('header.notifications')}</h4>
               {unreadCount > 0 && (
                 <Button
                   variant="ghost"
@@ -129,7 +132,7 @@ export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => vo
                   className="h-auto p-0 text-xs text-primary hover:text-primary/80"
                   onClick={markAllAsRead}
                 >
-                  Mark all as read
+                  {t('header.markAllAsRead')}
                 </Button>
               )}
             </div>
@@ -162,7 +165,7 @@ export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => vo
                   ))
                 ) : (
                   <div className="p-4 text-center text-sm text-muted-foreground">
-                    No notifications
+                    {t('header.noNotifications')}
                   </div>
                 )}
               </div>
@@ -173,7 +176,7 @@ export const DashboardHeader = ({ onMenuClick, title }: { onMenuClick?: () => vo
         <div className="flex items-center gap-3 pl-4 border-l border-border">
           <div className="text-right hidden md:block">
             <p className="text-sm font-semibold">{userProfile?.name || "User"}</p>
-            <p className="text-xs text-muted-foreground">{userProfile?.role || "Welcome"}</p>
+            <p className="text-xs text-muted-foreground">{userProfile?.role || ""}</p>
           </div>
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20 overflow-hidden">
             {userProfile?.profilePicture ? (

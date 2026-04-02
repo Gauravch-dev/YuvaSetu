@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { toast } from "sonner";
 import { auth } from "@/lib/firebase";
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, deleteUser } from "firebase/auth";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 
 export const SeekerSettings = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -85,9 +87,9 @@ export const SeekerSettings = () => {
       const { saveJobSeekerProfile } = await import('@/lib/auth-api');
       const updatedProfile = { ...profile };
       await saveJobSeekerProfile(token, updatedProfile);
-      toast.success("Account details updated successfully!");
+      toast.success(t('seekerSettings.accountUpdated'));
     } catch (error) {
-      toast.error("Failed to update account details");
+      toast.error(t('seekerSettings.accountUpdateFailed'));
     }
   };
 
@@ -102,7 +104,7 @@ export const SeekerSettings = () => {
 
   const handleChangePassword = async () => {
     if (!user) {
-      toast.error("Authentication session missing. Please reload.");
+      toast.error(t('seekerSettings.authSessionMissing'));
       return;
     }
 
@@ -114,12 +116,12 @@ export const SeekerSettings = () => {
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error("New passwords do not match");
+      toast.error(t('seekerSettings.passwordsDoNotMatch'));
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error("Password should be at least 6 characters");
+      toast.error(t('seekerSettings.passwordTooShort'));
       return;
     }
 
@@ -127,16 +129,16 @@ export const SeekerSettings = () => {
       const credential = EmailAuthProvider.credential(user.email!, currentPassword);
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPassword);
-      toast.success("Password updated successfully!");
+      toast.success(t('seekerSettings.passwordUpdated'));
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
       console.error(error);
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-        toast.error("Incorrect current password");
+        toast.error(t('seekerSettings.incorrectPassword'));
       } else {
-        toast.error("Failed to update password. Please try logging in again.");
+        toast.error(t('seekerSettings.passwordUpdateFailed'));
       }
     }
   };
@@ -161,11 +163,11 @@ export const SeekerSettings = () => {
           preferences
         };
         await saveJobSeekerProfile(token, updatedProfile);
-        toast.success("Preferences saved!");
+        toast.success(t('seekerSettings.preferencesSaved'));
         setProfile(updatedProfile);
       }
     } catch (error) {
-      toast.error("Failed to save preferences");
+      toast.error(t('seekerSettings.preferencesSaveFailed'));
     }
   };
 
@@ -193,92 +195,92 @@ export const SeekerSettings = () => {
       // (Optional) await deleteUser(user!); 
       // Backend already tried to delete firebase user.
 
-      toast.success("Account deleted successfully.");
+      toast.success(t('seekerSettings.accountDeleted'));
       navigate('/');
       window.location.reload(); // Force full state clear
     } catch (error) {
       console.error(error);
-      toast.error("Failed to delete account. Please try again.");
+      toast.error(t('seekerSettings.accountDeleteFailed'));
     } finally {
       setIsDeleting(false);
       setShowDeleteConfirm(false);
     }
   };
 
-  if (loading) return <div>Loading settings...</div>;
+  if (loading) return <div>{t('seekerSettings.loading')}</div>;
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-10 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-display font-bold">Settings</h1>
-        <p className="text-muted-foreground">Manage your account preferences and settings.</p>
+        <h1 className="text-3xl font-display font-bold">{t('seekerSettings.title')}</h1>
+        <p className="text-muted-foreground">{t('seekerSettings.subtitle')}</p>
       </div>
 
       <Tabs defaultValue="account" className="space-y-6">
         <TabsList className="grid grid-cols-3 w-full max-w-md">
           <TabsTrigger value="account" className="gap-2">
             <UserIcon className="w-4 h-4" />
-            Account
+            {t('seekerSettings.tabAccount')}
           </TabsTrigger>
           <TabsTrigger value="notifications" className="gap-2">
             <Bell className="w-4 h-4" />
-            Notifications
+            {t('seekerSettings.tabNotifications')}
           </TabsTrigger>
           <TabsTrigger value="privacy" className="gap-2">
             <Shield className="w-4 h-4" />
-            Privacy
+            {t('seekerSettings.tabPrivacy')}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="account" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Update your personal account details.</CardDescription>
+              <CardTitle>{t('seekerSettings.profileInfo')}</CardTitle>
+              <CardDescription>{t('seekerSettings.profileInfoDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t('seekerSettings.emailAddress')}</Label>
                 <Input id="email" value={profile?.personalInfo?.email || user?.email || ""} disabled className="bg-muted" />
-                <p className="text-[10px] text-muted-foreground">Email cannot be changed.</p>
+                <p className="text-[10px] text-muted-foreground">{t('seekerSettings.emailCannotChange')}</p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{t('seekerSettings.phoneNumber')}</Label>
                 <Input id="phone" value={profile?.personalInfo?.phone || ""} onChange={handlePhoneChange} />
               </div>
-              <Button onClick={handleSaveAccount}>Save Changes</Button>
+              <Button onClick={handleSaveAccount}>{t('seekerSettings.saveChanges')}</Button>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>Ensure your account is secure with a strong password.</CardDescription>
+              <CardTitle>{t('seekerSettings.changePassword')}</CardTitle>
+              <CardDescription>{t('seekerSettings.changePasswordDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="current-password">Current Password</Label>
+                <Label htmlFor="current-password">{t('seekerSettings.currentPassword')}</Label>
                 <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="new-password">New Password</Label>
+                <Label htmlFor="new-password">{t('seekerSettings.newPassword')}</Label>
                 <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">{t('seekerSettings.confirmPassword')}</Label>
                 <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
-              <Button onClick={handleChangePassword}>Update Password</Button>
+              <Button onClick={handleChangePassword}>{t('seekerSettings.updatePassword')}</Button>
             </CardContent>
           </Card>
 
           <Card className="border-destructive/50">
             <CardHeader>
-              <CardTitle className="text-destructive">Delete Account</CardTitle>
-              <CardDescription>Permanently remove your account and all data.</CardDescription>
+              <CardTitle className="text-destructive">{t('seekerSettings.deleteAccount')}</CardTitle>
+              <CardDescription>{t('seekerSettings.deleteAccountDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>Delete Account</Button>
+              <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>{t('seekerSettings.deleteAccount')}</Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -286,35 +288,35 @@ export const SeekerSettings = () => {
         <TabsContent value="notifications" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose what you want to be notified about.</CardDescription>
+              <CardTitle>{t('seekerSettings.notificationPreferences')}</CardTitle>
+              <CardDescription>{t('seekerSettings.notificationPreferencesDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="job-alerts" className="flex flex-col space-y-1">
-                  <span>Job Alerts</span>
-                  <span className="font-normal text-xs text-muted-foreground">Receive updates about new jobs matching your profile.</span>
+                  <span>{t('seekerSettings.jobAlerts')}</span>
+                  <span className="font-normal text-xs text-muted-foreground">{t('seekerSettings.jobAlertsDesc')}</span>
                 </Label>
                 <Switch id="job-alerts" checked={preferences.notifications.jobAlerts} onCheckedChange={() => togglePreference('notifications', 'jobAlerts')} />
               </div>
               <Separator />
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="application-updates" className="flex flex-col space-y-1">
-                  <span>Application Updates</span>
-                  <span className="font-normal text-xs text-muted-foreground">Get notified when your application status changes.</span>
+                  <span>{t('seekerSettings.applicationUpdates')}</span>
+                  <span className="font-normal text-xs text-muted-foreground">{t('seekerSettings.applicationUpdatesDesc')}</span>
                 </Label>
                 <Switch id="application-updates" checked={preferences.notifications.applicationUpdates} onCheckedChange={() => togglePreference('notifications', 'applicationUpdates')} />
               </div>
               <Separator />
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="marketing" className="flex flex-col space-y-1">
-                  <span>Marketing Emails</span>
-                  <span className="font-normal text-xs text-muted-foreground">Receive news and special offers.</span>
+                  <span>{t('seekerSettings.marketingEmails')}</span>
+                  <span className="font-normal text-xs text-muted-foreground">{t('seekerSettings.marketingEmailsDesc')}</span>
                 </Label>
                 <Switch id="marketing" checked={preferences.notifications.marketing} onCheckedChange={() => togglePreference('notifications', 'marketing')} />
               </div>
               <div className="pt-4">
-                <Button onClick={handleSavePreferences}>Save Preferences</Button>
+                <Button onClick={handleSavePreferences}>{t('seekerSettings.savePreferences')}</Button>
               </div>
             </CardContent>
           </Card>
@@ -323,27 +325,27 @@ export const SeekerSettings = () => {
         <TabsContent value="privacy" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Privacy Settings</CardTitle>
-              <CardDescription>Control who can see your profile details.</CardDescription>
+              <CardTitle>{t('seekerSettings.privacySettings')}</CardTitle>
+              <CardDescription>{t('seekerSettings.privacySettingsDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="public-profile" className="flex flex-col space-y-1">
-                  <span>Public Profile</span>
-                  <span className="font-normal text-xs text-muted-foreground">Allow employers to find you in search results.</span>
+                  <span>{t('seekerSettings.publicProfile')}</span>
+                  <span className="font-normal text-xs text-muted-foreground">{t('seekerSettings.publicProfileDesc')}</span>
                 </Label>
                 <Switch id="public-profile" checked={preferences.privacy.publicProfile} onCheckedChange={() => togglePreference('privacy', 'publicProfile')} />
               </div>
               <Separator />
               <div className="flex items-center justify-between space-x-2">
                 <Label htmlFor="show-email" className="flex flex-col space-y-1">
-                  <span>Show Email Address</span>
-                  <span className="font-normal text-xs text-muted-foreground">Display your email address on your public profile.</span>
+                  <span>{t('seekerSettings.showEmail')}</span>
+                  <span className="font-normal text-xs text-muted-foreground">{t('seekerSettings.showEmailDesc')}</span>
                 </Label>
                 <Switch id="show-email" checked={preferences.privacy.showEmail} onCheckedChange={() => togglePreference('privacy', 'showEmail')} />
               </div>
               <div className="pt-4">
-                <Button onClick={handleSavePreferences}>Save Privacy Settings</Button>
+                <Button onClick={handleSavePreferences}>{t('seekerSettings.savePrivacySettings')}</Button>
               </div>
             </CardContent>
           </Card>
@@ -354,13 +356,13 @@ export const SeekerSettings = () => {
       <Dialog open={showGoogleAlert} onOpenChange={setShowGoogleAlert}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Action Not Allowed</DialogTitle>
+            <DialogTitle>{t('seekerSettings.actionNotAllowed')}</DialogTitle>
             <DialogDescription>
-              You are signed in with Google. Please manage your password through your Google Account security settings.
+              {t('seekerSettings.googlePasswordMessage')}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setShowGoogleAlert(false)}>OK</Button>
+            <Button onClick={() => setShowGoogleAlert(false)}>{t('seekerSettings.ok')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -369,13 +371,13 @@ export const SeekerSettings = () => {
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-destructive">Delete Account Permanently?</DialogTitle>
+            <DialogTitle className="text-destructive">{t('seekerSettings.deleteAccountPermanently')}</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your profile, applications, and remove your data from our servers.
+              {t('seekerSettings.deleteAccountWarning')}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Label htmlFor="confirm-delete">Type "delete" to confirm</Label>
+            <Label htmlFor="confirm-delete">{t('seekerSettings.typeDeleteToConfirm')}</Label>
             <Input
               id="confirm-delete"
               value={deleteInput}
@@ -385,13 +387,13 @@ export const SeekerSettings = () => {
             />
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setShowDeleteConfirm(false)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setShowDeleteConfirm(false)}>{t('seekerSettings.cancel')}</Button>
             <Button
               variant="destructive"
               onClick={handleDeleteAccount}
               disabled={deleteInput !== "delete" || isDeleting}
             >
-              {isDeleting ? "Deleting..." : "Delete Account"}
+              {isDeleting ? t('seekerSettings.deleting') : t('seekerSettings.deleteAccount')}
             </Button>
           </DialogFooter>
         </DialogContent>

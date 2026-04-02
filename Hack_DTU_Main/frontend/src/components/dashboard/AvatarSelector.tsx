@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface AvatarSelectorProps {
     open: boolean;
@@ -12,15 +13,16 @@ interface AvatarSelectorProps {
     currentName?: string;
 }
 
-const STYLES = [
-    { id: 'avataaars', name: 'People' },
-    { id: 'bottts', name: 'Robots' },
-    { id: 'initials', name: 'Initials' },
-    { id: 'micah', name: 'Sketch' },
-    { id: 'lorelei', name: 'Fun' },
-];
-
 export const AvatarSelector = ({ open, onClose, onSelect, currentName = 'User' }: AvatarSelectorProps) => {
+    const { t } = useTranslation();
+
+    const STYLES = [
+        { id: 'avataaars', name: t('avatarSelector.people') },
+        { id: 'bottts', name: t('avatarSelector.robots') },
+        { id: 'initials', name: t('avatarSelector.initials') },
+        { id: 'micah', name: t('avatarSelector.sketch') },
+        { id: 'lorelei', name: t('avatarSelector.fun') },
+    ];
     const [selectedStyle, setSelectedStyle] = useState('avataaars');
     const [selectedSeed, setSelectedSeed] = useState<string | null>(null);
 
@@ -37,7 +39,7 @@ export const AvatarSelector = ({ open, onClose, onSelect, currentName = 'User' }
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Choose your Avatar</DialogTitle>
+                    <DialogTitle>{t('avatarSelector.title')}</DialogTitle>
                 </DialogHeader>
 
                 <Tabs defaultValue="avataaars" value={selectedStyle} onValueChange={setSelectedStyle} className="w-full">

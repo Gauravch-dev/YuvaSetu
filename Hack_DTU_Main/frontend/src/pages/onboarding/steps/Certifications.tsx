@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useOnboarding } from '@/contexts/OnboardingContext';
+import { useTranslation } from 'react-i18next';
 
 export const Certifications = () => {
+    const { t } = useTranslation();
     const { data, updateStepData } = useOnboarding();
     const { certifications } = data;
 
@@ -41,7 +43,7 @@ export const Certifications = () => {
                     <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2 mb-2">
                             <Award className="w-5 h-5 text-muted-foreground" />
-                            <h3 className="font-semibold">Certification / Achievement</h3>
+                            <h3 className="font-semibold">{t('certificationsStep.details')}</h3>
                         </div>
                         <Button
                             variant="ghost"
@@ -55,27 +57,27 @@ export const Certifications = () => {
 
                     <div className="grid md:grid-cols-3 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                            <Label>Title / Name *</Label>
+                            <Label>{t('certificationsStep.title')}</Label>
                             <Input
                                 value={cert.title}
                                 onChange={(e) => updateEntry(cert.id, 'title', e.target.value)}
-                                placeholder="Ex. AWS Certified DevOps Professional"
+                                placeholder={t('certificationsStep.titlePlaceholder')}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Year</Label>
+                            <Label>{t('certificationsStep.year')}</Label>
                             <Input
                                 value={cert.year || ''}
                                 onChange={(e) => updateEntry(cert.id, 'year', e.target.value)}
-                                placeholder="Ex. 2025"
+                                placeholder={t('certificationsStep.yearPlaceholder')}
                             />
                         </div>
                         <div className="space-y-2 md:col-span-3">
-                            <Label>Issuing Organization *</Label>
+                            <Label>{t('certificationsStep.issuer')}</Label>
                             <Input
                                 value={cert.issuer}
                                 onChange={(e) => updateEntry(cert.id, 'issuer', e.target.value)}
-                                placeholder="Ex. Amazon Web Services, Google, Smart India Hackathon"
+                                placeholder={t('certificationsStep.issuerPlaceholder')}
                             />
                         </div>
                     </div>
@@ -89,7 +91,7 @@ export const Certifications = () => {
                 className="w-full h-12 border-dashed border-2 hover:border-amber-500 hover:text-amber-500 gap-2"
             >
                 <Plus className="w-4 h-4" />
-                Add Certification / Achievement
+                {t('certificationsStep.addCertification')}
             </Button>
         </div>
     );

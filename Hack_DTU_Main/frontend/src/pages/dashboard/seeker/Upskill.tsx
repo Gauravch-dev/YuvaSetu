@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, Building2, ChevronRight, Timer, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -146,6 +147,7 @@ const MOCK_TESTS_UI = [
 ];
 
 export const Upskill = () => {
+  const { t } = useTranslation();
   // --- STATE ---
   const [view, setView] = useState<'dashboard' | 'test' | 'result'>('dashboard');
   const [selectedCategory, setSelectedCategory] = useState("Tech");
@@ -188,15 +190,15 @@ export const Upskill = () => {
     );
 
     if (!foundData) {
-      toast.error(`Questions not found for ${companyName}`, {
-        description: "Please run 'python scripts/scraper.py' in the backend first.",
+      toast.error(t('upskill.questionsNotFound', { company: companyName }), {
+        description: t('upskill.runScraperFirst'),
       });
       return;
     }
 
     if (!foundData.questions || foundData.questions.length === 0) {
-      toast.error(`Empty data for ${companyName}`, {
-        description: "The scraper found no questions. Try running it again.",
+      toast.error(t('upskill.emptyData', { company: companyName }), {
+        description: t('upskill.scraperNoQuestions'),
       });
       return;
     }
@@ -206,7 +208,7 @@ export const Upskill = () => {
     setTimeLeft(900);
     setCurrentQuestionIndex(0);
     setUserAnswers({});
-    toast.success(`Started ${companyName} Assessment`);
+    toast.success(t('upskill.startedAssessment', { company: companyName }));
   };
 
   const handleAnswerSelect = (option: string) => {
@@ -243,14 +245,14 @@ export const Upskill = () => {
             )}
           </div>
 
-          <h2 className="text-4xl font-bold mb-4 text-slate-800 dark:text-white">Test Completed!</h2>
+          <h2 className="text-4xl font-bold mb-4 text-slate-800 dark:text-white">{t('upskill.testCompleted')}</h2>
           <p className="text-slate-500 dark:text-slate-400 mb-8 text-xl">
             You scored <span className="font-bold text-slate-900 dark:text-white">{score}</span> out of <span className="font-bold text-slate-900 dark:text-white">{activeTest.questions.length}</span>
           </p>
 
           <div className="flex justify-center gap-4">
             <Button size="lg" onClick={() => setView('dashboard')} className="rounded-full px-8">
-              Back to Dashboard
+              {t('upskill.backToDashboard')}
             </Button>
           </div>
         </div>
@@ -268,7 +270,7 @@ export const Upskill = () => {
           <div>
             <h2 className="text-xl font-bold text-slate-800 dark:text-white">{activeTest.company} Assessment</h2>
             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mt-1">
-              <span>Question {currentQuestionIndex + 1} of {activeTest.questions.length}</span>
+              <span>{t('upskill.questionOf', { current: currentQuestionIndex + 1, total: activeTest.questions.length })}</span>
             </div>
           </div>
           <div className={`flex items-center gap-2 px-4 py-2 rounded-xl font-mono font-bold text-lg ${timeLeft < 60 ? 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400' : 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'}`}>
@@ -323,16 +325,16 @@ export const Upskill = () => {
             disabled={currentQuestionIndex === 0}
             className="text-slate-500 dark:text-slate-400"
           >
-            Previous
+            {t('upskill.previous')}
           </Button>
 
           {currentQuestionIndex === activeTest.questions.length - 1 ? (
             <Button size="lg" onClick={handleSubmitTest} className="bg-green-600 hover:bg-green-700 px-10 rounded-full">
-              Submit Test
+              {t('upskill.submitTest')}
             </Button>
           ) : (
             <Button size="lg" onClick={() => setCurrentQuestionIndex(prev => prev + 1)} className="px-10 rounded-full">
-              Next <ChevronRight className="w-4 h-4 ml-2" />
+              {t('upskill.next')} <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           )}
         </div>
@@ -351,16 +353,16 @@ export const Upskill = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-end gap-4 border-l-4 border-primary pl-4">
         <div>
-          <h1 className="font-display text-3xl font-bold mb-2 text-slate-900 dark:text-white">Company Mock Tests</h1>
-          <p className="text-muted-foreground text-lg">Unlock 360° prep with realistic, AI-powered mock exams.</p>
+          <h1 className="font-display text-3xl font-bold mb-2 text-slate-900 dark:text-white">{t('upskill.title')}</h1>
+          <p className="text-muted-foreground text-lg">{t('upskill.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 ${availableData.length > 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
             <div className={`w-2 h-2 rounded-full ${availableData.length > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
-            {availableData.length > 0 ? "System Online" : "Backend Offline"}
+            {availableData.length > 0 ? t('upskill.systemOnline') : t('upskill.backendOffline')}
           </div>
           <Button variant="outline" className="rounded-full" onClick={() => window.location.reload()}>
-            <RefreshCw className="w-4 h-4 mr-2" /> Refresh
+            <RefreshCw className="w-4 h-4 mr-2" /> {t('upskill.refresh')}
           </Button>
         </div>
       </div>
@@ -416,7 +418,7 @@ export const Upskill = () => {
               className="w-full rounded-xl border-slate-300 dark:border-slate-700 hover:bg-slate-900 dark:hover:bg-primary hover:text-white hover:border-slate-900 dark:hover:border-primary transition-all group-hover:shadow-lg dark:bg-transparent dark:text-slate-300"
               onClick={() => handleStartTest(test.company)}
             >
-              Start Test
+              {t('upskill.startTest')}
             </Button>
           </div>
         ))}

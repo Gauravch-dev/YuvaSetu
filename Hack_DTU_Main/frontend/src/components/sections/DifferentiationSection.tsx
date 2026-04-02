@@ -3,35 +3,37 @@ import { Zap, Eye, Brain, Shield, TrendingUp, Target, Sparkles, ArrowRight } fro
 import { useParallax } from '@/hooks/useParallax';
 import { Differentiation3DElement } from '@/components/Differentiation3DElement';
 import { Button } from '@/components/ui/button';
-
-const differences = [
-  {
-    icon: Target,
-    title: 'Top 5 Only',
-    description: 'No endless scrolling. We show you only your best 5 matches, saving hours of job hunting.',
-    color: 'from-primary to-blue-600',
-  },
-  {
-    icon: Eye,
-    title: 'Complete Transparency',
-    description: 'See exactly why you matched - 70% skills, 30% location. No black box algorithms.',
-    color: 'from-accent to-teal-600',
-  },
-  {
-    icon: Brain,
-    title: 'Explainable AI',
-    description: 'Our AI explains every recommendation. Understand your matches, make informed decisions.',
-    color: 'from-purple-500 to-pink-600',
-  },
-  {
-    icon: Shield,
-    title: 'Zero Resume Stress',
-    description: 'Auto-generate ATS-friendly resumes from your profile. Professional results in seconds.',
-    color: 'from-orange-500 to-red-600',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 export const DifferentiationSection = () => {
+  const { t } = useTranslation();
+
+  const differences = [
+    {
+      icon: Target,
+      title: t('differentiation.top5Only'),
+      description: t('differentiation.top5Desc'),
+      color: 'from-primary to-blue-600',
+    },
+    {
+      icon: Eye,
+      title: t('differentiation.completeTransparency'),
+      description: t('differentiation.completeTransparencyDesc'),
+      color: 'from-accent to-teal-600',
+    },
+    {
+      icon: Brain,
+      title: t('differentiation.explainableAi'),
+      description: t('differentiation.explainableAiDesc'),
+      color: 'from-purple-500 to-pink-600',
+    },
+    {
+      icon: Shield,
+      title: t('differentiation.zeroResumeStress'),
+      description: t('differentiation.zeroResumeStressDesc'),
+      color: 'from-orange-500 to-red-600',
+    },
+  ];
   const parallaxSlow = useParallax(0.15);
   const parallaxFast = useParallax(0.3);
 
@@ -65,18 +67,18 @@ export const DifferentiationSection = () => {
           <div className="inline-block relative preserve-3d mb-6" style={{ transform: 'translateZ(20px)' }}>
             <div className="absolute inset-0 bg-accent/20 blur-xl rounded-full" />
             <span className="relative inline-block px-6 py-2.5 rounded-full bg-accent/10 text-accent text-sm font-bold backdrop-blur-xl border border-accent/20 shadow-lg">
-              Why Choose Us
+              {t('differentiation.badge')}
             </span>
           </div>
           
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 preserve-3d" style={{ transform: 'translateZ(10px)' }}>
-            How We're <span className="text-primary relative">
-              Different
+            {t('differentiation.titlePrefix')} <span className="text-primary relative">
+              {t('differentiation.titleHighlight')}
               <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-accent/20 blur-lg -z-10" />
             </span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            We're not just another job portal. Experience the YuvaSetu difference.
+            {t('differentiation.subtitle')}
           </p>
         </RevealOnScroll>
 
@@ -88,10 +90,10 @@ export const DifferentiationSection = () => {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-display text-3xl font-bold mb-4">
-                    Quality Over <span className="text-primary">Quantity</span>
+                    {t('differentiation.qualityTitle')} <span className="text-primary">{t('differentiation.qualityTitleHighlight')}</span>
                   </h3>
                   <p className="text-muted-foreground leading-relaxed mb-6">
-                    While others bombard you with hundreds of irrelevant listings, we use AI to curate only your top 5 most relevant opportunities. Save time, reduce stress, find better matches.
+                    {t('differentiation.qualityDesc')}
                   </p>
                 </div>
 
@@ -102,8 +104,8 @@ export const DifferentiationSection = () => {
                       <Zap className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">40% Faster Results</h4>
-                      <p className="text-sm text-muted-foreground">Get matched in seconds, not hours of scrolling</p>
+                      <h4 className="font-semibold mb-1">{t('differentiation.fasterResults')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('differentiation.fasterResultsDesc')}</p>
                     </div>
                   </div>
 
@@ -112,8 +114,8 @@ export const DifferentiationSection = () => {
                       <Eye className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">100% Transparency</h4>
-                      <p className="text-sm text-muted-foreground">See exact match breakdown with explanations</p>
+                      <h4 className="font-semibold mb-1">{t('differentiation.fullTransparency')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('differentiation.fullTransparencyDesc')}</p>
                     </div>
                   </div>
 
@@ -122,8 +124,8 @@ export const DifferentiationSection = () => {
                       <TrendingUp className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-1">95% Match Accuracy</h4>
-                      <p className="text-sm text-muted-foreground">Semantic AI understands your true skills</p>
+                      <h4 className="font-semibold mb-1">{t('differentiation.matchAccuracy')}</h4>
+                      <p className="text-sm text-muted-foreground">{t('differentiation.matchAccuracyDesc')}</p>
                     </div>
                   </div>
                 </div>
@@ -132,7 +134,7 @@ export const DifferentiationSection = () => {
                 <div className="pt-4">
                   <Button size="lg" variant="seeker" className="shadow-3d-hover hover:animate-scale-brighten group">
                     <Sparkles className="w-5 h-5" />
-                    Experience the Difference
+                    {t('differentiation.experienceDifference')}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </div>

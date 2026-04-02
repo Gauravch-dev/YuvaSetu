@@ -1,7 +1,10 @@
 import { RevealOnScroll } from '@/components/RevealOnScroll';
 import { Cpu, Zap, TrendingUp, Shield } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const MatchingEngineSection = () => {
+  const { t } = useTranslation();
+
   return (
     <section id="how-it-works" className="relative py-32 overflow-hidden bg-gradient-hero">
       {/* Animated background elements */}
@@ -20,14 +23,13 @@ export const MatchingEngineSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         <RevealOnScroll className="text-center mb-20">
           <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-            Smart Matching Engine
+            {t('matchingEngine.badge')}
           </span>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Semantic AI That <span className="text-primary">Understands You</span>
+            {t('matchingEngine.title')} <span className="text-primary">{t('matchingEngine.titleHighlight')}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Our advanced AI understands meaning, not just keywords.
-            Whether it's Data Science, Marketing, Finance, or HR—we match you with roles that truly fit your skills.
+            {t('matchingEngine.subtitle')}
           </p>
         </RevealOnScroll>
         
@@ -83,8 +85,8 @@ export const MatchingEngineSection = () => {
                   <Zap className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold mb-2">Top 5 Curated Matches</h3>
-                  <p className="text-muted-foreground">No endless scrolling! Get only your top 5 most relevant opportunities, saving hours of job hunting.</p>
+                  <h3 className="font-display text-xl font-bold mb-2">{t('matchingEngine.top5Title')}</h3>
+                  <p className="text-muted-foreground">{t('matchingEngine.top5Desc')}</p>
                 </div>
               </div>
               
@@ -93,8 +95,8 @@ export const MatchingEngineSection = () => {
                   <TrendingUp className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold mb-2">Complete Transparency</h3>
-                  <p className="text-muted-foreground">See exactly why you matched—70% skills, 30% location. No mystery, no guesswork, just clear explanations.</p>
+                  <h3 className="font-display text-xl font-bold mb-2">{t('matchingEngine.transparencyTitle')}</h3>
+                  <p className="text-muted-foreground">{t('matchingEngine.transparencyDesc')}</p>
                 </div>
               </div>
               
@@ -103,8 +105,8 @@ export const MatchingEngineSection = () => {
                   <Shield className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-bold mb-2">Instant Resume Builder</h3>
-                  <p className="text-muted-foreground">Auto-generate ATS-friendly resumes from your profile in seconds. No formatting stress, just professional results.</p>
+                  <h3 className="font-display text-xl font-bold mb-2">{t('matchingEngine.resumeTitle')}</h3>
+                  <p className="text-muted-foreground">{t('matchingEngine.resumeDesc')}</p>
                 </div>
               </div>
             </div>

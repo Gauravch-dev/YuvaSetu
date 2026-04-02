@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +11,7 @@ import { toast } from 'sonner';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export const PostJob = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +65,7 @@ export const PostJob = () => {
           }
         } catch (error) {
           console.error(error);
-          toast.error("Failed to load job for editing");
+          toast.error(t('postJob.failedToLoadJob'));
         } finally {
           setIsLoading(false);
         }
@@ -96,22 +98,22 @@ export const PostJob = () => {
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Delete this draft?")) return;
+    if (!confirm(t('postJob.deleteDraftConfirm'))) return;
     try {
       const token = localStorage.getItem('authToken');
       if (!token) return;
       await deleteJob(token, id);
-      toast.success("Draft deleted");
+      toast.success(t('postJob.draftDeleted'));
       loadDrafts();
       if (editingId === id) {
         setEditingId(null);
         setFormData({ title: '', type: '', location: '', salary: '', description: '', requirements: '', skills: '' });
       }
-    } catch (err) { toast.error("Failed to delete"); }
+    } catch (err) { toast.error(t('postJob.failedToDelete')); }
   };
 
   const handleSubmit = async (status: 'DRAFT' | 'PUBLISHED') => {
-    if (!formData.title) return toast.error("Job Title is required");
+    if (!formData.title) return toast.error(t('postJob.titleRequired'));
 
     setIsLoading(true);
     try {
@@ -126,10 +128,10 @@ export const PostJob = () => {
 
       if (editingId) {
         await updateJob(token, editingId, payload);
-        toast.success(status === 'PUBLISHED' ? "Job Published!" : "Job Updated!");
+        toast.success(status === 'PUBLISHED' ? t('postJob.jobPublished') : t('postJob.jobUpdated'));
       } else {
         await createJob(token, payload);
-        toast.success(status === 'PUBLISHED' ? "Job Published!" : "Draft Saved!");
+        toast.success(status === 'PUBLISHED' ? t('postJob.jobPublished') : t('postJob.draftSaved'));
       }
 
       if (status === 'PUBLISHED') {
@@ -143,7 +145,7 @@ export const PostJob = () => {
       }
 
     } catch (error: any) {
-      toast.error(error.message || "Failed to post job");
+      toast.error(error.message || t('postJob.failedToPost'));
     } finally {
       setIsLoading(false);
     }
@@ -154,67 +156,67 @@ export const PostJob = () => {
       <div className="lg:col-span-2 space-y-8">
         <div>
           <h1 className="font-display text-3xl font-bold mb-2">
-            {editingId ? (location.state?.jobId ? 'Edit Job' : 'Edit Draft Job') : 'Post a New Job'}
+            {editingId ? (location.state?.jobId ? t('postJob.editJob') : t('postJob.editDraftJob')) : t('postJob.postNewJob')}
           </h1>
-          <p className="text-muted-foreground">Find the perfect candidate for your team.</p>
+          <p className="text-muted-foreground">{t('postJob.findPerfectCandidate')}</p>
         </div>
 
         <div className="bg-card border border-border rounded-xl p-8 shadow-sm space-y-8">
           <div className="space-y-4">
-            <h2 className="font-bold text-xl border-b border-border pb-2">Job Details</h2>
+            <h2 className="font-bold text-xl border-b border-border pb-2">{t('postJob.jobDetails')}</h2>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Job Title</Label>
-                <Input id="title" placeholder="e.g. Senior Frontend Engineer" value={formData.title} onChange={handleChange} />
+                <Label htmlFor="title">{t('postJob.jobTitle')}</Label>
+                <Input id="title" placeholder={t('postJob.jobTitlePlaceholder')} value={formData.title} onChange={handleChange} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="type">Employment Type</Label>
+                <Label htmlFor="type">{t('postJob.employmentType')}</Label>
                 <Select onValueChange={handleSelectChange} value={formData.type}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
+                    <SelectValue placeholder={t('postJob.selectType')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Full-time">Full-time</SelectItem>
-                    <SelectItem value="Part-time">Part-time</SelectItem>
-                    <SelectItem value="Contract">Contract</SelectItem>
-                    <SelectItem value="Internship">Internship</SelectItem>
+                    <SelectItem value="Full-time">{t('postJob.fullTime')}</SelectItem>
+                    <SelectItem value="Part-time">{t('postJob.partTime')}</SelectItem>
+                    <SelectItem value="Contract">{t('postJob.contract')}</SelectItem>
+                    <SelectItem value="Internship">{t('postJob.internship')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Location</Label>
-                <Input id="location" placeholder="e.g. Bangalore / Remote" value={formData.location} onChange={handleChange} />
+                <Label htmlFor="location">{t('postJob.location')}</Label>
+                <Input id="location" placeholder={t('postJob.locationPlaceholder')} value={formData.location} onChange={handleChange} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="salary">Salary Range</Label>
-                <Input id="salary" placeholder="e.g. ₹15L - ₹25L" value={formData.salary} onChange={handleChange} />
+                <Label htmlFor="salary">{t('postJob.salaryRange')}</Label>
+                <Input id="salary" placeholder={t('postJob.salaryPlaceholder')} value={formData.salary} onChange={handleChange} />
               </div>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h2 className="font-bold text-xl border-b border-border pb-2">Description & Requirements</h2>
+            <h2 className="font-bold text-xl border-b border-border pb-2">{t('postJob.descriptionAndRequirements')}</h2>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Job Description</Label>
-              <Textarea id="description" placeholder="Describe the role responsibilities..." className="min-h-[150px]" value={formData.description} onChange={handleChange} />
+              <Label htmlFor="description">{t('postJob.jobDescription')}</Label>
+              <Textarea id="description" placeholder={t('postJob.jobDescriptionPlaceholder')} className="min-h-[150px]" value={formData.description} onChange={handleChange} />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="requirements">Key Requirements</Label>
-              <Textarea id="requirements" placeholder="List the required skills and experience..." className="min-h-[150px]" value={formData.requirements} onChange={handleChange} />
+              <Label htmlFor="requirements">{t('postJob.keyRequirements')}</Label>
+              <Textarea id="requirements" placeholder={t('postJob.keyRequirementsPlaceholder')} className="min-h-[150px]" value={formData.requirements} onChange={handleChange} />
             </div>
           </div>
 
           <div className="space-y-4">
-            <h2 className="font-bold text-xl border-b border-border pb-2">Skills</h2>
+            <h2 className="font-bold text-xl border-b border-border pb-2">{t('postJob.skills')}</h2>
             <div className="space-y-2">
-              <Label>Required Skills (Comma separated)</Label>
-              <Input id="skills" placeholder="React, TypeScript, Node.js" value={formData.skills} onChange={handleChange} />
+              <Label>{t('postJob.requiredSkills')}</Label>
+              <Input id="skills" placeholder={t('postJob.skillsPlaceholder')} value={formData.skills} onChange={handleChange} />
             </div>
           </div>
 
@@ -223,13 +225,13 @@ export const PostJob = () => {
               setEditingId(null);
               setFormData({ title: '', type: '', location: '', salary: '', description: '', requirements: '', skills: '' });
               navigate('/dashboard/employer/post-job', { state: {} }); // Clear state
-            }}>Cancel Edit</Button>}
+            }}>{t('postJob.cancelEdit')}</Button>}
             <Button variant="outline" size="lg" onClick={() => handleSubmit('DRAFT')} disabled={isLoading}>
-              {editingId ? 'Update Draft' : 'Save Draft'}
+              {editingId ? t('postJob.updateDraft') : t('postJob.saveDraft')}
             </Button>
             <Button variant="employer" size="lg" className="gap-2" onClick={() => handleSubmit('PUBLISHED')} disabled={isLoading}>
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-              Publish Job
+              {t('postJob.publishJob')}
             </Button>
           </div>
         </div>
@@ -242,7 +244,7 @@ export const PostJob = () => {
           <div className="px-4 py-3 bg-gradient-to-r from-accent/10 to-primary/10 border-b border-border">
             <h3 className="font-bold text-sm flex items-center gap-2">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              Live Preview
+              {t('postJob.livePreview')}
             </h3>
           </div>
           <div className="p-4">
@@ -254,9 +256,9 @@ export const PostJob = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-bold text-sm truncate">
-                    {formData.title || 'Job Title'}
+                    {formData.title || t('postJob.jobTitle')}
                   </h4>
-                  <p className="text-xs text-muted-foreground">Your Company</p>
+                  <p className="text-xs text-muted-foreground">{t('postJob.yourCompany')}</p>
                 </div>
               </div>
               
@@ -303,22 +305,22 @@ export const PostJob = () => {
               )}
             </div>
             <p className="text-[10px] text-muted-foreground text-center mt-3">
-              This is how your job will appear to candidates
+              {t('postJob.previewNote')}
             </p>
           </div>
         </div>
 
         {/* Drafts List */}
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
-          <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> Your Drafts</h3>
+          <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><FileText className="w-5 h-5 text-muted-foreground" /> {t('postJob.yourDrafts')}</h3>
           <div className="space-y-3">
-            {drafts.length === 0 && <p className="text-sm text-muted-foreground italic">No drafts saved.</p>}
+            {drafts.length === 0 && <p className="text-sm text-muted-foreground italic">{t('postJob.noDraftsSaved')}</p>}
             {drafts.map((draft) => (
               <div key={draft._id} className={`p-4 rounded-lg border cursor-pointer transition-all ${editingId === draft._id ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}`} onClick={() => handleEdit(draft)}>
-                <h4 className="font-bold text-sm mb-1">{draft.title || 'Untitled Draft'}</h4>
+                <h4 className="font-bold text-sm mb-1">{draft.title || t('postJob.untitledDraft')}</h4>
                 <p className="text-xs text-muted-foreground mb-3">Last updated: {new Date(draft.updatedAt).toLocaleDateString()}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-xs bg-muted px-2 py-1 rounded">Edit</span>
+                  <span className="text-xs bg-muted px-2 py-1 rounded">{t('postJob.edit')}</span>
                   <Button size="icon" variant="ghost" className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-500/10" onClick={(e) => handleDelete(draft._id, e)}>
                     <Trash2 className="w-3 h-3" />
                   </Button>

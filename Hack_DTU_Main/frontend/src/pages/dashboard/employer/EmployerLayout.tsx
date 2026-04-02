@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { fetchProtectedData } from '@/lib/auth-api';
 import { toast } from 'sonner';
 
 export const EmployerLayout = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +19,7 @@ export const EmployerLayout = () => {
         const userData = await fetchProtectedData('/auth/me', token);
         // Strict Onboarding Check
         if (!userData.isOnboardingComplete && !location.pathname.includes('/profile')) {
-          toast.warning('Please complete your company profile first.');
+          toast.warning(t('employerLayout.completeProfile'));
           navigate('/dashboard/employer/profile');
         }
       } catch (error) {

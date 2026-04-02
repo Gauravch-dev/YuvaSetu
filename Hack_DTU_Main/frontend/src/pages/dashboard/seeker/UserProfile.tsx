@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MapPin, Mail, Phone, Linkedin, Github, Download, Edit2, Plus, Code, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 export const UserProfile = () => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<any>(null);
   const [isAvatarOpen, setIsAvatarOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -44,10 +46,10 @@ export const UserProfile = () => {
         setProfile(updatedProfile);
 
         await saveJobSeekerProfile(token, updatedProfile);
-        toast.success("Avatar updated!");
+        toast.success(t('userProfile.avatarUpdated'));
       }
     } catch (error) {
-      toast.error("Failed to update avatar");
+      toast.error(t('userProfile.avatarFailed'));
       fetchProfile(); // Revert
     }
   };
@@ -75,11 +77,11 @@ export const UserProfile = () => {
         };
         setProfile(updatedProfile);
         await saveJobSeekerProfile(token, updatedProfile);
-        toast.success("Cover image updated!");
+        toast.success(t('userProfile.coverUpdated'));
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to upload cover image");
+      toast.error(t('userProfile.coverFailed'));
     } finally {
       setIsUploading(false);
     }
@@ -91,13 +93,13 @@ export const UserProfile = () => {
       toast.promise(
         exportResumeToPDF(profile, `${profile.personalInfo.fullName || 'Resume'}.pdf`),
         {
-          loading: 'Generating PDF...',
-          success: 'Resume downloaded!',
-          error: 'Failed to generate PDF'
+          loading: t('userProfile.generatingPdf'),
+          success: t('userProfile.resumeDownloaded'),
+          error: t('userProfile.pdfFailed')
         }
       );
     } catch (error) {
-      toast.error("Failed to download");
+      toast.error(t('userProfile.downloadFailed'));
     }
   };
 
@@ -107,7 +109,7 @@ export const UserProfile = () => {
     }
   };
 
-  if (!profile) return <div className="p-8 text-center text-muted-foreground">Loading profile...</div>;
+  if (!profile) return <div className="p-8 text-center text-muted-foreground">{t('userProfile.loadingProfile')}</div>;
 
   const { personalInfo, education, experience, skills, projects } = profile;
 
@@ -142,7 +144,7 @@ export const UserProfile = () => {
           disabled={isUploading}
         >
           <Edit2 className="w-3 h-3" />
-          {isUploading ? 'Uploading...' : 'Edit Cover'}
+          {isUploading ? t('userProfile.uploading') : t('userProfile.editCover')}
         </Button>
       </div>
 
@@ -167,7 +169,7 @@ export const UserProfile = () => {
 
           <div className="flex-1 space-y-2 py-2">
             <h1 className="text-3xl font-display font-bold">{personalInfo.fullName}</h1>
-            <p className="text-lg text-muted-foreground">{experience?.[0]?.role || "Job Seeker"} • <MapPin className="inline w-4 h-4 ml-1" /> {personalInfo.location || "India"}</p>
+            <p className="text-lg text-muted-foreground">{experience?.[0]?.role || t('userProfile.jobSeeker')} • <MapPin className="inline w-4 h-4 ml-1" /> {personalInfo.location || "India"}</p>
             <div className="flex flex-wrap gap-3 pt-2">
               <Button variant="outline" size="sm" className="gap-2">
                 <Mail className="w-3.5 h-3.5" /> {personalInfo.email}
@@ -194,10 +196,10 @@ export const UserProfile = () => {
 
           <div className="flex gap-3 pb-2">
             <Button variant="outline" size="lg" className="gap-2" onClick={handleDownloadResume}>
-              <Download className="w-4 h-4" /> Download Resume
+              <Download className="w-4 h-4" /> {t('userProfile.downloadResume')}
             </Button>
             <Button variant="seeker" size="lg" className="gap-2" onClick={handleEditProfile}>
-              <Edit2 className="w-4 h-4" /> Edit Profile
+              <Edit2 className="w-4 h-4" /> {t('userProfile.editProfile')}
             </Button>
           </div>
         </div>
@@ -208,17 +210,17 @@ export const UserProfile = () => {
         <div className="md:col-span-2 space-y-8">
           {/* About */}
           <section className="bg-card border border-border rounded-2xl p-8 space-y-4">
-            <h2 className="font-bold text-xl">About Me</h2>
+            <h2 className="font-bold text-xl">{t('userProfile.aboutMe')}</h2>
             <p className="text-muted-foreground leading-relaxed">
-              {personalInfo.bio || "No bio added yet."}
+              {personalInfo.bio || t('userProfile.noBio')}
             </p>
           </section>
 
           {/* Experience */}
           <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="font-bold text-xl">Work Experience</h2>
-              <Button variant="ghost" size="sm" className="text-primary"><Plus className="w-4 h-4 mr-1" /> Add</Button>
+              <h2 className="font-bold text-xl">{t('userProfile.workExperience')}</h2>
+              <Button variant="ghost" size="sm" className="text-primary"><Plus className="w-4 h-4 mr-1" /> {t('userProfile.add')}</Button>
             </div>
 
             <div className="space-y-8">
@@ -232,13 +234,13 @@ export const UserProfile = () => {
                   </p>
                 </div>
               ))}
-              {!experience?.length && <p className="text-muted-foreground">No experience added.</p>}
+              {!experience?.length && <p className="text-muted-foreground">{t('userProfile.noExperience')}</p>}
             </div>
           </section>
 
           {/* Education */}
           <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
-            <h2 className="font-bold text-xl">Education</h2>
+            <h2 className="font-bold text-xl">{t('userProfile.education')}</h2>
             <div className="space-y-6">
               {education?.map((edu: any, i: number) => (
                 <div key={i} className="flex justify-between items-start">
@@ -252,15 +254,15 @@ export const UserProfile = () => {
                   </div>
                 </div>
               ))}
-              {!education?.length && <p className="text-muted-foreground">No education added.</p>}
+              {!education?.length && <p className="text-muted-foreground">{t('userProfile.noEducation')}</p>}
             </div>
           </section>
 
           {/* Projects */}
           <section className="bg-card border border-border rounded-2xl p-8 space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="font-bold text-xl">Projects</h2>
-              <Button variant="ghost" size="sm" className="text-primary"><Plus className="w-4 h-4 mr-1" /> Add</Button>
+              <h2 className="font-bold text-xl">{t('userProfile.projectsTitle')}</h2>
+              <Button variant="ghost" size="sm" className="text-primary"><Plus className="w-4 h-4 mr-1" /> {t('userProfile.add')}</Button>
             </div>
             <div className="grid gap-6">
               {projects?.map((proj: any, i: number) => (
@@ -268,7 +270,7 @@ export const UserProfile = () => {
                   <div className="flex justify-between items-start">
                     <h3 className="font-bold text-lg">{proj.title}</h3>
                     {proj.link && (
-                      <a href={proj.link} target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm">View Project</a>
+                      <a href={proj.link} target="_blank" rel="noreferrer" className="text-primary hover:underline text-sm">{t('userProfile.viewProject')}</a>
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">{proj.description}</p>
@@ -281,7 +283,7 @@ export const UserProfile = () => {
                   )}
                 </div>
               ))}
-              {!projects?.length && <p className="text-muted-foreground">No projects added.</p>}
+              {!projects?.length && <p className="text-muted-foreground">{t('userProfile.noProjects')}</p>}
             </div>
           </section>
 
@@ -292,7 +294,7 @@ export const UserProfile = () => {
           {/* Skills */}
           <section className="bg-card border border-border rounded-2xl p-6 space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="font-bold text-lg">Skills</h2>
+              <h2 className="font-bold text-lg">{t('userProfile.skillsTitle')}</h2>
               <Edit2 className="w-4 h-4 text-muted-foreground cursor-pointer" />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -301,14 +303,14 @@ export const UserProfile = () => {
                   {skill}
                 </Badge>
               ))}
-              {!skills?.length && <p className="text-sm text-muted-foreground">No skills added.</p>}
+              {!skills?.length && <p className="text-sm text-muted-foreground">{t('userProfile.noSkills')}</p>}
             </div>
           </section>
 
           {/* Languages */}
           {personalInfo.languages && (
             <section className="bg-card border border-border rounded-2xl p-6 space-y-4">
-              <h2 className="font-bold text-lg">Languages</h2>
+              <h2 className="font-bold text-lg">{t('userProfile.languages')}</h2>
               <div className="space-y-3">
                 {personalInfo.languages.split(',').map((lang: string, i: number) => (
                   <div key={i} className="flex justify-between text-sm">

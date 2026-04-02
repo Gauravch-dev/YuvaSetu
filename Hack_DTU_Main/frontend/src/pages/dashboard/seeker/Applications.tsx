@@ -1,5 +1,6 @@
 
 
+import { useTranslation } from 'react-i18next';
 import { ExternalLink, Calendar, CheckCircle2, XCircle, Clock, Timer, ChevronRight, Briefcase, Loader2, MapPin, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -41,6 +42,7 @@ const getProgressPercentage = (status: string) => {
 };
 
 export const Applications = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { socket } = useSocket();
   const { toast } = useToast();
@@ -62,8 +64,8 @@ export const Applications = () => {
     const handleStatusUpdate = (data: any) => {
       console.log("Real-time Update:", data);
       toast({
-        title: "Application Update!",
-        description: `Your status for ${data.jobTitle} at ${data.company} is now ${data.status}`,
+        title: t('applications.applicationUpdate'),
+        description: t('applications.statusUpdateMessage', { job: data.jobTitle, company: data.company, status: data.status }),
         variant: "default"
       });
       queryClient.invalidateQueries({ queryKey: ['my-applications'] });
@@ -84,11 +86,11 @@ export const Applications = () => {
     <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in pb-10">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="font-display text-3xl font-bold mb-2">My Applications</h1>
-          <p className="text-muted-foreground">Track the status of your job applications.</p>
+          <h1 className="font-display text-3xl font-bold mb-2">{t('applications.title')}</h1>
+          <p className="text-muted-foreground">{t('applications.subtitle')}</p>
         </div>
         <div className="text-sm text-muted-foreground">
-          {applications?.length || 0} Total Applications
+          {t('applications.totalApplications', { count: applications?.length || 0 })}
         </div>
       </div>
 
@@ -145,10 +147,10 @@ export const Applications = () => {
                   />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Applied</span>
-                  <span>Review</span>
-                  <span>Interview</span>
-                  <span>Offer</span>
+                  <span>{t('applications.applied')}</span>
+                  <span>{t('applications.review')}</span>
+                  <span>{t('applications.interview')}</span>
+                  <span>{t('applications.offer')}</span>
                 </div>
               </div>
 
@@ -159,7 +161,7 @@ export const Applications = () => {
                   {app.status}
                 </div>
                 <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground group-hover:text-primary">
-                  View Details
+                  {t('applications.viewDetails')}
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -172,10 +174,10 @@ export const Applications = () => {
             <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4">
               <Briefcase className="w-10 h-10 text-muted-foreground" />
             </div>
-            <h3 className="text-xl font-bold mb-2">No applications yet</h3>
-            <p className="text-muted-foreground mb-6">Start applying to jobs to track your progress here.</p>
+            <h3 className="text-xl font-bold mb-2">{t('applications.noApplicationsYet')}</h3>
+            <p className="text-muted-foreground mb-6">{t('applications.startApplying')}</p>
             <Button onClick={() => navigate('/dashboard')}>
-              Browse Jobs
+              {t('applications.browseJobs')}
             </Button>
           </div>
         )}

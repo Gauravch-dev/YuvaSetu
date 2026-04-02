@@ -1,14 +1,16 @@
 import { RevealOnScroll } from '@/components/RevealOnScroll';
 import { Code2, Database, Cloud, Container } from 'lucide-react';
-
-const techStack = [
-  { icon: Code2, name: 'Python + React', description: 'Modern full-stack' },
-  { icon: Database, name: 'MongoDB', description: 'Scalable NoSQL' },
-  { icon: Container, name: 'Docker', description: 'Containerized' },
-  { icon: Cloud, name: 'AWS Graviton', description: 'ARM optimized' },
-];
+import { useTranslation } from 'react-i18next';
 
 export const TeamSection = () => {
+  const { t } = useTranslation();
+
+  const techStack = [
+    { icon: Code2, name: t('team.tech1Name'), description: t('team.tech1Description') },
+    { icon: Database, name: t('team.tech2Name'), description: t('team.tech2Description') },
+    { icon: Container, name: t('team.tech3Name'), description: t('team.tech3Description') },
+    { icon: Cloud, name: t('team.tech4Name'), description: t('team.tech4Description') },
+  ];
   return (
     <section id="about" className="relative py-32 overflow-hidden">
       {/* Background gradient */}
@@ -19,26 +21,23 @@ export const TeamSection = () => {
           {/* Content */}
           <RevealOnScroll>
             <span className="inline-block px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
-              Team Havoc
+              {t('team.badge')}
             </span>
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-              Building for <span className="text-primary-accent">Scale</span>
+              {t('team.titlePrefix')} <span className="text-primary-accent">{t('team.titleHighlight')}</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Team Havoc isn't just building a prototype—we're delivering a production-ready, 
-              scalable platform. Our system is optimized to run efficiently while delivering 
-              human-level matching intelligence.
+              {t('team.description1')}
             </p>
             <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              By focusing on efficient, lightweight ML instead of heavy large language models, 
-              YuvaSetu delivers superior results with <span className="text-primary font-semibold">lower cost</span>, 
-              <span className="text-primary font-semibold"> lower latency</span>, and 
-              <span className="text-primary font-semibold"> high scalability</span>.
+              {t('team.description2Prefix')} <span className="text-primary font-semibold">{t('team.lowerCost')}</span>,
+              <span className="text-primary font-semibold"> {t('team.lowerLatency')}</span>, and
+              <span className="text-primary font-semibold"> {t('team.highScalability')}</span>.
             </p>
-            
+
             <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30">
               <span className="text-2xl">🚀</span>
-              <span className="font-display font-bold">Ready to scale to millions</span>
+              <span className="font-display font-bold">{t('team.achievement')}</span>
             </div>
           </RevealOnScroll>
           

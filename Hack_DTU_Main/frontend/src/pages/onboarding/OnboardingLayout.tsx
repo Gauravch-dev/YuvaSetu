@@ -1,6 +1,8 @@
 import { Link, Outlet } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const OnboardingLayout = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-background relative overflow-hidden flex flex-col">
       {/* Background Ambience */}
@@ -22,7 +24,7 @@ export const OnboardingLayout = () => {
         </Link>
         
         <Link to="/help" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-          Need help?
+          {t('onboardingSteps.needHelp')}
         </Link>
       </header>
 

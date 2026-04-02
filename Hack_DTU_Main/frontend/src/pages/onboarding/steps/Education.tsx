@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useOnboarding } from '@/contexts/OnboardingContext';
+import { useTranslation } from 'react-i18next';
 
 export const Education = () => {
+  const { t } = useTranslation();
   const { data, updateStepData } = useOnboarding();
   const { education } = data;
 
@@ -42,7 +44,7 @@ export const Education = () => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2 mb-2">
               <GraduationCap className="w-5 h-5 text-muted-foreground" />
-              <h3 className="font-semibold">Education Details</h3>
+              <h3 className="font-semibold">{t('educationStep.details')}</h3>
             </div>
             <Button
               variant="ghost"
@@ -56,35 +58,35 @@ export const Education = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Institution / College</Label>
-              <Input 
+              <Label>{t('educationStep.institution')}</Label>
+              <Input
                 value={edu.institution}
                 onChange={(e) => updateEntry(edu.id, 'institution', e.target.value)}
-                placeholder="Ex. IIT Bombay"
+                placeholder={t('educationStep.institutionPlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label>Degree / Course</Label>
-              <Input 
+              <Label>{t('educationStep.degree')}</Label>
+              <Input
                 value={edu.degree}
                 onChange={(e) => updateEntry(edu.id, 'degree', e.target.value)}
-                placeholder="Ex. B.Tech Computer Science"
+                placeholder={t('educationStep.degreePlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label>Completion Year</Label>
-              <Input 
+              <Label>{t('educationStep.completionYear')}</Label>
+              <Input
                 value={edu.year}
                 onChange={(e) => updateEntry(edu.id, 'year', e.target.value)}
-                placeholder="Ex. 2024"
+                placeholder={t('educationStep.completionYearPlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label>Grade / CGPA</Label>
-              <Input 
+              <Label>{t('educationStep.grade')}</Label>
+              <Input
                 value={edu.score}
                 onChange={(e) => updateEntry(edu.id, 'score', e.target.value)}
-                placeholder="Ex. 9.5 CGPA"
+                placeholder={t('educationStep.gradePlaceholder')}
               />
             </div>
           </div>
@@ -98,7 +100,7 @@ export const Education = () => {
         className="w-full h-12 border-dashed border-2 hover:border-primary hover:text-primary gap-2"
       >
         <Plus className="w-4 h-4" />
-        Add Education
+        {t('educationStep.addEducation')}
       </Button>
     </div>
   );

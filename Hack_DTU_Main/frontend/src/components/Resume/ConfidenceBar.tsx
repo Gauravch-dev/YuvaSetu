@@ -1,4 +1,5 @@
 import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ConfidenceBarProps {
     confidence: number | null;
@@ -13,6 +14,8 @@ interface ConfidenceBarProps {
  * - RED: Low confidence (<30)
  */
 export const ConfidenceBar = ({ confidence, warnings, className = '' }: ConfidenceBarProps) => {
+    const { t } = useTranslation();
+
     if (confidence === null) return null;
 
     const getLevel = () => {
@@ -29,24 +32,24 @@ export const ConfidenceBar = ({ confidence, warnings, className = '' }: Confiden
             bgColor: 'bg-green-50 border-green-200',
             textColor: 'text-green-800',
             icon: CheckCircle,
-            label: 'High Confidence',
-            description: 'Resume parsed successfully. Please review the auto-filled data.'
+            label: t('confidenceBar.highConfidence'),
+            description: t('confidenceBar.highConfidenceDesc')
         },
         medium: {
             color: 'bg-yellow-500',
             bgColor: 'bg-yellow-50 border-yellow-200',
             textColor: 'text-yellow-800',
             icon: AlertTriangle,
-            label: 'Needs Review',
-            description: 'Some fields may need manual correction.'
+            label: t('confidenceBar.needsReview'),
+            description: t('confidenceBar.needsReviewDesc')
         },
         low: {
             color: 'bg-red-500',
             bgColor: 'bg-red-50 border-red-200',
             textColor: 'text-red-800',
             icon: XCircle,
-            label: 'Low Confidence',
-            description: 'We couldn\'t reliably extract your details. Please fill manually.'
+            label: t('confidenceBar.lowConfidence'),
+            description: t('confidenceBar.lowConfidenceDesc')
         }
     };
 

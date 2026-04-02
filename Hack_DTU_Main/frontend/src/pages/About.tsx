@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
@@ -44,6 +45,7 @@ const founders = [
 ];
 
 const About = () => {
+  const { t } = useTranslation();
   return (
     <>
       <Helmet>
@@ -68,15 +70,13 @@ const About = () => {
           <div className="container mx-auto px-4 relative z-10">
             <RevealOnScroll className="text-center max-w-3xl mx-auto">
               <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-                Team Havoc
+                {t('about.badge')}
               </span>
               <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-                Meet the <span className="text-primary">Founders</span>
+                {t('about.meetFounders')} <span className="text-primary">{t('about.foundersHighlight')}</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                We're a team of passionate innovators on a mission to transform
-                the way students discover career opportunities through
-                AI-powered matching and transparent recommendations.
+                {t('about.teamDescription')}
               </p>
             </RevealOnScroll>
           </div>
@@ -155,19 +155,15 @@ const About = () => {
           <div className="container mx-auto px-4 relative z-10">
             <RevealOnScroll className="max-w-4xl mx-auto text-center">
               <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-                Our <span className="text-primary">Mission</span>
+                {t('about.ourLabel')} <span className="text-primary">{t('about.missionHighlight')}</span>
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8">
-                At YuvaSetu, we believe that every student deserves access to
-                opportunities that truly match their potential. We're
-                eliminating opportunity fatigue by using explainable AI to show
-                you only the most relevant jobs - with complete transparency on
-                why each match matters.
+                {t('about.missionText')}
               </p>
               <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30">
                 <span className="text-2xl">🚀</span>
                 <span className="font-display font-bold">
-                  Building the future of career discovery
+                  {t('about.buildingFuture')}
                 </span>
               </div>
             </RevealOnScroll>

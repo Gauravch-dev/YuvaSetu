@@ -4,8 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useOnboarding } from '@/contexts/OnboardingContext';
+import { useTranslation } from 'react-i18next';
 
 export const Experience = () => {
+  const { t } = useTranslation();
   const { data, updateStepData } = useOnboarding();
   const { experience } = data;
 
@@ -43,7 +45,7 @@ export const Experience = () => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2 mb-2">
               <Briefcase className="w-5 h-5 text-muted-foreground" />
-              <h3 className="font-semibold">Work Experience</h3>
+              <h3 className="font-semibold">{t('experienceStep.details')}</h3>
             </div>
             <Button
               variant="ghost"
@@ -57,35 +59,35 @@ export const Experience = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Job Role / Title</Label>
-              <Input 
+              <Label>{t('experienceStep.role')}</Label>
+              <Input
                 value={exp.role}
                 onChange={(e) => updateEntry(exp.id, 'role', e.target.value)}
-                placeholder="Ex. Frontend Developer"
+                placeholder={t('experienceStep.rolePlaceholder')}
               />
             </div>
             <div className="space-y-2">
-              <Label>Company Name</Label>
-              <Input 
+              <Label>{t('experienceStep.company')}</Label>
+              <Input
                 value={exp.company}
                 onChange={(e) => updateEntry(exp.id, 'company', e.target.value)}
-                placeholder="Ex. Google"
+                placeholder={t('experienceStep.companyPlaceholder')}
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label>Duration</Label>
-              <Input 
+              <Label>{t('experienceStep.duration')}</Label>
+              <Input
                 value={exp.duration}
                 onChange={(e) => updateEntry(exp.id, 'duration', e.target.value)}
-                placeholder="Ex. Jan 2023 - Present"
+                placeholder={t('experienceStep.durationPlaceholder')}
               />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <Label>Description</Label>
-              <Textarea 
+              <Label>{t('experienceStep.description')}</Label>
+              <Textarea
                 value={exp.description}
                 onChange={(e) => updateEntry(exp.id, 'description', e.target.value)}
-                placeholder="Describe your responsibilities and achievements..."
+                placeholder={t('experienceStep.descriptionPlaceholder')}
                 className="min-h-[100px]"
               />
             </div>
@@ -100,7 +102,7 @@ export const Experience = () => {
         className="w-full h-12 border-dashed border-2 hover:border-accent hover:text-accent gap-2"
       >
         <Plus className="w-4 h-4" />
-        Add Experience
+        {t('experienceStep.addExperience')}
       </Button>
     </div>
   );

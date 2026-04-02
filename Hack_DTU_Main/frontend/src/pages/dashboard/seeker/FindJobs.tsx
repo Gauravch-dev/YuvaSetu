@@ -6,10 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { JobCard, Job } from '@/components/dashboard/JobCard';
 import { Checkbox } from '@/components/ui/checkbox';
 import { fetchRecommendedJobs } from '@/lib/auth-api';
+import { useTranslation } from 'react-i18next';
 
-const FILTERS = [
-  { category: 'Job Type', key: 'type', options: ['Full-time', 'Part-time', 'Contract', 'Internship'] },
-  { category: 'Work Mode', key: 'workMode', options: ['On-site', 'Remote', 'Hybrid'] },
+const FILTER_KEYS = [
+  { category: 'findJobs.jobType', key: 'type', options: ['Full-time', 'Part-time', 'Contract', 'Internship'] },
+  { category: 'findJobs.workMode', key: 'workMode', options: ['On-site', 'Remote', 'Hybrid'] },
 ];
 
 export const FindJobs = () => {
@@ -21,6 +22,7 @@ export const FindJobs = () => {
     workMode: [],
   });
   const [sortBy, setSortBy] = useState<'match' | 'newest' | 'salary'>('match');
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -57,21 +59,21 @@ export const FindJobs = () => {
 
   const filteredJobs = jobs.filter(job => {
     // Search filter
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.skills?.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     // Type filter
-    const matchesType = selectedFilters.type.length === 0 || 
+    const matchesType = selectedFilters.type.length === 0 ||
       selectedFilters.type.includes(job.type);
-    
+
     // Work mode filter (check location for Remote/Hybrid/On-site)
     const matchesWorkMode = selectedFilters.workMode.length === 0 ||
-      selectedFilters.workMode.some(mode => 
+      selectedFilters.workMode.some(mode =>
         job.location?.toLowerCase().includes(mode.toLowerCase())
       );
-    
+
     return matchesSearch && matchesType && matchesWorkMode;
   });
 
@@ -88,9 +90,9 @@ export const FindJobs = () => {
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold mb-2">Find Your Next Role</h1>
+          <h1 className="font-display text-3xl font-bold mb-2">{t('findJobs.title')}</h1>
           <p className="text-muted-foreground">
-            {isLoading ? 'Loading jobs...' : `${sortedJobs.length} jobs matching your profile`}
+            {isLoading ? t('findJobs.loadingJobs') : t('findJobs.jobsMatching', { count: sortedJobs.length })}
           </p>
         </div>
       </div>
@@ -101,36 +103,36 @@ export const FindJobs = () => {
           <div className="bg-card border border-border rounded-xl p-6 space-y-6 sticky top-24">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-lg flex items-center gap-2">
-                Filters
+                {t('findJobs.filters')}
                 {activeFilterCount > 0 && (
                   <Badge variant="secondary" className="text-xs">{activeFilterCount}</Badge>
                 )}
               </h3>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="text-primary hover:text-primary/80"
                 onClick={clearFilters}
                 disabled={activeFilterCount === 0 && !searchQuery}
               >
-                Clear
+                {t('findJobs.clear')}
               </Button>
             </div>
 
-            {FILTERS.map((section) => (
+            {FILTER_KEYS.map((section) => (
               <div key={section.category} className="space-y-3 pb-6 border-b border-border last:border-0 last:pb-0">
-                <h4 className="font-medium text-sm">{section.category}</h4>
+                <h4 className="font-medium text-sm">{t(section.category)}</h4>
                 <div className="space-y-2">
                   {section.options.map((option) => {
                     const isChecked = selectedFilters[section.key]?.includes(option);
                     return (
-                      <label 
-                        key={option} 
+                      <label
+                        key={option}
                         className={`flex items-center gap-3 text-sm cursor-pointer group transition-colors ${
                           isChecked ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
-                        <Checkbox 
+                        <Checkbox
                           checked={isChecked}
                           onCheckedChange={() => toggleFilter(section.key, option)}
                         />
@@ -150,34 +152,34 @@ export const FindJobs = () => {
           <div className="flex gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input 
-                placeholder="Search job title, company, or skills" 
-                className="pl-10 h-12 text-lg" 
+              <Input
+                placeholder={t('findJobs.searchPlaceholder')}
+                className="pl-10 h-12 text-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Button size="lg" className="h-12 px-8 gap-2">
               <Search className="w-4 h-4" />
-              Search
+              {t('common.search')}
             </Button>
           </div>
 
           {/* Sort Tabs */}
           <div className="flex items-center gap-2 pb-4 overflow-x-auto">
-            <Badge 
-              variant={sortBy === 'match' ? 'default' : 'outline'} 
+            <Badge
+              variant={sortBy === 'match' ? 'default' : 'outline'}
               className="px-3 py-1 cursor-pointer hover:bg-muted"
               onClick={() => setSortBy('match')}
             >
-              Top Match
+              {t('findJobs.topMatch')}
             </Badge>
-            <Badge 
-              variant={sortBy === 'newest' ? 'default' : 'outline'} 
+            <Badge
+              variant={sortBy === 'newest' ? 'default' : 'outline'}
               className="px-3 py-1 cursor-pointer hover:bg-muted"
               onClick={() => setSortBy('newest')}
             >
-              Newest
+              {t('findJobs.newest')}
             </Badge>
           </div>
 
@@ -189,9 +191,9 @@ export const FindJobs = () => {
           ) : sortedJobs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Frown className="w-12 h-12 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-bold mb-2">No jobs found</h3>
-              <p className="text-muted-foreground mb-4">Try adjusting your filters or search query.</p>
-              <Button variant="outline" onClick={clearFilters}>Clear All Filters</Button>
+              <h3 className="text-xl font-bold mb-2">{t('findJobs.noJobsFound')}</h3>
+              <p className="text-muted-foreground mb-4">{t('findJobs.tryAdjustingSearch')}</p>
+              <Button variant="outline" onClick={clearFilters}>{t('findJobs.clearAllFilters')}</Button>
             </div>
           ) : (
             <div className="grid gap-4">

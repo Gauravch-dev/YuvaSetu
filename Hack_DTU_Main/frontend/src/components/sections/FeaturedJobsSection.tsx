@@ -11,6 +11,7 @@ import {
 import { useParallax } from '@/hooks/useParallax';
 import { useCounterAnimation } from '@/hooks/useCounterAnimation';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Job categories with refined data
 const jobCategories = [
@@ -113,6 +114,7 @@ const TiltCard = ({ children, className = '' }: { children: React.ReactNode; cla
 };
 
 export const FeaturedJobsSection = () => {
+  const { t } = useTranslation();
   const parallaxSlow = useParallax(0.15);
   const totalPlacements = jobCategories.reduce((sum, cat) => sum + cat.placementCount, 0);
 
@@ -139,17 +141,17 @@ export const FeaturedJobsSection = () => {
         <RevealOnScroll className="text-center mb-16 md:mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
             <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm font-medium text-primary">Placement Statistics</span>
+            <span className="text-sm font-medium text-primary">{t('featuredJobs.badge')}</span>
           </div>
           
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
-            <span className="text-foreground">Proven Track Record of</span>
+            <span className="text-foreground">{t('featuredJobs.title')}</span>
             <br />
-            <span className="text-primary">Career Success</span>
+            <span className="text-primary">{t('featuredJobs.titleHighlight')}</span>
           </h2>
           
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-            Join thousands of professionals who've accelerated their careers through our AI-powered matching platform.
+            {t('featuredJobs.subtitle')}
           </p>
         </RevealOnScroll>
 
@@ -171,8 +173,8 @@ export const FeaturedJobsSection = () => {
                           <Target className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Total Placements</p>
-                          <p className="text-xs text-primary font-medium">Verified & Growing</p>
+                          <p className="text-sm text-muted-foreground">{t('featuredJobs.totalPlacements')}</p>
+                          <p className="text-xs text-primary font-medium">{t('featuredJobs.verifiedGrowing')}</p>
                         </div>
                       </div>
                       
@@ -180,14 +182,14 @@ export const FeaturedJobsSection = () => {
                         <AnimatedCounter value={totalPlacements} suffix="+" />
                       </div>
                       <p className="text-lg text-muted-foreground">
-                        Successful career transitions
+                        {t('featuredJobs.successfulTransitions')}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-4 mt-6 pt-6 border-t border-border">
                       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                         <TrendingUp className="w-4 h-4" />
-                        <span className="text-sm font-semibold">+22% YoY Growth</span>
+                        <span className="text-sm font-semibold">{t('featuredJobs.yoyGrowth')}</span>
                       </div>
                     </div>
                   </div>
@@ -205,7 +207,7 @@ export const FeaturedJobsSection = () => {
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <p className="text-sm text-muted-foreground mb-1">Success Rate</p>
+                          <p className="text-sm text-muted-foreground mb-1">{t('featuredJobs.successRate')}</p>
                           <div className="text-4xl font-display font-bold text-foreground">
                             <AnimatedCounter value={92} suffix="%" />
                           </div>
@@ -214,7 +216,7 @@ export const FeaturedJobsSection = () => {
                           <Zap className="w-5 h-5 text-accent" />
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground">Of matched candidates placed within 30 days</p>
+                      <p className="text-xs text-muted-foreground">{t('featuredJobs.successRateDesc')}</p>
                     </div>
                   </div>
                 </RevealOnScroll>
@@ -228,7 +230,7 @@ export const FeaturedJobsSection = () => {
                     <div className="relative z-10">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <p className="text-sm text-muted-foreground mb-1">Active Industries</p>
+                          <p className="text-sm text-muted-foreground mb-1">{t('featuredJobs.activeIndustries')}</p>
                           <div className="text-4xl font-display font-bold text-foreground">
                             <AnimatedCounter value={15} suffix="+" />
                           </div>
@@ -237,7 +239,7 @@ export const FeaturedJobsSection = () => {
                           <Briefcase className="w-5 h-5 text-primary" />
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground">Spanning tech, finance, healthcare & more</p>
+                      <p className="text-xs text-muted-foreground">{t('featuredJobs.activeIndustriesDesc')}</p>
                     </div>
                   </div>
                 </RevealOnScroll>
@@ -249,10 +251,10 @@ export const FeaturedJobsSection = () => {
         {/* Category Cards - Clean, uniform design */}
         <RevealOnScroll className="mb-6">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-display text-2xl font-bold text-foreground">By Domain</h3>
+            <h3 className="font-display text-2xl font-bold text-foreground">{t('featuredJobs.byDomain')}</h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Users className="w-4 h-4" />
-              <span>Placements by category</span>
+              <span>{t('featuredJobs.placementsByCategory')}</span>
             </div>
           </div>
         </RevealOnScroll>
@@ -297,13 +299,13 @@ export const FeaturedJobsSection = () => {
         <RevealOnScroll delay={500} className="text-center mt-16">
           <div className="inline-flex flex-col items-center">
             <p className="text-muted-foreground text-sm mb-4">
-              Ready to write your success story?
+              {t('featuredJobs.readyToWrite')}
             </p>
             <a 
               href="/login/seeker"
               className="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-primary text-primary-foreground font-semibold shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 animated-border relative overflow-hidden"
             >
-              <span>Start Your Journey</span>
+              <span>{t('featuredJobs.startJourney')}</span>
               <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
           </div>

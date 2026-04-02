@@ -2,62 +2,9 @@ import { RevealOnScroll } from '@/components/RevealOnScroll';
 import { useParallax } from '@/hooks/useParallax';
 import { ArrowRight, Check, X, Zap, Target, Eye } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
-// Traditional approach pain points
-const traditionalFlow = [
-  {
-    icon: '🔍',
-    title: 'Endless Scrolling',
-    description: 'Hours browsing irrelevant listings',
-    metric: '2+ hrs/day',
-  },
-  {
-    icon: '📝',
-    title: 'Manual Filtering',
-    description: 'Adjusting filters that still miss',
-    metric: '50+ sites',
-  },
-  {
-    icon: '❓',
-    title: 'Zero Transparency',
-    description: 'No idea why jobs appear',
-    metric: '0% clarity',
-  },
-  {
-    icon: '🤞',
-    title: 'Spray & Pray',
-    description: 'Hoping for callbacks',
-    metric: '2% reply',
-  },
-];
-
-// YuvaSetu's intelligent approach
-const yuvaSetuFlow = [
-  {
-    icon: '🧠',
-    title: 'Semantic Understanding',
-    description: 'AI understands your true skills',
-    metric: 'Deep Analysis',
-  },
-  {
-    icon: '🎯',
-    title: 'Curated Top 5',
-    description: 'Only your perfect matches',
-    metric: 'Top 5 matches',
-  },
-  {
-    icon: '👀',
-    title: 'Full Transparency',
-    description: 'Detailed match breakdown',
-    metric: '100% clarity',
-  },
-  {
-    icon: '✅',
-    title: 'Confident Applications',
-    description: 'Apply knowing you fit',
-    metric: '3x callbacks',
-  },
-];
+// Arrays moved inside component for i18n access
 
 const ComparisonCard = ({ 
   children, 
@@ -74,8 +21,63 @@ const ComparisonCard = ({
 };
 
 export const FlowGraph3DSection = () => {
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+
+  const traditionalFlow = [
+    {
+      icon: '🔍',
+      title: t('flowGraph.endlessScrolling'),
+      description: t('flowGraph.endlessScrollingDesc'),
+      metric: t('flowGraph.endlessScrollingMetric'),
+    },
+    {
+      icon: '📝',
+      title: t('flowGraph.manualFiltering'),
+      description: t('flowGraph.manualFilteringDesc'),
+      metric: t('flowGraph.manualFilteringMetric'),
+    },
+    {
+      icon: '❓',
+      title: t('flowGraph.zeroTransparency'),
+      description: t('flowGraph.zeroTransparencyDesc'),
+      metric: t('flowGraph.zeroTransparencyMetric'),
+    },
+    {
+      icon: '🤞',
+      title: t('flowGraph.sprayPray'),
+      description: t('flowGraph.sprayPrayDesc'),
+      metric: t('flowGraph.sprayPrayMetric'),
+    },
+  ];
+
+  const yuvaSetuFlow = [
+    {
+      icon: '🧠',
+      title: t('flowGraph.semanticUnderstanding'),
+      description: t('flowGraph.semanticUnderstandingDesc'),
+      metric: t('flowGraph.semanticUnderstandingMetric'),
+    },
+    {
+      icon: '🎯',
+      title: t('flowGraph.curatedTop5'),
+      description: t('flowGraph.curatedTop5Desc'),
+      metric: t('flowGraph.curatedTop5Metric'),
+    },
+    {
+      icon: '👀',
+      title: t('flowGraph.fullTransparency'),
+      description: t('flowGraph.fullTransparencyDesc'),
+      metric: t('flowGraph.fullTransparencyMetric'),
+    },
+    {
+      icon: '✅',
+      title: t('flowGraph.confidentApps'),
+      description: t('flowGraph.confidentAppsDesc'),
+      metric: t('flowGraph.confidentAppsMetric'),
+    },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -128,13 +130,13 @@ export const FlowGraph3DSection = () => {
           {/* Header - Stays put or fades slightly */}
           <div className="text-center mb-12 transition-opacity duration-300">
              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
-              <span className="text-sm font-medium text-primary">The Difference</span>
+              <span className="text-sm font-medium text-primary">{t('flowGraph.badge')}</span>
             </div>
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
-              Job Hunting, <span className="text-primary">Reimagined</span>
+              {t('flowGraph.titlePrefix')} <span className="text-primary">{t('flowGraph.titleHighlight')}</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Experience a recruitment process designed for clarity, speed, and success.
+              {t('flowGraph.subtitle')}
             </p>
           </div>
 
@@ -159,8 +161,8 @@ export const FlowGraph3DSection = () => {
                     <X className="w-8 h-8 text-red-500" />
                   </div>
                   <div className="text-center md:text-left">
-                    <h3 className="text-3xl font-bold text-foreground mb-2">Traditional Approach</h3>
-                    <p className="text-muted-foreground text-lg">The "Spray & Pray" method causes fatigue.</p>
+                    <h3 className="text-3xl font-bold text-foreground mb-2">{t('flowGraph.traditionalApproach')}</h3>
+                    <p className="text-muted-foreground text-lg">{t('flowGraph.traditionalApproachDesc')}</p>
                   </div>
                 </div>
                 
@@ -179,7 +181,7 @@ export const FlowGraph3DSection = () => {
                   ))}
                 </div>
                  <div className="mt-8 text-center relative z-10">
-                  <p className="text-muted-foreground/60 text-sm font-medium tracking-wide uppercase">Results: Frustration & Burnout</p>
+                  <p className="text-muted-foreground/60 text-sm font-medium tracking-wide uppercase">{t('flowGraph.resultFrustration')}</p>
                 </div>
               </div>
             </div>
@@ -206,8 +208,8 @@ export const FlowGraph3DSection = () => {
                     <Check className="w-8 h-8 text-white" />
                   </div>
                   <div className="text-center md:text-left">
-                    <h3 className="text-3xl font-bold text-foreground">YuvaSetu Approach</h3>
-                    <p className="text-muted-foreground text-lg">Intelligent matching. Zero noise.</p>
+                    <h3 className="text-3xl font-bold text-foreground">{t('flowGraph.yuvasetuApproach')}</h3>
+                    <p className="text-muted-foreground text-lg">{t('flowGraph.yuvasetuApproachDesc')}</p>
                   </div>
                 </div>
                 
@@ -231,7 +233,7 @@ export const FlowGraph3DSection = () => {
                  <div className="mt-10 text-center relative z-10">
                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <p className="text-sm font-medium text-foreground">Result: <span className="text-primary font-bold">Career Accelerated</span></p>
+                    <p className="text-sm font-medium text-foreground">{t('flowGraph.yuvaSetuResultPrefix')} <span className="text-primary font-bold">{t('flowGraph.yuvaSetuResultHighlight')}</span></p>
                   </div>
                 </div>
               </div>

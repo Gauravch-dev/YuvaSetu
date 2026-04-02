@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Search, MapPin, Briefcase, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 const jobTypes = ['Remote', 'Full-time', 'Internship', 'Part-time'];
 const trendingRoles = ['Data Analyst', 'Product Manager', 'Software Engineer', 'Marketing', 'UI/UX Designer'];
 
 export const SearchBar = () => {
+  const { t } = useTranslation();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useState('');
@@ -31,7 +33,7 @@ export const SearchBar = () => {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <input
                   type="text"
-                  placeholder="Job title or keyword"
+                  placeholder={t('searchBar.jobPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-xl bg-background/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
@@ -43,7 +45,7 @@ export const SearchBar = () => {
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <input
                   type="text"
-                  placeholder="City or remote"
+                  placeholder={t('searchBar.locationPlaceholder')}
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 rounded-xl bg-background/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
@@ -57,7 +59,7 @@ export const SearchBar = () => {
                 className="w-full shadow-3d-hover hover:animate-scale-brighten"
               >
                 <Search className="w-5 h-5" />
-                Search Jobs
+                {t('searchBar.searchJobs')}
               </Button>
             </div>
 
@@ -65,7 +67,7 @@ export const SearchBar = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-6 border-b border-border">
               <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
                 <Filter className="w-4 h-4" />
-                <span className="font-medium">Job Type:</span>
+                <span className="font-medium">{t('searchBar.jobType')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {jobTypes.map((type) => (
@@ -88,7 +90,7 @@ export const SearchBar = () => {
             <div className="pt-6">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                 <Briefcase className="w-4 h-4" />
-                <span className="font-medium">Trending:</span>
+                <span className="font-medium">{t('searchBar.trending')}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {trendingRoles.map((role) => (

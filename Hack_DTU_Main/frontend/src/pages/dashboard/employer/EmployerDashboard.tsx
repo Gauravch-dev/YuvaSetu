@@ -1,5 +1,6 @@
 import { Users, Briefcase, BarChart3, Plus, Search, MoreHorizontal } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -26,6 +27,7 @@ const RECENT_CANDIDATES = [
 import { Skeleton } from '@/components/ui/skeleton';
 
 export const EmployerDashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [userName, setUserName] = useState('Employer');
   const [stats, setStats] = useState({
@@ -71,9 +73,9 @@ export const EmployerDashboard = () => {
   }, []);
 
   const STATS_DATA = [
-    { label: 'Active Jobs', value: stats.activeJobs, icon: Briefcase, color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Total Applications', value: stats.totalApplications, icon: Users, color: 'text-accent', bg: 'bg-accent/10' },
-    { label: 'Interviews Scheduled', value: stats.interviews, icon: BarChart3, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+    { label: t('employerDashboard.activeJobs'), value: stats.activeJobs, icon: Briefcase, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: t('employerDashboard.totalApplications'), value: stats.totalApplications, icon: Users, color: 'text-accent', bg: 'bg-accent/10' },
+    { label: t('employerDashboard.interviewsScheduled'), value: stats.interviews, icon: BarChart3, color: 'text-orange-500', bg: 'bg-orange-500/10' },
   ];
 
   return (
@@ -82,13 +84,13 @@ export const EmployerDashboard = () => {
       <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
           <h1 className="font-display text-3xl font-bold mb-2">
-            Welcome back, <span className="text-accent">{userName}</span>!
+            {t('employerDashboard.welcomeBack', { name: userName })}
           </h1>
-          <p className="text-muted-foreground">Manage your job postings and hiring pipeline.</p>
+          <p className="text-muted-foreground">{t('employerDashboard.managePostings')}</p>
         </div>
         <Button variant="employer" className="gap-2 shadow-button" onClick={() => navigate('/dashboard/employer/post-job')}>
           <Plus className="w-4 h-4" />
-          Post New Job
+          {t('employerDashboard.postNewJob')}
         </Button>
       </div>
 
@@ -137,8 +139,8 @@ export const EmployerDashboard = () => {
         {/* Active Jobs Table */}
         <div className="lg:col-span-2 bg-card border border-border rounded-3xl overflow-hidden">
           <div className="p-6 border-b border-border flex items-center justify-between">
-            <h2 className="font-bold text-xl">Active Job Postings</h2>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/employer/post-job')}>View All</Button>
+            <h2 className="font-bold text-xl">{t('employerDashboard.activeJobPostings')}</h2>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard/employer/post-job')}>{t('employerDashboard.viewAll')}</Button>
           </div>
           <div className="p-6">
             <div className="space-y-4">
@@ -157,9 +159,9 @@ export const EmployerDashboard = () => {
                   <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
                     <Briefcase className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-bold">No active jobs</h3>
-                  <p className="text-muted-foreground mb-4">Post your first job to start finding candidates.</p>
-                  <Button onClick={() => navigate('/dashboard/employer/post-job')}>Post a Job</Button>
+                  <h3 className="text-lg font-bold">{t('employerDashboard.noActiveJobs')}</h3>
+                  <p className="text-muted-foreground mb-4">{t('employerDashboard.postFirstJob')}</p>
+                  <Button onClick={() => navigate('/dashboard/employer/post-job')}>{t('employerDashboard.postAJob')}</Button>
                 </div>
               ) : (
                 activeJobs.map((job) => (
@@ -176,9 +178,9 @@ export const EmployerDashboard = () => {
                     <div className="flex items-center gap-6">
                       <div className="text-center">
                         <p className="text-xl font-bold">{job.candidates ? job.candidates.length : 0}</p>
-                        <p className="text-xs text-muted-foreground uppercase">Applicants</p>
+                        <p className="text-xs text-muted-foreground uppercase">{t('employerDashboard.applicants')}</p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => navigate(`/dashboard/employer/postings/${job._id}`)}>Manage</Button>
+                      <Button variant="outline" size="sm" onClick={() => navigate(`/dashboard/employer/postings/${job._id}`)}>{t('employerDashboard.manage')}</Button>
                     </div>
                   </div>
                 ))
@@ -190,7 +192,7 @@ export const EmployerDashboard = () => {
         {/* Recent Candidates */}
         <div className="bg-card border border-border rounded-3xl overflow-hidden">
           <div className="p-6 border-b border-border">
-            <h2 className="font-bold text-xl">Top Candidates</h2>
+            <h2 className="font-bold text-xl">{t('employerDashboard.topCandidates')}</h2>
           </div>
           <div className="p-6 space-y-4">
             {isLoading ? (
@@ -208,8 +210,8 @@ export const EmployerDashboard = () => {
                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3">
                   <Users className="w-6 h-6 text-muted-foreground" />
                 </div>
-                <p className="text-sm font-medium">No candidates yet</p>
-                <p className="text-xs text-muted-foreground mt-1">Candidates will appear here once they apply.</p>
+                <p className="text-sm font-medium">{t('employerDashboard.noCandidatesYet')}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('employerDashboard.candidatesAppearHere')}</p>
               </div>
             ) : (
               recentCandidates.map((candidate) => (
@@ -237,7 +239,7 @@ export const EmployerDashboard = () => {
             {/* View All Details Button underneath if needed, or stick to list */}
             {!isLoading && recentCandidates.length > 0 && (
               <Button variant="ghost" className="w-full text-xs" onClick={() => navigate('/dashboard/employer/postings')}>
-                View All Applications
+                {t('employerDashboard.viewAllApplications')}
               </Button>
             )}
           </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { X, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useVoiceGenie } from '../hooks/useVoiceGenie';
 import { useVoiceFlow } from '../logic/VoiceFlowMachine';
 import { PulsatingMic } from './PulsatingMic';
@@ -12,6 +13,7 @@ interface GenieInlineProps {
 }
 
 export const GenieInline: React.FC<GenieInlineProps> = ({ onStateChange, onPartialUpdate, onComplete, onClose }) => {
+  const { t } = useTranslation();
   const { currentState, context, transition, updateContext, config } = useVoiceFlow();
   const [transcript, setTranscript] = useState('');
   const [loadingStatus, setLoadingStatus] = useState<any>(null);
@@ -158,8 +160,8 @@ export const GenieInline: React.FC<GenieInlineProps> = ({ onStateChange, onParti
        {/* Header */}
        <div className="p-6 pb-2 flex justify-between items-start">
            <div>
-               <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">Voice Genie</h3>
-               <p className="text-xs text-slate-400">Assistant Active</p>
+               <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">{t('voiceGenie.title')}</h3>
+               <p className="text-xs text-slate-400">{t('voiceGenie.assistantActive')}</p>
            </div>
            {onClose && (
                <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full">
@@ -174,7 +176,7 @@ export const GenieInline: React.FC<GenieInlineProps> = ({ onStateChange, onParti
            {/* Message */}
            <div className="text-center min-h-[60px] flex items-center justify-center">
                 {isModelLoading ? (
-                    <span className="text-sm animate-pulse">Initializing...</span>
+                    <span className="text-sm animate-pulse">{t('voiceGenie.initializing')}</span>
                 ) : loadingStatus?.status === 'transcribing' ? (
                     <div className="flex items-center gap-2 text-purple-300">
                         <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -200,7 +202,7 @@ export const GenieInline: React.FC<GenieInlineProps> = ({ onStateChange, onParti
                     }} 
                />
                <p className="text-center mt-4 text-xs text-slate-500">
-                    {isListening ? "Tap to stop" : "Tap to speak"}
+                    {isListening ? t('voiceGenie.tapToStop') : t('voiceGenie.tapToSpeak')}
                </p>
            </div>
 
@@ -218,7 +220,7 @@ export const GenieInline: React.FC<GenieInlineProps> = ({ onStateChange, onParti
                        onClick={handleConfirm}
                        className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-full text-sm font-bold flex items-center gap-2 transition-all animate-bounce-in"
                    >
-                       <Check size={14} /> Confirm
+                       <Check size={14} /> {t('voiceGenie.confirm')}
                    </button>
                )}
            </div>
