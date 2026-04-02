@@ -1,0 +1,630 @@
+[
+    {
+        "company": "Meta",
+        "profile": "Frontend Engineer",
+        "questions": [
+            {
+                "question": "Which load balancing algorithm distributes incoming requests to servers based on the least number of active connections?",
+                "options": [
+                    "Round Robin",
+                    "Least Connections",
+                    "IP Hash",
+                    "Weighted Round Robin"
+                ],
+                "answer": "Least Connections"
+            },
+            {
+                "question": "For a system like Facebook's newsfeed which requires massive scale and high write throughput, which type of database is typically preferred for storing the actual feed content?",
+                "options": [
+                    "Relational Database (e.g., PostgreSQL)",
+                    "In-memory Database (e.g., Redis)",
+                    "NoSQL Key-Value Store (e.g., Cassandra)",
+                    "Graph Database (e.g., Neo4j)"
+                ],
+                "answer": "NoSQL Key-Value Store (e.g., Cassandra)"
+            },
+            {
+                "question": "In a distributed caching system, which consistency model ensures that a read operation always returns the most recent write?",
+                "options": [
+                    "Eventual Consistency",
+                    "Strong Consistency",
+                    "Read-Through Consistency",
+                    "Write-Back Consistency"
+                ],
+                "answer": "Strong Consistency"
+            },
+            {
+                "question": "What is the primary technique used by platforms like Meta to handle the 'fan-out on write' challenge when a user posts content to millions of followers?",
+                "options": [
+                    "Pull Model (Fanout-on-Read)",
+                    "Active Replication",
+                    "Database Sharding by User ID",
+                    "Write-through Caching"
+                ],
+                "answer": "Pull Model (Fanout-on-Read)"
+            },
+            {
+                "question": "Which system component is essential for managing and executing long-running, asynchronous tasks, such as generating reports or sending large numbers of notifications?",
+                "options": [
+                    "API Gateway",
+                    "Message Queue",
+                    "Service Discovery",
+                    "Reverse Proxy"
+                ],
+                "answer": "Message Queue"
+            },
+            {
+                "question": "What is the average-case time complexity for searching an element in a balanced Binary Search Tree (BST)?",
+                "options": [
+                    "O(n)",
+                    "O(log n)",
+                    "O(n log n)",
+                    "O(1)"
+                ],
+                "answer": "O(log n)"
+            },
+            {
+                "question": "Which standard Data Structure is primarily used to implement Breadth-First Search (BFS) for graph traversal?",
+                "options": [
+                    "Stack",
+                    "Hash Map",
+                    "Min-Heap",
+                    "Queue"
+                ],
+                "answer": "Queue"
+            },
+            {
+                "question": "What is the most common algorithm used to efficiently detect a cycle in a singly linked list?",
+                "options": [
+                    "Merge Sort",
+                    "Kruskal's Algorithm",
+                    "Floyd's Tortoise and Hare Algorithm",
+                    "Dijkstra's Algorithm"
+                ],
+                "answer": "Floyd's Tortoise and Hare Algorithm"
+            },
+            {
+                "question": "Which of the following comparison-based sorting algorithms has an optimal worst-case time complexity of O(n log n)?",
+                "options": [
+                    "Insertion Sort",
+                    "Bubble Sort",
+                    "Quick Sort",
+                    "Merge Sort"
+                ],
+                "answer": "Merge Sort"
+            },
+            {
+                "question": "Dynamic Programming is typically used to solve problems that exhibit which two key properties?",
+                "options": [
+                    "Greedy Choice and Optimal Substructure",
+                    "Optimal Substructure and Overlapping Subproblems",
+                    "Linear Time Complexity and Constant Space",
+                    "Branch and Bound and Memoization"
+                ],
+                "answer": "Optimal Substructure and Overlapping Subproblems"
+            },
+            {
+                "question": "Which of the following is considered one of Meta's core company values often emphasized in behavioral interviews?",
+                "options": [
+                    "Be Patient",
+                    "Minimize Risk",
+                    "Move Fast",
+                    "Prioritize Profit"
+                ],
+                "answer": "Move Fast"
+            },
+            {
+                "question": "When discussing a past conflict with a teammate during a Meta interview, what is the most important element the interviewer is looking for in your response?",
+                "options": [
+                    "Blaming the other person accurately",
+                    "Demonstrating deep technical knowledge",
+                    "Focusing on resolution and learning",
+                    "Avoiding any mention of conflict"
+                ],
+                "answer": "Focusing on resolution and learning"
+            },
+            {
+                "question": "A common behavioral question at Meta involves discussing a time you scaled your impact. What does 'scaling impact' primarily refer to in this context?",
+                "options": [
+                    "Increasing the number of meetings you attend",
+                    "Writing more lines of code per day",
+                    "Enabling others or building tools to solve problems broadly",
+                    "Working longer hours consistently"
+                ],
+                "answer": "Enabling others or building tools to solve problems broadly"
+            },
+            {
+                "question": "If Meta launches a new feature designed to increase user interaction within groups, which metric is the most direct indicator of success?",
+                "options": [
+                    "Daily Active Users (DAU)",
+                    "Average Time Spent per Session",
+                    "Group Post Engagements per Week",
+                    "Churn Rate"
+                ],
+                "answer": "Group Post Engagements per Week"
+            },
+            {
+                "question": "In a product or technical decision-making scenario at Meta, interviewers often focus on how candidates handle trade-offs. What is the preferred approach for addressing trade-offs?",
+                "options": [
+                    "Ignoring constraints to aim for the perfect solution",
+                    "Choosing the most complex technical solution",
+                    "Articulating pros/cons and aligning the choice with business goals",
+                    "Delegating the decision entirely to a manager"
+                ],
+                "answer": "Articulating pros/cons and aligning the choice with business goals"
+            }
+        ],
+        "source": "https://www.geeksforgeeks.org/meta-interview-questions/"
+    },
+    {
+        "company": "Amazon",
+        "profile": "SDE / Data Analyst",
+        "questions": [
+            {
+                "question": "Which SQL window function is used to calculate the running total of sales over time?",
+                "options": [
+                    "RANK()",
+                    "LAG()",
+                    "SUM() OVER()",
+                    "DENSE_RANK()"
+                ],
+                "answer": "SUM() OVER()"
+            },
+            {
+                "question": "In an A/B test for a new checkout flow, which metric would best indicate a successful implementation in terms of overall business impact?",
+                "options": [
+                    "Page Load Time",
+                    "Bounce Rate",
+                    "Click-Through Rate (CTR)",
+                    "Revenue Per User"
+                ],
+                "answer": "Revenue Per User"
+            },
+            {
+                "question": "What is the typical alpha (significance level) used in industry standard A/B testing to determine statistical significance?",
+                "options": [
+                    "0.10",
+                    "0.01",
+                    "0.05",
+                    "0.50"
+                ],
+                "answer": "0.05"
+            },
+            {
+                "question": "Which component is central to the Amazon 'Flywheel' business strategy, driving the initial cycle?",
+                "options": [
+                    "Low Prices",
+                    "High Inventory",
+                    "Fast Shipping",
+                    "Global Expansion"
+                ],
+                "answer": "Low Prices"
+            },
+            {
+                "question": "If a query attempts to perform arithmetic operations on a column stored as a VARCHAR, what is the most likely error?",
+                "options": [
+                    "Syntax Error",
+                    "Null Pointer Exception",
+                    "Data Type Mismatch Error",
+                    "Memory Leak"
+                ],
+                "answer": "Data Type Mismatch Error"
+            },
+            {
+                "question": "Which step in the standard ETL process involves cleaning and transforming data to fit the target data warehouse schema?",
+                "options": [
+                    "Extraction",
+                    "Loading",
+                    "Transformation",
+                    "Validation"
+                ],
+                "answer": "Transformation"
+            },
+            {
+                "question": "Which of the following is an operational Key Performance Indicator (KPI) relevant to warehouse efficiency?",
+                "options": [
+                    "Customer Lifetime Value",
+                    "Inventory Turnover Rate",
+                    "Average Order Value",
+                    "Net Promoter Score"
+                ],
+                "answer": "Inventory Turnover Rate"
+            },
+            {
+                "question": "What is the primary purpose of normalizing a relational database?",
+                "options": [
+                    "Speed up query execution",
+                    "Reduce data redundancy",
+                    "Enhance security",
+                    "Facilitate large-scale data loading"
+                ],
+                "answer": "Reduce data redundancy"
+            },
+            {
+                "question": "Which measure of central tendency is least affected by extreme outliers in a dataset?",
+                "options": [
+                    "Mean",
+                    "Standard Deviation",
+                    "Mode",
+                    "Range"
+                ],
+                "answer": "Mode"
+            },
+            {
+                "question": "Which type of SQL join returns all rows from the left table and the matching rows from the right table, filling non-matches with NULLs?",
+                "options": [
+                    "INNER JOIN",
+                    "FULL OUTER JOIN",
+                    "LEFT JOIN",
+                    "CROSS JOIN"
+                ],
+                "answer": "LEFT JOIN"
+            },
+            {
+                "question": "Which technology is commonly used in Big Data environments for highly scalable and distributed processing of massive datasets?",
+                "options": [
+                    "PHP",
+                    "Spark/MapReduce",
+                    "Python (Pandas only)",
+                    "JavaScript"
+                ],
+                "answer": "Spark/MapReduce"
+            },
+            {
+                "question": "A data analyst only collects feedback from users who placed orders in the last 24 hours, ignoring long-term or inactive users. What type of bias is most likely introduced?",
+                "options": [
+                    "Selection Bias",
+                    "Confirmation Bias",
+                    "Survivorship Bias",
+                    "Reporting Bias"
+                ],
+                "answer": "Selection Bias"
+            },
+            {
+                "question": "What is the most common data warehouse schema optimized for querying and reporting, consisting of a central fact table and surrounding dimension tables?",
+                "options": [
+                    "3rd Normal Form",
+                    "Star Schema",
+                    "Hierarchical Schema",
+                    "Entity-Relationship Model"
+                ],
+                "answer": "Star Schema"
+            },
+            {
+                "question": "If Amazon wants to measure the 'stickiness' or engagement of a user base with a product or feature, which ratio metric is most appropriate?",
+                "options": [
+                    "Daily Active Users (DAU)",
+                    "Conversion Rate",
+                    "DAU/MAU Ratio",
+                    "Average Session Duration"
+                ],
+                "answer": "DAU/MAU Ratio"
+            },
+            {
+                "question": "When analyzing time series sales data over a year, what phenomenon describes a regular, predictable movement that repeats every 7 days (e.g., higher sales on weekends)?",
+                "options": [
+                    "Trend",
+                    "Seasonality",
+                    "Cyclicity",
+                    "Randomness"
+                ],
+                "answer": "Seasonality"
+            }
+        ],
+        "source": "https://www.simplilearn.com/tutorials/data-analytics-tutorial/amazon-data-analyst-interview-questions"
+    },
+    {
+        "company": "Apple",
+        "profile": "Software Engineer",
+        "questions": [
+            {
+                "question": "The task 'Invert a Binary Tree' fundamentally requires transforming the tree by swapping which components?",
+                "options": [
+                    "A. Root and leaf nodes",
+                    "B. Parent and child nodes",
+                    "C. Left and right subtrees",
+                    "D. Nodes at even and odd depths"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "Which two data structures are commonly combined to efficiently implement the Least Recently Used (LRU) Cache operations `get(key)` and `put(key, value)` with O(1) time complexity?",
+                "options": [
+                    "A. Array and Stack",
+                    "B. Hash Map and Doubly Linked List",
+                    "C. Binary Search Tree and Queue",
+                    "D. Heap and Singly Linked List"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "What is the primary design challenge associated with implementing a custom memory allocator, such as `malloc/free`, that necessitates careful handling to maximize memory utility?",
+                "options": [
+                    "A. Disk I/O overhead",
+                    "B. Network latency",
+                    "C. Memory fragmentation",
+                    "D. Context switching"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "To ensure the Singleton design pattern is thread-safe in a multi-threaded environment, which synchronization mechanism is most commonly employed during the instance initialization phase?",
+                "options": [
+                    "A. Condition Variables",
+                    "B. Mutexes or Locks (e.g., Double-Checked Locking)",
+                    "C. Semaphores with a count > 1",
+                    "D. Spinlocks (only suitable for long-running operations)"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "Which statement best describes the primary function of Virtual Memory in modern operating systems?",
+                "options": [
+                    "A. To increase the CPU clock speed",
+                    "B. To allow processes to use more memory than physically available and provide memory isolation",
+                    "C. To store temporary files on the hard drive",
+                    "D. To encrypt data stored in RAM"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "In concurrent programming, which synchronization mechanism is typically used to prevent a Race Condition by ensuring mutual exclusion over critical sections?",
+                "options": [
+                    "A. Load Balancers",
+                    "B. Firewalls",
+                    "C. Mutexes",
+                    "D. Garbage Collection"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "What is the fundamental difference in memory space utilization between a Process and a Thread within the same program?",
+                "options": [
+                    "A. Threads have their own separate heap memory space",
+                    "B. Processes share the same code segment but different data segments",
+                    "C. Threads within a process share the same memory space, while processes have independent memory spaces",
+                    "D. Processes share the stack but threads have separate stacks"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "In memory management, what is the primary purpose of Paging, a technique that divides physical memory into fixed-size frames?",
+                "options": [
+                    "A. To divide memory into variable-sized logical blocks",
+                    "B. To eliminate external fragmentation",
+                    "C. To prioritize disk access over memory access",
+                    "D. To dynamically link libraries during runtime"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "When designing a URL Shortening Service, what is the key technique used to map a long URL to a short, fixed-length unique identifier?",
+                "options": [
+                    "A. Cryptographic signing",
+                    "B. Compression algorithms",
+                    "C. Hashing and Base conversion (e.g., Base62)",
+                    "D. Recursive function calls"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "Which factor is the most critical challenge when designing a system like iCloud Storage that synchronizes user data across multiple, potentially disconnected, devices?",
+                "options": [
+                    "A. Minimizing user interface latency",
+                    "B. Ensuring strong data consistency and conflict resolution",
+                    "C. Maximizing single device storage capacity",
+                    "D. Reducing the physical size of the data centers"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "Which API rate-limiting algorithm enforces a steady output rate by queuing requests and releasing them at a fixed interval, effectively smoothing out bursty traffic?",
+                "options": [
+                    "A. Token Bucket",
+                    "B. Leaky Bucket",
+                    "C. Sliding Window Counter",
+                    "D. Fixed Window Counter"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "When designing new features for Apple Maps, improving which of the following areas would address a frequently cited user experience (UX) pain point?",
+                "options": [
+                    "A. Increasing the maximum zoom level",
+                    "B. Enhancing the accuracy and detail of public transit or indoor mapping",
+                    "C. Removing the ability to share locations",
+                    "D. Limiting access to satellite imagery"
+                ],
+                "answer": "B"
+            },
+            {
+                "question": "When tackling a Fermi Problem like 'Estimate the number of iPhones sold last year,' the primary objective for the interviewer is to assess competence in:",
+                "options": [
+                    "A. Recalling the exact historical sales figures",
+                    "B. Utilizing deep machine learning models",
+                    "C. Breaking down a complex problem into verifiable assumptions and performing order-of-magnitude estimation",
+                    "D. Conducting a massive public survey"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "In machine learning, what is the primary functional difference of L1 (Lasso) Regularization compared to L2 (Ridge) Regularization?",
+                "options": [
+                    "A. L2 encourages sparsity by driving some weights exactly to zero, while L1 only shrinks the weights",
+                    "B. L1 uses the square of the weights, while L2 uses the absolute values of the weights",
+                    "C. L1 encourages sparsity (feature selection) by driving some weights to zero, while L2 primarily prevents large weights",
+                    "D. L1 is only used for classification, and L2 is only used for regression"
+                ],
+                "answer": "C"
+            },
+            {
+                "question": "In the context of Hardware/VLSI design, what phenomenon is described as the difference in arrival times of the clock signal at various sequential elements across the chip?",
+                "options": [
+                    "A. Thermal runaway",
+                    "B. Power integrity degradation",
+                    "C. Static Timing Analysis",
+                    "D. Clock Skew"
+                ],
+                "answer": "D"
+            }
+        ],
+        "source": "https://www.geeksforgeeks.org/apple-interview-questions/"
+    },
+    {
+        "company": "Google",
+        "profile": "SDE Intern",
+        "questions": [
+            {
+                "question": "What is the typical average time complexity for searching in a well-implemented Hash Map?",
+                "options": [
+                    "O(n)",
+                    "O(log n)",
+                    "O(1)",
+                    "O(n log n)"
+                ],
+                "answer": "O(1)"
+            },
+            {
+                "question": "Which data structure combination is most suitable for implementing a Least Recently Used (LRU) Cache?",
+                "options": [
+                    "Array and Stack",
+                    "Singly Linked List and Hash Map",
+                    "Stack and Queue",
+                    "Doubly Linked List combined with a Hash Map"
+                ],
+                "answer": "Doubly Linked List combined with a Hash Map"
+            },
+            {
+                "question": "In the context of Dynamic Programming, what does the principle of 'Optimal Substructure' imply?",
+                "options": [
+                    "The problem can be divided into independent subproblems",
+                    "The optimal solution to the problem contains optimal solutions to its subproblems",
+                    "The solution requires memoization",
+                    "The problem can be solved using recursion"
+                ],
+                "answer": "The optimal solution to the problem contains optimal solutions to its subproblems"
+            },
+            {
+                "question": "What is the time complexity of the best-case scenario for Quick Sort?",
+                "options": [
+                    "O(n^2)",
+                    "O(n log n)",
+                    "O(n)",
+                    "O(log n)"
+                ],
+                "answer": "O(n log n)"
+            },
+            {
+                "question": "Which graph traversal algorithm uses a Queue data structure to manage vertices during exploration?",
+                "options": [
+                    "Depth First Search (DFS)",
+                    "Dijkstra's Algorithm",
+                    "Breadth First Search (BFS)",
+                    "A* Search"
+                ],
+                "answer": "Breadth First Search (BFS)"
+            },
+            {
+                "question": "What is the primary advantage of using a Load Balancer in a distributed system?",
+                "options": [
+                    "Encrypting data transmission",
+                    "Reducing database latency",
+                    "Distributing incoming network traffic across multiple servers",
+                    "Managing cache invalidation"
+                ],
+                "answer": "Distributing incoming network traffic across multiple servers"
+            },
+            {
+                "question": "Which binary tree traversal technique visits the root node *after* visiting both the left and right subtrees?",
+                "options": [
+                    "Preorder",
+                    "Inorder",
+                    "Postorder",
+                    "Level-order"
+                ],
+                "answer": "Postorder"
+            },
+            {
+                "question": "If you want to efficiently count the frequency of characters in a large string, which data structure is typically used?",
+                "options": [
+                    "Queue",
+                    "Heap",
+                    "Array",
+                    "Hash Map (or Frequency Map)"
+                ],
+                "answer": "Hash Map (or Frequency Map)"
+            },
+            {
+                "question": "What is the result of the bitwise AND operation `5 & 3`?",
+                "options": [
+                    "7",
+                    "1",
+                    "0",
+                    "5"
+                ],
+                "answer": "1"
+            },
+            {
+                "question": "What is the space complexity required for the Merge Sort algorithm, assuming an array implementation?",
+                "options": [
+                    "O(1)",
+                    "O(log n)",
+                    "O(n)",
+                    "O(n^2)"
+                ],
+                "answer": "O(n)"
+            },
+            {
+                "question": "A 'Trie' data structure is primarily used for efficient storage and retrieval of what type of data?",
+                "options": [
+                    "Key-value pairs",
+                    "Numerical data",
+                    "Strings (especially for prefix matching)",
+                    "Graph edges"
+                ],
+                "answer": "Strings (especially for prefix matching)"
+            },
+            {
+                "question": "What is the largest number of nodes possible in a complete binary tree of height 'h' (where the root is at height 0)?",
+                "options": [
+                    "2^h",
+                    "2^(h+1) - 1",
+                    "h^2",
+                    "2h + 1"
+                ],
+                "answer": "2^(h+1) - 1"
+            },
+            {
+                "question": "Which type of NoSQL database is typically preferred for storing hierarchical or nested JSON-like structures?",
+                "options": [
+                    "Relational Database (SQL)",
+                    "Key-Value Store",
+                    "Graph Database",
+                    "Document Database"
+                ],
+                "answer": "Document Database"
+            },
+            {
+                "question": "In algorithms, 'Memoization' is a key technique used primarily to optimize which problem-solving approach?",
+                "options": [
+                    "Greedy Algorithms",
+                    "Divide and Conquer (non-overlapping subproblems)",
+                    "Backtracking",
+                    "Top-Down Dynamic Programming"
+                ],
+                "answer": "Top-Down Dynamic Programming"
+            },
+            {
+                "question": "What property defines a Min-Heap?",
+                "options": [
+                    "Every node's value is greater than or equal to its children's values",
+                    "It is a complete binary search tree",
+                    "The root must be the largest element",
+                    "Every node's value is less than or equal to its children's values"
+                ],
+                "answer": "Every node's value is less than or equal to its children's values"
+            }
+        ],
+        "source": "https://www.geeksforgeeks.org/top-25-interview-questions-for-google-sde-internship/"
+    }
+]
