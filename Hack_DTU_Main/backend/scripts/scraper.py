@@ -156,22 +156,10 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from openai import OpenAI
-
 # 1. LOAD CONFIG
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
-openrouter_key = os.getenv("OPENROUTER_API_KEY")
 mongo_uri = os.getenv("MONGODB_URI")
-
-if not openrouter_key:
-    print("❌ Error: OPENROUTER_API_KEY not found in .env")
-    exit()
-
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=openrouter_key,
-)
 
 # 2. SETUP MONGODB
 if not mongo_uri:
@@ -187,19 +175,10 @@ else:
         print(f"❌ MongoDB Connection Failed: {e}")
         exit()
 
-# 3. ROBUST MODEL LIST
+# 3. LOCAL OLLAMA MODELS
 FALLBACK_MODELS = [
-    # Primary: Fast Google Models
-    "google/gemini-2.0-flash-exp:free",
-    "google/gemini-2.0-pro-exp-02-05:free",
-    
-    # Secondary: Reliable Open Source (Different Providers)
-    "meta-llama/llama-3.3-70b-instruct:free",
-    "deepseek/deepseek-r1:free",
-    "microsoft/phi-3-mini-128k-instruct:free",
-    
-    # Last Resort
-    "openrouter/auto"
+    "mistral",
+    "llama3"
 ]
 
 def extract_json(text):
@@ -228,44 +207,44 @@ def get_website_text(url):
         return None
 
 def get_questions_safe(content, profile):
-    """Tries models with delays and retries"""
+    """Hits local Ollama API to extract cleanly formatted JSON"""
     prompt = f"""
-    Extract 15 technical MCQs for {profile} from this text.
-    Format: JSON Array only. Keys: question, options (array), answer.
+    You are a technical recruiter. Extract 15 technical MCQs for {profile} from this text.
+    Format: JSON Array only. Keys: question, options (array of 4 items), answer.
+    Never output conversational text, only valid JSON.
     Text: {content[:8000]}
     """
 
     for model_id in FALLBACK_MODELS:
-        # Retry loop for 429 Rate Limits
-        for attempt in range(2): 
-            try:
-                print(f"   🤖 Trying {model_id} (Attempt {attempt+1})...")
-                completion = client.chat.completions.create(
-                    model=model_id,
-                    messages=[
-                        {"role": "system", "content": "Output valid JSON only."},
-                        {"role": "user", "content": prompt}
-                    ]
-                )
-                response_text = completion.choices[0].message.content
+        try:
+            print(f"   🤖 Trying LOCAL {model_id} via Ollama...")
+            response = requests.post("http://localhost:11434/api/generate", json={
+                "model": model_id,
+                "prompt": prompt,
+                "format": "json",       # <-- This forces perfect JSON structure
+                "stream": False,
+                "options": {
+                    "temperature": 0.1  # Keeps the model strictly factual
+                }
+            }, timeout=300) # Give local laptop GPU 5 minutes to think if needed
+
+            if response.status_code == 200:
+                response_text = response.json().get('response', '')
                 questions = extract_json(response_text)
                 
-                if questions:
+                if questions and len(questions) > 0:
                     return questions, model_id
-            
-            except Exception as e:
-                err_str = str(e)
-                if "429" in err_str:
-                    print(f"   ⏳ Rate Limited. Waiting 20s...")
-                    time.sleep(20) # Cooldown for rate limit
-                    continue 
-                elif "404" in err_str:
-                    print(f"   ⚠️ Model ID invalid, skipping...")
-                    break 
                 else:
-                    print(f"   ⚠️ Error: {e}")
-                    break
-    
+                    print("   ⚠️ Ollama returned empty or invalid JSON array. Retrying next model...")
+            else:
+                print(f"   ❌ Ollama Error {response.status_code}: {response.text}")
+
+        except requests.exceptions.ConnectionError:
+            print("   ❌ CRITICAL: Cannot connect to Ollama. Is the Ollama app running on your machine?")
+            break # No point looping if the program isn't even open
+        except Exception as e:
+            print(f"   ⚠️ Error running local model: {e}")
+            
     return None, None
 
 # 4. TARGETS
