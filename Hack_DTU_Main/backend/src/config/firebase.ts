@@ -8,9 +8,13 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 const getServiceAccountKey = () => {
     if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
         try {
+            let jsonString = process.env.FIREBASE_SERVICE_ACCOUNT_JSON.trim();
+            if (jsonString.startsWith("'")) jsonString = jsonString.slice(1);
+            if (jsonString.endsWith("'")) jsonString = jsonString.slice(0, -1);
+            
             // If it's a JSON string (starts with {)
-            if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON.trim().startsWith('{')) {
-                return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+            if (jsonString.trim().startsWith('{')) {
+                return JSON.parse(jsonString);
             }
             // Otherwise treat as a path (require handles JSON files)
             return require(path.resolve(process.env.FIREBASE_SERVICE_ACCOUNT_JSON));

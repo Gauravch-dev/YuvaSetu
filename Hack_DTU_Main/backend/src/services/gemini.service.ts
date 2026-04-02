@@ -12,7 +12,7 @@ let model: any = null;
 
 if (apiKey) {
     genAI = new GoogleGenerativeAI(apiKey);
-    model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+    model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
 } else {
     console.warn("WARNING: GEMINI_API_KEY is missing. Embeddings will not be generated.");
 }
@@ -24,7 +24,12 @@ export const generateEmbedding = async (text: string): Promise<number[] | null> 
     try {
         const result = await model.embedContent(text);
         const embedding = result.embedding;
-        return embedding.values;
+        if (!embedding || !embedding.values) return null;
+        let values = embedding.values;
+        if (values.length > 768) {
+            values = values.slice(0, 768);
+        }
+        return values;
     } catch (error) {
         console.error("Gemini Embedding Error:", error);
         return null;

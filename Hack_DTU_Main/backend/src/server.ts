@@ -97,7 +97,11 @@ socketService.init(httpServer);
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:8080", "http://localhost:8081", process.env.CLIENT_URL].filter(Boolean) as string[],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
