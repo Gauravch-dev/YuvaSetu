@@ -29,120 +29,132 @@ const MOCK_TESTS_UI = [
     company: 'Meta',
     role: 'Frontend Engineer',
     category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/meta/0668E1',
-    color: 'bg-blue-50 dark:bg-blue-500/10'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png',
+    color: 'bg-white dark:bg-white'
   },
   {
     id: 'amazon',
     company: 'Amazon',
     role: 'SDE / Data Analyst',
     category: 'Tech',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg',
-    color: 'bg-orange-50 dark:bg-orange-500/10'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
+    color: 'bg-white dark:bg-white'
   },
   {
     id: 'apple',
     company: 'Apple',
     role: 'Software Engineer',
     category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/apple/white',
-    color: 'bg-gray-50 dark:bg-gray-800/50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
+    color: 'bg-white dark:bg-white'
   },
   {
     id: 'netflix',
     company: 'Netflix',
     role: 'Senior Engineer',
     category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/netflix/E50914',
-    color: 'bg-red-50 dark:bg-red-500/10',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg',
+    color: 'bg-white dark:bg-white',
   },
   {
     id: 'google',
     company: 'Google',
     role: 'SDE Intern',
     category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/google/4285F4',
-    color: 'bg-green-50 dark:bg-green-500/10',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+    color: 'bg-white dark:bg-white',
   },
   {
-    id: 'microsoft', company: 'Microsoft', role: 'Full Stack Engineer', category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/microsoft/00A4EF', color: 'bg-blue-50'
+    id: 'microsoft',
+    company: 'Microsoft',
+    role: 'Full Stack Engineer',
+    category: 'Tech',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
+    color: 'bg-white dark:bg-white'
   },
   {
-    id: 'adobe', company: 'Adobe', role: 'Product Developer', category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/adobe/FF0000', color: 'bg-red-50'
+    id: 'adobe',
+    company: 'Adobe',
+    role: 'Product Developer',
+    category: 'Tech',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.png',
+    color: 'bg-white dark:bg-white'
   },
   {
-    id: 'uber', company: 'Uber', role: 'Backend Engineer', category: 'Tech',
-    logo: 'https://cdn.simpleicons.org/uber/000000', color: 'bg-gray-50'
+    id: 'uber',
+    company: 'Uber',
+    role: 'Backend Engineer',
+    category: 'Tech',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png',
+    color: 'bg-white dark:bg-white'
   },
 
   // --- MANAGEMENT ---
   {
     id: 'mckinsey', company: 'McKinsey', role: 'Business Analyst', category: 'Management',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/McKinsey_%26_Company_Shield_Logo.svg', color: 'bg-blue-900'
+    logo: 'https://cdn.worldvectorlogo.com/logos/mckinsey-company.svg', color: 'bg-blue-900/10'
   },
   {
     id: 'bcg', company: 'BCG', role: 'Associate Consultant', category: 'Management',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/d/db/Boston_Consulting_Group_2020_logo.svg', color: 'bg-green-50'
+    logo: 'https://cdn.worldvectorlogo.com/logos/boston-consulting-group.svg', color: 'bg-green-50 dark:bg-green-900/10'
   },
   {
     id: 'goldman', company: 'Goldman Sachs', role: 'Operations Analyst', category: 'Management',
-    logo: 'https://cdn.simpleicons.org/goldmansachs/7399C6', color: 'bg-blue-50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/6/61/Goldman_Sachs.svg', color: 'bg - blue - 50 dark: bg - blue - 900 / 10'
   },
   {
     id: 'hul', company: 'HUL', role: 'Brand Manager', category: 'Management',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/82/Hindustan_Unilever_Logo.svg/1200px-Hindustan_Unilever_Logo.svg.png', color: 'bg-blue-50'
+    logo: 'https://www.google.com/s2/favicons?sz=128&domain=hul.co.in', color: 'bg-blue-50'
   },
   {
     id: 'pg', company: 'P&G', role: 'Supply Chain Manager', category: 'Management',
-    logo: 'https://cdn.simpleicons.org/procterandgamble/00377A', color: 'bg-blue-100'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Procter_%26_Gamble_logo.svg', color: 'bg-blue-100 dark:bg-blue-900/20'
   },
   {
     id: 'jpmorgan', company: 'JPMorgan', role: 'Financial Analyst', category: 'Management',
-    logo: 'https://cdn.simpleicons.org/jpmorganchase/117ACA', color: 'bg-blue-50'
+    logo: 'https://cdn.worldvectorlogo.com/logos/jpmorgan-chase.svg', color: 'bg-blue-50 dark:bg-blue-900/10'
   },
   {
     id: 'deloitte', company: 'Deloitte', role: 'Risk Advisory', category: 'Management',
-    logo: 'https://cdn.simpleicons.org/deloitte/86BC25', color: 'bg-green-50'
+    logo: 'https://www.google.com/s2/favicons?sz=128&domain=deloitte.com', color: 'bg-green-50'
   },
   {
     id: 'reliance', company: 'Reliance', role: 'Management Trainee', category: 'Management',
-    logo: 'https://upload.wikimedia.org/wikipedia/en/9/99/Reliance_Industries_Logo.svg', color: 'bg-red-50'
+    logo: 'https://cdn.brandfetch.io/ril.com/w/400/h/400/logo', color: 'bg-red-50'
   },
 
   // --- GENERAL ---
   {
     id: 'tcs', company: 'TCS', role: 'NQT / Ninja', category: 'General',
-    logo: 'https://cdn.simpleicons.org/tata/5F68C3', color: 'bg-blue-50'
+    logo: 'https://cdn.worldvectorlogo.com/logos/tata-consultancy-services.svg', color: 'bg-white dark:bg-white'
   },
   {
     id: 'infosys', company: 'Infosys', role: 'System Engineer', category: 'General',
-    logo: 'https://cdn.simpleicons.org/infosys/007CC3', color: 'bg-blue-50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg', color: 'bg-blue-50'
   },
   {
     id: 'accenture', company: 'Accenture', role: 'Application Analyst', category: 'General',
-    logo: 'https://cdn.simpleicons.org/accenture/A100FF', color: 'bg-purple-50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg', color: 'bg-white dark:bg-white'
   },
   {
     id: 'wipro', company: 'Wipro', role: 'Project Engineer', category: 'General',
-    logo: 'https://cdn.simpleicons.org/wipro/000000', color: 'bg-gray-50'
+    logo: 'https://www.google.com/s2/favicons?sz=128&domain=wipro.com', color: 'bg-gray-50'
   },
   {
     id: 'cognizant', company: 'Cognizant', role: 'GenC Developer', category: 'General',
-    logo: 'https://cdn.simpleicons.org/cognizant/0033A0', color: 'bg-blue-50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/43/Cognizant_logo_2022.svg', color: 'bg-blue-50'
   },
   {
     id: 'capgemini', company: 'Capgemini', role: 'Senior Analyst', category: 'General',
-    logo: 'https://cdn.simpleicons.org/capgemini/0070AD', color: 'bg-blue-50'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/Capgemini_201x_logo.svg', color: 'bg-blue-50'
   },
   {
     id: 'sbi', company: 'SBI', role: 'Probationary Officer', category: 'General',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg', color: 'bg-blue-100'
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/c/cc/SBI-logo.svg', color: 'bg-white dark:bg-white'
   },
   {
     id: 'ibm', company: 'IBM', role: 'Associate Developer', category: 'General',
-    logo: 'https://cdn.simpleicons.org/ibm/052FAD', color: 'bg-blue-50'
+    logo: 'https://cdn.jsdelivr.net/npm/simple-icons@11/icons/ibm.svg', color: 'bg-blue-50'
   },
 ];
 
@@ -398,7 +410,10 @@ export const Upskill = () => {
               <img
                 src={test.logo}
                 alt={`${test.company} Logo`}
-                className={`w-16 h-16 object-contain relative z-10 ${test.id === 'apple' ? 'dark:invert' : ''}`}
+                className="w-16 h-16 object-contain relative z-10"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+                }}
               />
             </div>
 
@@ -418,7 +433,7 @@ export const Upskill = () => {
               className="w-full rounded-xl border-slate-300 dark:border-slate-700 hover:bg-slate-900 dark:hover:bg-primary hover:text-white hover:border-slate-900 dark:hover:border-primary transition-all group-hover:shadow-lg dark:bg-transparent dark:text-slate-300"
               onClick={() => handleStartTest(test.company)}
             >
-              {t('upskill.startTest')}
+              Start Assessment
             </Button>
           </div>
         ))}

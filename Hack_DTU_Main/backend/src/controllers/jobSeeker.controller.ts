@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import Job, { JobStatus } from '../models/Job';
 
 // ... existing code ...
@@ -41,6 +42,42 @@ import JobSeekerProfile from '../models/JobSeekerProfile';
 import { sendSuccess, sendError } from '../utils/response';
 
 import { generateEmbedding } from '../services/gemini.service';
+import { GithubService } from '../services/github.service';
+import { OllamaService } from '../services/ollama.service';
+
+const processGithubDataInBackground = async (userId: any, githubUrl: string) => {
+    try {
+        const username = GithubService.extractUsername(githubUrl);
+        if (!username) return;
+
+        console.log(`Starting background GitHub fetch for ${username}`);
+        const githubData: any = await GithubService.fetchUserDetails(username);
+        
+        if (!githubData || Object.keys(githubData).length === 0) return;
+
+        // Use Ollama to summarize projects
+        if (githubData.pinnedProjects && githubData.pinnedProjects.length > 0) {
+            for (let proj of githubData.pinnedProjects) {
+                if (proj.readmeTex && proj.readmeTex.length > 10) {
+                    proj.aiSummary = await OllamaService.summarizeProject(proj.description || '', proj.readmeTex);
+                } else {
+                    proj.aiSummary = proj.description || "No readable README found.";
+                }
+                delete proj.readmeTex; // Don't save full readme to DB
+            }
+        }
+
+        githubData.lastUpdated = new Date();
+
+        await JobSeekerProfile.findOneAndUpdate(
+            { userId: userId },
+            { $set: { githubData: githubData } }
+        );
+        console.log(`Finished background GitHub fetch for ${username}`);
+    } catch (err) {
+        console.error("Background GitHub fetch failed:", err);
+    }
+};
 
 export const createOrUpdateProfile = async (req: Request, res: Response) => {
     try {
@@ -113,6 +150,19 @@ export const createOrUpdateProfile = async (req: Request, res: Response) => {
             },
             { new: true, upsert: true, setDefaultsOnInsert: true }
         );
+
+        // Trigger background GitHub fetch if URL is present
+        if (profileData.personalInfo?.github) {
+            // Check if we need to update (e.g. older than 2 days or empty)
+            const shouldUpdate = !profile.githubData?.lastUpdated || 
+                (Date.now() - new Date(profile.githubData.lastUpdated).getTime() > 2 * 24 * 60 * 60 * 1000) ||
+                (!profile.githubData.languageDistribution || profile.githubData.languageDistribution.length === 0);
+            
+            if (shouldUpdate) {
+                // Fire and forget
+                processGithubDataInBackground(user._id, profileData.personalInfo.github).catch(console.error);
+            }
+        }
 
         return sendSuccess(res, profile, 'Profile saved successfully');
 

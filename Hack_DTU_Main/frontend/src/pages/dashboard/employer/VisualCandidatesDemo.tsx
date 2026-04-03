@@ -17,7 +17,8 @@ import {
   Eye,
   FileText,
   ArrowLeft,
-  Loader2
+  Loader2,
+  Github
 } from 'lucide-react';
 import {
   HoverCard,
@@ -55,7 +56,10 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  Legend
+  Legend,
+  PieChart,
+  Pie,
+  Cell
 } from 'recharts';
 import { fetchJobById } from '@/lib/auth-api';
 import { fetchJobCandidates, fetchJobAnalytics, updateApplicationStatus } from '@/lib/api/jobs';
@@ -297,15 +301,20 @@ export const VisualCandidatesDemo = () => {
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={analytics?.matchDistribution || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                  <XAxis dataKey="range" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                  <CartesianGrid stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" vertical={false} opacity={0.5} />
+                  <XAxis dataKey="range" fontSize={10} tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" />
+                  <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} stroke="hsl(var(--muted-foreground))" />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#1f2937', borderRadius: '8px', border: 'none', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
-                    cursor={{ fill: 'var(--muted)', opacity: 0.2 }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--popover))',
+                      borderColor: 'hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--popover-foreground))'
+                    }}
+                    itemStyle={{ color: 'hsl(var(--popover-foreground))' }}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
                   />
-                  <Bar dataKey="count" fill="var(--primary)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -321,15 +330,20 @@ export const VisualCandidatesDemo = () => {
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={analytics?.applicantTrends || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                  <XAxis dataKey="day" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                  <CartesianGrid stroke="hsl(var(--muted-foreground))" strokeDasharray="3 3" vertical={false} opacity={0.5} />
+                  <XAxis dataKey="day" fontSize={12} tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" />
+                  <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} stroke="hsl(var(--muted-foreground))" />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#1f2937', borderRadius: '8px', border: 'none', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
-                    cursor={{ fill: 'var(--muted)', opacity: 0.2 }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--popover))',
+                      borderColor: 'hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--popover-foreground))'
+                    }}
+                    itemStyle={{ color: 'hsl(var(--popover-foreground))' }}
+                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
                   />
-                  <Bar dataKey="applicants" fill="#8884d8" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="applicants" fill="#818cf8" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -350,37 +364,40 @@ export const VisualCandidatesDemo = () => {
             {candidates.map((candidate) => (
               <div
                 key={candidate.userId}
-                className="group relative bg-card hover:bg-muted/30 border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                className="group relative bg-card hover:bg-muted/30 border border-border rounded-2xl overflow-visible transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
               >
                 {/* Match Score Indicator - Mocking Score as we don't store it persistently per candidate list usually, but let's see if candidates API returns it */}
                 {/* Assuming API returns matchScore now or we calculate simple one */}
-                <div className="absolute top-4 right-4 z-10">
-                  <div className={`
-                    flex flex-col items-center justify-center w-14 h-14 rounded-xl font-bold text-sm border-2 shadow-sm bg-card
-                    ${(candidate.matchScore || 0) >= 90 ? 'border-green-500 text-green-600' :
-                      (candidate.matchScore || 0) >= 80 ? 'border-blue-500 text-blue-600' : 'border-orange-500 text-orange-600'}
-                  `}>
-                    <span>{candidate.matchScore || '?'}%</span>
-                    <span className="text-[10px] uppercase font-normal text-muted-foreground">Match</span>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  {/* Avatar & Header */}
-                  <div className="flex items-start gap-4 mb-6">
+                <div className="p-6 pb-8">
+                  {/* Top Header Row: Avatar & Match Badge */}
+                  <div className="flex items-center justify-between mb-5">
                     <Avatar className="w-16 h-16 border-2 border-primary/10 shadow-md">
                       <AvatarImage src={candidate.avatar} />
                       <AvatarFallback>{candidate.name?.[0] || 'U'}</AvatarFallback>
                     </Avatar>
-                    <div className="pt-1">
-                      <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">
-                        {candidate.name || 'Candidate'}
-                      </h3>
-                      <p className="text-sm text-muted-foreground line-clamp-1">{candidate.role || 'Job Seeker'}</p>
-                      <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {Array.isArray(candidate.experience) ? candidate.experience.length : (candidate.experience || 0)} roles exp
-                      </p>
+
+                    <div className={`
+                      flex flex-col items-center justify-center w-16 h-16 rounded-2xl font-bold border-2 shadow-sm bg-card shrink-0
+                      ${(candidate.matchScore || 0) >= 90 ? 'border-green-500 text-green-600' :
+                        (candidate.matchScore || 0) >= 80 ? 'border-blue-500 text-blue-600' :
+                          'border-orange-500 text-orange-600'}
+                    `}>
+                      <span className="text-base font-black leading-none">{candidate.matchScore || '?'}%</span>
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground mt-1.5 opacity-80">Match</span>
                     </div>
+                  </div>
+
+                  {/* Name & Role Section - Full Width for robust wrapping */}
+                  <div className="mb-6 space-y-1">
+                    <h3 className="font-bold text-xl leading-tight group-hover:text-primary transition-colors whitespace-normal">
+                      {candidate.name || 'Candidate'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {candidate.role || 'Job Seeker'}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {Array.isArray(candidate.experience) ? candidate.experience.length : (candidate.experience || 0)} roles exp
+                    </p>
                   </div>
 
                   {/* Skills Tags */}
@@ -416,12 +433,13 @@ export const VisualCandidatesDemo = () => {
                   </div>
 
                   {/* Actions */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 mt-4">
                     <Button
-                      className="w-full h-9 text-xs bg-primary hover:bg-primary/90"
+                      className="w-full h-10 px-1 text-[11px] bg-primary hover:bg-primary/90 flex items-center justify-center rounded-xl transition-all shadow-sm active:scale-95"
                       onClick={() => setSelectedCandidate(candidate)}
                     >
-                      <Eye className="w-3 h-3 mr-2" /> View Profile
+                      <Eye className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                      <span className="truncate">View Profile</span>
                     </Button>
 
                     {/* Status Change Dropdown */}
@@ -429,7 +447,7 @@ export const VisualCandidatesDemo = () => {
                       defaultValue={candidate.status}
                       onValueChange={(val) => handleStatusChange(candidate.userId, val)}
                     >
-                      <SelectTrigger className={`w-full h-9 text-xs border-0 font-medium ${candidate.status === 'APPLIED' ? 'bg-blue-50 text-blue-700' :
+                      <SelectTrigger className={`w-full h-10 px-2 text-[11px] border-0 font-semibold rounded-xl shadow-sm ${candidate.status === 'APPLIED' ? 'bg-blue-50 text-blue-700' :
                         candidate.status === 'SHORTLISTED' ? 'bg-green-50 text-green-700' :
                           candidate.status === 'INTERVIEW' ? 'bg-purple-50 text-purple-700' :
                             candidate.status === 'OFFER' ? 'bg-teal-50 text-teal-700' :
@@ -456,7 +474,7 @@ export const VisualCandidatesDemo = () => {
 
         {/* Simplified other tabs logic for demo purposes - just filtering candidates array */}
         <TabsContent value="top" className="mt-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {candidates.filter(c => (c.matchScore || 0) >= 80).map(candidate => (
               // Reusing the same card structure would be better as a component, but for now copying basics
               <div key={candidate.userId} className="p-6 border rounded-2xl bg-card">
@@ -470,7 +488,7 @@ export const VisualCandidatesDemo = () => {
         </TabsContent>
 
         <TabsContent value="pipeline" className="mt-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {candidates.filter(c => ['SHORTLISTED', 'INTERVIEW', 'OFFER'].includes(c.status)).map(candidate => (
               <div key={candidate.userId} className="p-6 border rounded-2xl bg-card">
                 <h3 className="font-bold">{candidate.name}</h3>
@@ -587,95 +605,227 @@ export const VisualCandidatesDemo = () => {
 
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-5 h-full">
-
-                  {/* Left: Radar Chart */}
-                  <div className="md:col-span-2 bg-muted/10 p-6 flex flex-col items-center justify-center border-r">
-                    <h4 className="font-bold text-sm text-center mb-4">Detailed Match Profile</h4>
-                    <div className="h-[250px] w-full">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={getRadarData(selectedCandidate.matchDetails)}>
-                          <PolarGrid stroke="var(--border)" />
-                          <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }} />
-                          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                          <Radar
-                            name="Match"
-                            dataKey="A"
-                            stroke="var(--primary)"
-                            fill="var(--primary)"
-                            fillOpacity={0.3}
-                          />
-                          <Tooltip />
-                        </RadarChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="text-center mt-4">
-                      <div className="text-3xl font-bold text-primary">{selectedCandidate.matchScore}%</div>
-                      <div className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Overall Match</div>
-                    </div>
+                <Tabs defaultValue="match" className="flex-1 flex flex-col h-full overflow-hidden">
+                  <div className="px-6 pt-4 border-b shrink-0 bg-muted/5">
+                    <TabsList className="bg-transparent gap-6 h-auto p-0 justify-start">
+                      <TabsTrigger
+                        value="match"
+                        className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3 text-base"
+                      >
+                        Match Profile
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="github"
+                        className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3 text-base flex items-center gap-2"
+                      >
+                        <Github className="w-4 h-4" /> GitHub Insights
+                      </TabsTrigger>
+                    </TabsList>
                   </div>
 
-                  {/* Right: Details & Status */}
-                  <div className="md:col-span-3 p-6 space-y-6">
+                  <TabsContent value="match" className="flex-1 mt-0 data-[state=active]:flex flex-col h-0 overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-5 h-full">
 
-                    {/* Summary Actions */}
-                    <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl border border-destructive/10" >
-                      <div className="flex-1">
-                        <p className="text-sm font-medium mb-2">Current Status</p>
-                        <Select
-                          defaultValue={selectedCandidate.status}
-                          onValueChange={(val) => handleStatusChange(selectedCandidate.userId, val)}
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="APPLIED">Applied</SelectItem>
-                            <SelectItem value="SHORTLISTED">Shortlisted</SelectItem>
-                            <SelectItem value="INTERVIEW">Interview</SelectItem>
-                            <SelectItem value="OFFER">Offer</SelectItem>
-                            <SelectItem value="REJECTED">Rejected</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Button variant="outline" size="icon" className="h-10 w-10">
-                        <MessageSquare className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="icon" className="h-10 w-10">
-                        <Calendar className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                    {/* Skills */}
-                    <div>
-                      <h4 className="font-bold text-sm mb-3">Top Skills</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedCandidate.skills?.map((skill: string, i: number) => (
-                          <Badge key={i} variant="secondary">{skill}</Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Fit Breakdown */}
-                    <div className="space-y-4">
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className="text-muted-foreground">Skills Match</span>
-                          <span className="font-bold">{selectedCandidate.matchDetails?.skills || 0}%</span>
+                      {/* Left: Radar Chart */}
+                      <div className="md:col-span-2 bg-muted/10 p-6 flex flex-col items-center justify-center border-r">
+                        <h4 className="font-bold text-sm text-center mb-4">Detailed Match Profile</h4>
+                        <div className="h-[250px] w-full">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={getRadarData(selectedCandidate.matchDetails)}>
+                              <PolarGrid stroke="var(--border)" />
+                              <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }} />
+                              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                              <Radar
+                                name="Match"
+                                dataKey="A"
+                                stroke="var(--primary)"
+                                fill="var(--primary)"
+                                fillOpacity={0.3}
+                              />
+                              <Tooltip />
+                            </RadarChart>
+                          </ResponsiveContainer>
                         </div>
-                        <Progress value={selectedCandidate.matchDetails?.skills || 0} className="h-2" />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className="text-muted-foreground">Direct Experience</span>
-                          <span className="font-bold">{selectedCandidate.matchDetails?.experience || 0}%</span>
+                        <div className="text-center mt-4">
+                          <div className="text-3xl font-bold text-primary">{selectedCandidate.matchScore}%</div>
+                          <div className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Overall Match</div>
                         </div>
-                        <Progress value={selectedCandidate.matchDetails?.experience || 0} className="h-2" />
+                      </div>
+
+                      {/* Right: Details & Status */}
+                      <div className="md:col-span-3 p-6 space-y-6">
+
+                        {/* Summary Actions */}
+                        <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-xl border border-destructive/10" >
+                          <div className="flex-1">
+                            <p className="text-sm font-medium mb-2">Current Status</p>
+                            <Select
+                              defaultValue={selectedCandidate.status}
+                              onValueChange={(val) => handleStatusChange(selectedCandidate.userId, val)}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="APPLIED">Applied</SelectItem>
+                                <SelectItem value="SHORTLISTED">Shortlisted</SelectItem>
+                                <SelectItem value="INTERVIEW">Interview</SelectItem>
+                                <SelectItem value="OFFER">Offer</SelectItem>
+                                <SelectItem value="REJECTED">Rejected</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button variant="outline" size="icon" className="h-10 w-10">
+                            <MessageSquare className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="icon" className="h-10 w-10">
+                            <Calendar className="w-4 h-4" />
+                          </Button>
+                        </div>
+
+                        {/* Skills */}
+                        <div>
+                          <h4 className="font-bold text-sm mb-3">Top Skills</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedCandidate.skills?.map((skill: string, i: number) => (
+                              <Badge key={i} variant="secondary">{skill}</Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Fit Breakdown */}
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span className="text-muted-foreground">Skills Match</span>
+                              <span className="font-bold">{selectedCandidate.matchDetails?.skills || 0}%</span>
+                            </div>
+                            <Progress value={selectedCandidate.matchDetails?.skills || 0} className="h-2" />
+                          </div>
+                          <div>
+                            <div className="flex justify-between text-sm mb-1">
+                              <span className="text-muted-foreground">Direct Experience</span>
+                              <span className="font-bold">{selectedCandidate.matchDetails?.experience || 0}%</span>
+                            </div>
+                            <Progress value={selectedCandidate.matchDetails?.experience || 0} className="h-2" />
+                          </div>
+                        </div>
+
                       </div>
                     </div>
+                  </TabsContent>
 
-                  </div>
-                </div>
+                  <TabsContent value="github" className="flex-1 mt-0 p-6 overflow-y-auto data-[state=active]:block">
+                    {selectedCandidate.githubData ? (
+                      <div className="space-y-6 animate-fade-in pb-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Left Side: Stats and Donut Chart */}
+                          <div className="space-y-6 border-r border-border/50 pr-6">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="p-5 bg-card rounded-2xl border border-border text-center shadow-sm hover:shadow-md transition-shadow">
+                                <div className="text-4xl font-display font-bold text-primary mb-1">{selectedCandidate.githubData.repoCount}</div>
+                                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Public Repos</div>
+                              </div>
+                              <div className="p-5 bg-card rounded-2xl border border-border text-center shadow-sm hover:shadow-md transition-shadow">
+                                <div className="text-4xl font-display font-bold text-green-600 mb-1">{selectedCandidate.githubData.contributions}</div>
+                                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Contributions</div>
+                              </div>
+                            </div>
+
+                            {selectedCandidate.githubData.languageDistribution?.length > 0 && (
+                              <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
+                                <h3 className="font-bold text-sm text-foreground flex items-center gap-2 mb-4">
+                                  Language Distribution
+                                </h3>
+                                <div className="h-[200px] w-full relative">
+                                  <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                      <Pie
+                                        data={selectedCandidate.githubData.languageDistribution}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={50}
+                                        outerRadius={80}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                      >
+                                        {selectedCandidate.githubData.languageDistribution.map((entry: any, index: number) => (
+                                          <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#6366f1'][index % 4]} />
+                                        ))}
+                                      </Pie>
+                                      <Tooltip
+                                        contentStyle={{
+                                          borderRadius: '12px',
+                                          border: '1px solid var(--border)',
+                                          background: 'var(--background)',
+                                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                                          padding: '8px 12px'
+                                        }}
+                                        itemStyle={{ fontWeight: 'bold', color: 'var(--foreground)' }}
+                                        labelStyle={{ fontWeight: 'bold', color: 'var(--muted-foreground)', marginBottom: '4px' }}
+                                        formatter={(value: number, name: string) => [`${value}%`, name]}
+                                      />
+                                    </PieChart>
+                                  </ResponsiveContainer>
+                                </div>
+
+                                {/* Legend */}
+                                <div className="flex flex-wrap justify-center gap-3 mt-4">
+                                  {selectedCandidate.githubData.languageDistribution.map((entry: any, index: number) => (
+                                    <div key={entry.name} className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                                      <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#6366f1'][index % 4] }}></div>
+                                      {entry.name} ({entry.value}%)
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Right Side: Pinned Projects with AI Summaries */}
+                          <div className="space-y-4">
+                            <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                              Pinned Projects & AI Summaries
+                            </h3>
+                            <div className="grid gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                              {selectedCandidate.githubData.pinnedProjects?.length > 0 ? selectedCandidate.githubData.pinnedProjects.map((proj: any, i: number) => (
+                                <div key={i} className="p-5 rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow group">
+                                  <div className="flex justify-between items-start mb-2">
+                                    <a href={proj.url} target="_blank" rel="noreferrer" className="font-bold text-base text-primary/90 hover:text-primary hover:underline transition-colors flex items-center gap-1">
+                                      {proj.name}
+                                    </a>
+                                    {proj.languages?.[0] && <Badge variant="outline" className="text-[10px] bg-muted/20">{proj.languages[0]}</Badge>}
+                                  </div>
+                                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{proj.description}</p>
+
+                                  {proj.aiSummary && (
+                                    <div className="text-sm text-foreground bg-primary/5 p-4 rounded-xl border border-primary/10 relative overflow-hidden">
+                                      <div className="absolute top-0 left-0 w-1 h-full bg-primary/40 rounded-l-xl"></div>
+                                      <span className="font-bold text-xs text-primary uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                                        <Star className="w-3.5 h-3.5" /> AI Project Insight
+                                      </span>
+                                      <p className="leading-relaxed">{proj.aiSummary}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              )) : (
+                                <div className="p-8 text-center text-muted-foreground border rounded-2xl bg-muted/10 border-dashed">
+                                  No pinned projects found for this candidate.
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-16 text-center text-muted-foreground h-full min-h-[400px]">
+                        <Github className="w-16 h-16 mb-4 opacity-20 text-foreground" />
+                        <h3 className="font-bold text-xl text-foreground mb-2">No GitHub Insights Available</h3>
+                        <p className="max-w-xs mx-auto">This candidate hasn't linked a valid GitHub profile, or the data is currently being analyzed by AI.</p>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </>
             )}
           </div>

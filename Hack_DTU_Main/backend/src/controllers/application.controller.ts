@@ -169,7 +169,7 @@ export const getJobCandidates = async (req: Request, res: Response) => {
 
         // Fetch Profiles - selecting MORE fields for Resume Generation
         const profiles = await JobSeekerProfile.find({ userId: { $in: candidateUserIds } })
-            .select('userId personalInfo education experience projects certifications skills skillsEmbedding experienceEmbedding bioEmbedding');
+            .select('userId personalInfo education experience projects certifications skills skillsEmbedding experienceEmbedding bioEmbedding githubData');
 
         // Map candidates to result
         const candidates = job.candidates.map(candidate => {
@@ -214,6 +214,7 @@ export const getJobCandidates = async (req: Request, res: Response) => {
                 education: profile?.education || [],
                 projects: profile?.projects || [],
                 certifications: profile?.certifications || [],
+                githubData: profile?.githubData || null,
 
                 matchScore: matchScore,
                 matchDetails: matchDetails,

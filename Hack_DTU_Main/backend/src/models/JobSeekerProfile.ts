@@ -43,6 +43,22 @@ export interface IJobSeekerProfile extends Document {
     experienceEmbedding?: number[];
     bioEmbedding?: number[];
     resumeEmbedding?: number[];
+    githubData?: {
+        repoCount: number;
+        followers: number;
+        contributions: number;
+        topLanguages: string[];
+        languageDistribution?: Array<{ name: string; value: number }>;
+        pinnedProjects: Array<{
+            name: string;
+            url: string;
+            description: string;
+            aiSummary: string;
+            languages: string[];
+            isAlignedToJob?: boolean;
+        }>;
+        lastUpdated?: Date;
+    };
     preferences?: {
         notifications: {
             jobAlerts: boolean;
@@ -122,6 +138,26 @@ const JobSeekerProfileSchema: Schema = new Schema(
             type: [Number],
             default: [],
             select: false
+        },
+
+        githubData: {
+            repoCount: { type: Number, default: 0 },
+            followers: { type: Number, default: 0 },
+            contributions: { type: Number, default: 0 },
+            topLanguages: [String],
+            languageDistribution: [{
+                name: String,
+                value: Number
+            }],
+            pinnedProjects: [{
+                name: String,
+                url: String,
+                description: String,
+                aiSummary: String,
+                languages: [String],
+                isAlignedToJob: { type: Boolean, default: false }
+            }],
+            lastUpdated: Date
         },
 
         preferences: {
