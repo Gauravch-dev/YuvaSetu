@@ -74,13 +74,16 @@ export const updateApplicationStatus = async (req: Request, res: Response) => {
         if (!candidate) return sendError(res, 404, 'Candidate not found in this job');
 
         // Update Status
+        console.log(`UPDATING STATUS: User ${userId}, Job ${id}, New Status: ${status}`);
         candidate.status = status;
         await job.save();
 
         // Send Email Notification
-        if (status === 'SHORTLISTED' || status === 'INTERVIEW') {
+        if (status === 'SHORTLISTED' || status === 'INTERVIEW' || status === 'REJECTED' || status === 'OFFER') {
+            console.log(`Triggering Email for status: ${status}`);
             const user = await User.findById(userId);
             if (user && user.email) {
+                console.log(`User found: ${user.email}. Sending email...`);
                 // @ts-ignore
                 const companyName = job.companyProfileId?.companyName || "YuvaSetu Employer";
 
@@ -91,7 +94,11 @@ export const updateApplicationStatus = async (req: Request, res: Response) => {
                     status,
                     user.name || "Candidate"
                 );
+            } else {
+                console.log('User or email not found for ID:', userId);
             }
+        } else {
+            console.log(`Status ${status} does not trigger email.`);
         }
 
         // Real-Time Notification to Job Seeker
@@ -179,7 +186,9 @@ export const getJobCandidates = async (req: Request, res: Response) => {
             let matchScore = 0;
             let matchDetails = { skills: 0, experience: 0, roleFit: 0 };
 
-            if (profile && profile.skillsEmbedding && job.skillsEmbedding) {
+            if (profile && profile.skillsEmbedding && job.skillsEmbedding && 
+                profile.experienceEmbedding && job.experienceEmbedding && 
+                profile.bioEmbedding && job.descriptionEmbedding) {
                 const exactSkillScore = VectorService.cosineSimilarity(profile.skillsEmbedding, job.skillsEmbedding);
                 const expScore = VectorService.cosineSimilarity(profile.experienceEmbedding, job.experienceEmbedding);
                 const roleScore = VectorService.cosineSimilarity(profile.bioEmbedding, job.descriptionEmbedding);

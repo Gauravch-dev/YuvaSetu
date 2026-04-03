@@ -8,11 +8,20 @@ class MailService {
     private transporter: nodemailer.Transporter;
 
     private constructor() {
+        console.log('--- Initializing MailService ---');
+        console.log('EMAIL_USER:', process.env.EMAIL_USER ? 'PRESENT' : 'MISSING');
+        console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'PRESENT' : 'MISSING');
+
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true, // Use SSL
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
+            },
+            tls: {
+                rejectUnauthorized: false
             }
         });
     }
@@ -54,21 +63,47 @@ class MailService {
                     <p>The YuvaSetu Team</p>
                 </div>
             `;
+        } else if (status === 'REJECTED') {
+            subject = `Application Update: ${jobTitle} at ${companyName}`;
+            html = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Hi ${name},</h2>
+                    <p>Thank you for your interest in the position of <strong>${jobTitle}</strong> at <strong>${companyName}</strong>.</p>
+                    <p>After careful consideration, the employer has decided not to move forward with your application at this time.</p>
+                    <p>We appreciate the time you took to apply and wish you the best of luck in your search.</p>
+                    <br>
+                    <p>Best regards,</p>
+                    <p>The YuvaSetu Team</p>
+                </div>
+            `;
+        } else if (status === 'OFFER') {
+            subject = `Exciting News! Job Offer for ${jobTitle} at ${companyName}`;
+            html = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Hi ${name},</h2>
+                    <p>Congratulations! We are thrilled to inform you that <strong>${companyName}</strong> has extended a job offer to you for the position of <strong>${jobTitle}</strong>.</p>
+                    <p>The employer will be contacting you shortly with the formal offer details and next steps.</p>
+                    <br>
+                    <p>Best regards,</p>
+                    <p>The YuvaSetu Team</p>
+                </div>
+            `;
         } else {
             // Optional: Handle other statuses or return
             return;
         }
 
         try {
+            console.log(`Attempting to send email to ${to} for job: ${jobTitle}, status: ${status}`);
             await this.transporter.sendMail({
-                from: process.env.EMAIL_USER,
+                from: `"YuvaSetu" <${process.env.EMAIL_USER}>`,
                 to,
                 subject,
                 html
             });
-            console.log(`Email sent to ${to} for status ${status}`);
+            console.log(`Email successfully sent to ${to}`);
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.error('CRITICAL EMAIL ERROR:', error);
             // Don't generate a critical error to avoid blocking the main flow
         }
     }
