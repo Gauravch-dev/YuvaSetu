@@ -31,6 +31,10 @@ import { VisualCandidatesDemo } from "./pages/dashboard/employer/VisualCandidate
 
 import { Applications } from "./pages/dashboard/seeker/Applications";
 import { Upskill } from "./pages/dashboard/seeker/Upskill";
+import { MockInterview } from "./pages/dashboard/seeker/MockInterview";
+import { InterviewSession } from "./pages/dashboard/seeker/InterviewSession";
+import { InterviewFeedback } from "./pages/dashboard/seeker/InterviewFeedback";
+import { InterviewHistory } from "./pages/dashboard/seeker/InterviewHistory";
 import { UserProfile } from "./pages/dashboard/seeker/UserProfile";
 import { SeekerSettings } from "./pages/dashboard/seeker/SeekerSettings";
 import { SkillGapAnalysis } from "./pages/dashboard/seeker/SkillGapAnalysis";
@@ -77,6 +81,10 @@ const App = () => (
                     <Route path="skill-gap" element={<SkillGapAnalysis />} />
                     <Route path="skill-gap/:jobId" element={<SkillGapAnalysis />} />
                     <Route path="upskill" element={<Upskill />} />
+                    <Route path="mock-interview" element={<MockInterview />} />
+                    <Route path="interview/:id" element={<InterviewSession />} />
+                    <Route path="interview/:id/feedback" element={<InterviewFeedback />} />
+                    <Route path="interview-history" element={<InterviewHistory />} />
                     <Route path="profile" element={<UserProfile />} />
                     <Route path="settings" element={<SeekerSettings />} />
 

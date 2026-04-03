@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, BookOpen, Send, User, Settings, LogOut, Users, Building2, TrendingUp, FileText, PenTool } from 'lucide-react';
+import { LayoutDashboard, Briefcase, BookOpen, Send, User, Settings, LogOut, Users, Building2, TrendingUp, FileText, PenTool, Mic, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +13,8 @@ export const DashboardSidebar = () => {
     { icon: Send, label: t('sidebar.applications'), href: '/dashboard/applications' },
     { icon: TrendingUp, label: t('sidebar.skillGap'), href: '/dashboard/skill-gap' },
     { icon: PenTool, label: t('sidebar.mockTests'), href: '/dashboard/upskill' },
+    { icon: Mic, label: t('sidebar.mockInterview'), href: '/dashboard/mock-interview' },
+    { icon: BarChart3, label: 'Interview History', href: '/dashboard/interview-history' },
     { icon: User, label: t('sidebar.myProfile'), href: '/dashboard/profile' },
     { icon: Settings, label: t('sidebar.settings'), href: '/dashboard/settings' },
   ];

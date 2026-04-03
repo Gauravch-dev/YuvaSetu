@@ -81,6 +81,8 @@ import jobRoutes from './routes/job.routes';
 import recommendationRoutes from './routes/recommendation.routes';
 import sttRoutes from './routes/stt.routes';
 import ttsRoutes from './routes/tts.routes';
+import interviewRoutes from './routes/interview.routes';
+import ollamaProxyRoutes from './routes/ollama-proxy.routes';
 
 import { createServer } from 'http';
 import { socketService } from './services/socket.service';
@@ -155,6 +157,7 @@ app.use('/api/stt', sttRoutes); // Public STT route
 app.use('/api/tts', ttsRoutes); // Public TTS route
 import structureRoutes from './routes/structure.routes';
 app.use('/api/structure', structureRoutes); // Public Structure route
+app.use('/api/ollama-proxy', ollamaProxyRoutes); // Public Ollama proxy (before auth catch-all)
 app.use('/api', protectedRoutes);
 app.use('/api/job-seeker', jobSeekerRoutes);
 app.use('/api/upload', uploadRoutes);
@@ -162,6 +165,7 @@ app.use('/api/ondemand', ondemandRoutes);
 app.use('/api/employer', employerRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/recommendations', recommendationRoutes);
+app.use('/api/interview', interviewRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

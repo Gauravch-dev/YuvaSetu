@@ -1,0 +1,968 @@
+"use client";
+
+import { z } from "zod";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useRef, KeyboardEvent, useEffect } from "react";
+
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import FormField from "@/components/FormField";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { useServerUser } from "@/contexts/UserContext";
+import { clientOllamaAdapter } from "@/lib/services/client_ollama_adapter";
+
+const generateFormSchema = z.object({
+  role: z.string().min(1, "Role is required"),
+  level: z.enum(["Junior", "Mid-level", "Senior", "Lead"], {
+    required_error: "Please select an experience level",
+  }),
+  type: z.enum(["Technical", "Behavioral", "Mixed"], {
+    required_error: "Please select interview type",
+  }),
+  techstack: z.array(z.string()).min(1, "At least one technology is required"),
+  amount: z.number().min(1).max(20),
+  jobDescription: z.string().optional(),
+  targetColleges: z.array(z.string()).min(1, "Select at least one college"),
+  targetBranches: z.array(z.string()).min(1, "Select at least one branch"),
+  targetYears: z.array(z.number()).min(1, "Select at least one year"),
+});
+
+type GenerateFormData = z.infer<typeof generateFormSchema>;
+
+
+// MultiSelect Dropdown Component
+interface MultiSelectOption {
+  value: string | number;
+  label: string;
+}
+
+interface MultiSelectDropdownProps {
+  options: MultiSelectOption[];
+  selectedValues: (string | number)[];
+  onChange: (values: (string | number)[]) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  disabled?: boolean;
+  emptyMessage?: string;
+}
+
+const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
+  options,
+  selectedValues,
+  onChange,
+  placeholder = "Select options...",
+  searchPlaceholder = "Search...",
+  disabled = false,
+  emptyMessage = "No options available"
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredOptions = options.filter(option =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleToggleOption = (value: string | number) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter(v => v !== value));
+    } else {
+      onChange([...selectedValues, value]);
+    }
+  };
+
+  const handleRemoveTag = (valueToRemove: string | number) => {
+    onChange(selectedValues.filter(v => v !== valueToRemove));
+  };
+
+  const getSelectedLabel = (value: string | number) => {
+    return options.find(option => option.value === value)?.label || value.toString();
+  };
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      {/* Main Input */}
+      <div 
+        className={`w-full min-h-[3rem] cursor-pointer flex flex-wrap items-center gap-1 p-3 rounded-xl bg-[#27282f]/80 border border-white/10 text-white transition-all duration-200 ${
+          disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-[#cac5fe]/50 focus:border-[#cac5fe] focus:ring-2 focus:ring-[#cac5fe]/20'
+        }`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+      >
+        {/* Selected Tags */}
+        {selectedValues.length > 0 ? (
+          selectedValues.map((value) => (
+            <span
+              key={value}
+              className="inline-flex items-center gap-1 px-3 py-1 text-xs bg-[#cac5fe]/20 text-[#cac5fe] rounded-lg border border-[#cac5fe]/30"
+            >
+              {getSelectedLabel(value)}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveTag(value);
+                }}
+                className="text-[#cac5fe] hover:text-white ml-1 transition-colors"
+              >
+                ×
+              </button>
+            </span>
+          ))
+        ) : (
+          <span className="text-gray-400 text-sm">{placeholder}</span>
+        )}
+        
+        {/* Dropdown Arrow */}
+        <div className="ml-auto">
+          <svg 
+            className={`w-4 h-4 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Dropdown Menu */}
+      {isOpen && !disabled && (
+        <div className="absolute z-50 w-full mt-2 bg-[#27282f] border border-white/10 rounded-xl shadow-xl max-h-60 overflow-hidden">
+          {/* Search Input */}
+          <div className="p-3 border-b border-white/10">
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 text-sm bg-[#1A1C20] border border-white/10 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:border-[#cac5fe] focus:ring-2 focus:ring-[#cac5fe]/20"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+
+          {/* Options List */}
+          <div className="max-h-40 overflow-y-auto">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option) => (
+                <div
+                  key={option.value}
+                  className={`px-3 py-2 text-sm cursor-pointer hover:bg-[#1A1C20] flex items-center justify-between transition-colors ${
+                    selectedValues.includes(option.value) ? 'bg-[#cac5fe]/10 text-[#cac5fe]' : 'text-light-100'
+                  }`}
+                  onClick={() => handleToggleOption(option.value)}
+                >
+                  <span>{option.label}</span>
+                  {selectedValues.includes(option.value) && (
+                    <svg className="w-4 h-4 text-[#cac5fe]" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="px-3 py-4 text-sm text-gray-400 text-center">
+                {emptyMessage}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const GeneratePage = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, loading, authInitialized } = useFirebaseAuth();
+  const { userRole, userCollegeId } = useServerUser();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [techInput, setTechInput] = useState("");
+  const techInputRef = useRef<HTMLInputElement>(null);
+
+  // State for colleges data
+  const [colleges, setColleges] = useState<College[]>([]);
+  const [selectedCollegeData, setSelectedCollegeData] = useState<{
+    branches: string[];
+    years: number[];
+  }>({ branches: [], years: [] });
+
+  // State for interview table
+  const [showTable, setShowTable] = useState(false);
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [tableFilters, setTableFilters] = useState({
+    college: "",
+    branch: "",
+    year: ""
+  });
+  const [showQuestionsModal, setShowQuestionsModal] = useState(false);
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
+
+  const form = useForm<GenerateFormData>({
+    resolver: zodResolver(generateFormSchema),
+    defaultValues: {
+      role: "",
+      level: "Junior",
+      type: "Mixed",
+      techstack: [],
+      amount: 5,
+      jobDescription: "",
+      targetColleges: [],
+      targetBranches: [],
+      targetYears: [],
+    },
+  });
+
+  useEffect(() => {
+    if (!authInitialized) return;
+
+    if (!user) {
+      router.push("/sign-in");
+      return;
+    }
+
+    if (userRole !== "admin" && userRole !== "tpo") {
+      toast.error("You are not authorized to access this page");
+      router.push("/");
+      return;
+    }
+
+    setIsAuthorized(true);
+    fetchColleges();
+  }, [user, authInitialized, router, userRole]);
+
+  const fetchColleges = async () => {
+    try {
+      if (!user) return;
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/colleges", {
+        headers: { "Authorization": `Bearer ${idToken}` },
+      });
+      const result = await response.json();
+      if (result.success) {
+        setColleges(result.data);
+
+        // TPO: auto-select their college and populate branches/years
+        if (userRole === "tpo" && userCollegeId) {
+          const tpoCollege = result.data.find((c: College) => c.id === userCollegeId);
+          if (tpoCollege) {
+            form.setValue("targetColleges", [userCollegeId]);
+            setSelectedCollegeData({
+              branches: tpoCollege.branches || [],
+              years: tpoCollege.years || [],
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching colleges:", error);
+    }
+  };
+
+  const handleCollegeSelection = (collegeIds: string[]) => {
+    // Update form
+    form.setValue("targetColleges", collegeIds);
+    
+    // Reset dependent fields
+    form.setValue("targetBranches", []);
+    form.setValue("targetYears", []);
+    
+    if (collegeIds.length > 0) {
+      // Get unique branches and years from selected colleges
+      const branches = new Set<string>();
+      const years = new Set<number>();
+      
+      collegeIds.forEach(collegeId => {
+        const college = colleges.find(c => c.id === collegeId);
+        if (college) {
+          if (college.branches && Array.isArray(college.branches)) {
+            college.branches.forEach(branch => branches.add(branch));
+          }
+          if (college.years && Array.isArray(college.years)) {
+            college.years.forEach(year => years.add(year));
+          }
+        }
+      });
+      
+      setSelectedCollegeData({
+        branches: Array.from(branches),
+        years: Array.from(years)
+      });
+    } else {
+      setSelectedCollegeData({ branches: [], years: [] });
+    }
+  };
+
+  // Reset branch and year when college changes
+  useEffect(() => {
+    if (tableFilters.college) {
+      setTableFilters(prev => ({ ...prev, branch: "", year: "" }));
+    }
+  }, [tableFilters.college]);
+
+  const fetchInterviews = async () => {
+    if (!tableFilters.college) {
+      toast.error("Please select a college filter first");
+      return;
+    }
+
+    // console.log("🔍 Fetching interviews with filters:", tableFilters);
+    // console.log("👤 User ID:", user?.uid);
+
+    try {
+      const params = new URLSearchParams({
+        college: tableFilters.college,
+        // Note: Not excluding user's own interviews on generate page since they want to see their generated interviews
+        // userId: user?.uid || "",  
+        ...(tableFilters.branch && { branch: tableFilters.branch }),
+        ...(tableFilters.year && { year: tableFilters.year }),
+      });
+
+      // console.log("📤 Request URL:", `/api/interviews?${params.toString()}`);
+      // console.log("📋 Request params:", Object.fromEntries(params.entries()));
+
+      const idToken = await user?.getIdToken();
+      const response = await fetch(`/api/interviews?${params}`, {
+        headers: { "Authorization": `Bearer ${idToken}` },
+      });
+      // console.log("📥 Response status:", response.status);
+      // console.log("📥 Response headers:", Object.fromEntries(response.headers.entries()));
+
+      if (!response.ok) {
+        // console.error("❌ HTTP Error:", response.status, response.statusText);
+        const errorText = await response.text();
+        // console.error("❌ Error response body:", errorText);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      // console.log("📊 API Response:", result);
+      
+      if (result.success) {
+        // console.log("✅ Interviews fetched successfully:", result.data?.length || 0, "interviews");
+        // console.log("📝 Interview data:", result.data);
+        setInterviews(result.data || []);
+        setShowTable(true);
+      } else {
+        // console.error("❌ API returned error:", result.error);
+        toast.error("Failed to fetch interviews");
+      }
+    } catch (error) {
+      // console.error("💥 Error fetching interviews:", error);
+      toast.error("Failed to fetch interviews");
+    }
+  };
+
+  const addTech = () => {
+    const trimmedInput = techInput.trim();
+    if (trimmedInput && !form.getValues("techstack").includes(trimmedInput)) {
+      const updatedTechstack = [...form.getValues("techstack"), trimmedInput];
+      form.setValue("techstack", updatedTechstack);
+      setTechInput("");
+      techInputRef.current?.focus();
+    }
+  };
+
+  const removeTech = (techToRemove: string) => {
+    const updatedTechstack = form.getValues("techstack").filter(tech => tech !== techToRemove);
+    form.setValue("techstack", updatedTechstack);
+  };
+
+  const handleTechKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTech();
+    } else if (e.key === "Backspace" && techInput === "" && form.getValues("techstack").length > 0) {
+      const techstack = form.getValues("techstack");
+      removeTech(techstack[techstack.length - 1]);
+    }
+  };
+
+  const handleMultiSelect = (value: string | number, field: "targetColleges" | "targetBranches" | "targetYears") => {
+    if (field === "targetColleges" || field === "targetBranches") {
+      const currentValues = form.getValues(field) as string[];
+      const stringValue = value as string;
+      const newValues = currentValues.includes(stringValue)
+        ? currentValues.filter(v => v !== stringValue)
+        : [...currentValues, stringValue];
+      
+      if (field === "targetColleges") {
+        handleCollegeSelection(newValues);
+      } else {
+        form.setValue(field, newValues);
+      }
+    } else if (field === "targetYears") {
+      const currentValues = form.getValues(field) as number[];
+      const numberValue = value as number;
+      const newValues = currentValues.includes(numberValue)
+        ? currentValues.filter(v => v !== numberValue)
+        : [...currentValues, numberValue];
+      
+      form.setValue(field, newValues);
+    }
+  };
+
+  const onSubmit = async (data: GenerateFormData) => {
+    // console.log("Form submitted with data:", data);
+    
+    if (!isAuthorized || !user) {
+      // console.error("Unauthorized: isAuthorized =", isAuthorized, "user =", user);
+      toast.error("Unauthorized access");
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      // Step 1: Test Ollama connection first
+      toast.info("Checking Ollama connection...");
+      const isOllamaHealthy = await clientOllamaAdapter.testConnection();
+      if (!isOllamaHealthy) {
+        throw new Error("Cannot connect to Ollama service. Please ensure it's running and accessible.");
+      }
+
+      // Step 2: Generate questions using client-side Ollama call
+      toast.info("Generating interview questions...");
+      // console.log("Calling Ollama directly from browser...");
+
+      // Build the prompt with optional job description context
+      let prompt = `Prepare questions for a job interview.
+        The job role is ${data.role}.
+        The job experience level is ${data.level}.
+        The tech stack used in the job is: ${data.techstack.join(", ")}.
+        The focus between behavioural and technical questions should lean towards: ${data.type}.
+        The amount of questions required is: ${data.amount}.`;
+
+      // Add job description context if provided
+      if (data.jobDescription && data.jobDescription.trim()) {
+        prompt += `
+
+        IMPORTANT: The following is the actual Job Description for this role. Generate questions that are HIGHLY RELEVANT to the specific requirements, responsibilities, and qualifications mentioned in this JD. The questions should test candidates on the exact skills and experiences mentioned below:
+
+        --- JOB DESCRIPTION START ---
+        ${data.jobDescription.trim()}
+        --- JOB DESCRIPTION END ---
+
+        Make sure the questions:
+        1. Cover key responsibilities mentioned in the JD
+        2. Test for specific skills and technologies listed
+        3. Assess experience levels matching the JD requirements
+        4. Include scenario-based questions related to the role's daily tasks
+        5. Evaluate cultural fit based on company values if mentioned`;
+      }
+
+      prompt += `
+
+        Please return only the questions, without any additional text.
+        The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
+        Return the questions formatted like this:
+        ["Question 1", "Question 2", "Question 3"]
+
+        Thank you!`;
+
+      const questionsResponse = await clientOllamaAdapter.generateResponse([
+        {
+          role: "user",
+          content: prompt,
+        },
+      ]);
+
+      // console.log("Raw Ollama response:", questionsResponse);
+
+      // Step 3: Parse the questions array
+      let parsedQuestions: string[];
+      try {
+        // Try to parse JSON directly
+        parsedQuestions = JSON.parse(questionsResponse);
+        
+        // Validate it's an array
+        if (!Array.isArray(parsedQuestions)) {
+          throw new Error("Response is not an array");
+        }
+      } catch (parseError) {
+        // console.warn("Failed to parse JSON, attempting text extraction", {
+        //   error: parseError,
+        //   rawResponse: questionsResponse,
+        // });
+
+        // Fallback: extract questions from text
+        const lines = questionsResponse.split('\n').filter(line => line.trim());
+        parsedQuestions = lines
+          .filter(line => 
+            line.includes('?') && 
+            !line.toLowerCase().includes('thank you') &&
+            line.length > 10
+          )
+          .map(line => line.replace(/^\d+\.?\s*/, '').replace(/^["\[\]]/g, '').replace(/["\[\]],?$/g, '').trim())
+          .slice(0, data.amount);
+
+        if (parsedQuestions.length === 0) {
+          // console.error("No valid questions extracted", { rawResponse: questionsResponse });
+          throw new Error("Failed to generate valid questions");
+        }
+      }
+
+      // Ensure we have the right number of questions
+      if (parsedQuestions.length < data.amount) {
+        toast.info(`Generated ${parsedQuestions.length} questions instead of ${data.amount}`);
+      }
+
+      // Step 4: Save to database using the new save-interview API
+      toast.info("Saving interview...");
+      const idToken = await user.getIdToken();
+      
+      const saveResponse = await fetch("/api/save-interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          type: data.type,
+          role: data.role,
+          level: data.level,
+          techstack: data.techstack,
+          amount: data.amount,
+          userid: user.uid,
+          targetColleges: data.targetColleges,
+          targetBranches: data.targetBranches,
+          targetYears: data.targetYears,
+          questions: parsedQuestions,
+          jobDescription: data.jobDescription || "", // Include JD in save request
+        }),
+      });
+
+      const saveResult = await saveResponse.json();
+      
+      if (saveResult.success) {
+        toast.success(`Interview created successfully! ${saveResult.questionsGenerated} questions generated.`);
+        router.push(`/interview/${saveResult.interviewId}`);
+      } else {
+        throw new Error(saveResult.error || "Failed to save interview");
+      }
+
+    } catch (error) {
+      // console.error("Error generating interview:", error);
+      
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        if (error.message.includes("fetch failed") || error.message.includes("NetworkError")) {
+          toast.error("Cannot connect to Ollama service. Please ensure it's running.");
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const showQuestions = (questions: string[]) => {
+    setSelectedQuestions(questions);
+    setShowQuestionsModal(true);
+  };
+
+  if (loading || !isAuthorized) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">
+            {loading ? "Loading..." : "Checking authorization..."}
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto p-6">
+      {/* Interview Generation Form */}
+      <div className="card-border lg:min-w-[566px] mx-auto">
+        <div className="flex flex-col gap-6 card py-14 px-10">
+          <div className="text-center">
+            <h2 className="text-primary-100 text-2xl font-bold">Generate Interview</h2>
+            <p className="text-gray-600 mt-2">Create a new AI interview session</p>
+          </div>
+
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                // console.error("Form validation errors:", errors);
+                toast.error("Please fix the form errors before submitting");
+              })}
+              className="w-full mt-4 form"
+            >
+              <div className="grid grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="role"
+                  label="Job Role"
+                  placeholder="e.g., Frontend Developer, Product Manager"
+                  type="text"
+                />
+
+                <div>
+                  <label className="label">Number of Questions</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    {...form.register("amount", { valueAsNumber: true })}
+                    className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                  />
+                  {form.formState.errors.amount && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {form.formState.errors.amount.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6 mt-6">
+                <div>
+                  <label className="label">Experience Level</label>
+                  <select
+                    {...form.register("level")}
+                    className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                  >
+                    <option value="Junior" className="bg-[#27282f] text-white">Junior</option>
+                    <option value="Mid-level" className="bg-[#27282f] text-white">Mid-level</option>
+                    <option value="Senior" className="bg-[#27282f] text-white">Senior</option>
+                    <option value="Lead" className="bg-[#27282f] text-white">Lead</option>
+                  </select>
+                  {form.formState.errors.level && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {form.formState.errors.level.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="label">Interview Type</label>
+                  <select
+                    {...form.register("type")}
+                    className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                  >
+                    <option value="Technical" className="bg-[#27282f] text-white">Technical</option>
+                    <option value="Behavioral" className="bg-[#27282f] text-white">Behavioral</option>
+                    <option value="Mixed" className="bg-[#27282f] text-white">Mixed</option>
+                  </select>
+                  {form.formState.errors.type && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {form.formState.errors.type.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <label className="label">Tech Stack</label>
+                <div className="flex flex-wrap gap-2 p-3 border border-white/10 rounded-xl bg-[#27282f]/80 min-h-[3rem]">
+                  {form.watch("techstack").map((tech, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-[#cac5fe]/20 text-[#cac5fe] rounded-lg border border-[#cac5fe]/30"
+                    >
+                      {tech}
+                      <button
+                        type="button"
+                        onClick={() => removeTech(tech)}
+                        className="text-[#cac5fe] hover:text-white ml-1 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    ref={techInputRef}
+                    type="text"
+                    value={techInput}
+                    onChange={(e) => setTechInput(e.target.value)}
+                    onKeyDown={handleTechKeyDown}
+                    onBlur={addTech}
+                    placeholder={form.watch("techstack").length === 0 ? "Type technologies and press Enter" : "Add more..."}
+                    className="flex-1 min-w-[120px] bg-transparent outline-none text-white placeholder:text-gray-400"
+                  />
+                </div>
+                {form.formState.errors.techstack && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {form.formState.errors.techstack.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Job Description Section */}
+              <div className="mt-6">
+                <label className="label">
+                  Job Description <span className="text-gray-400 text-xs font-normal">(Optional - Paste JD for tailored questions)</span>
+                </label>
+                <textarea
+                  {...form.register("jobDescription")}
+                  placeholder="Paste the job description here to generate questions tailored to specific requirements, responsibilities, and qualifications mentioned in the JD..."
+                  rows={6}
+                  className="w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-4 py-3 text-sm text-white ring-offset-background placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] transition-all duration-200 resize-y min-h-[120px]"
+                />
+                <p className="text-gray-400 text-xs mt-2">
+                  When provided, the AI will analyze the JD and generate questions that specifically test for skills, experience, and responsibilities mentioned in the job posting.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6 mt-6">
+                {/* Target Colleges */}
+                <div>
+                  <label className="label">Target Colleges</label>
+                  <MultiSelectDropdown
+                    options={colleges.map(college => ({ value: college.id, label: college.name }))}
+                    selectedValues={form.watch("targetColleges")}
+                    onChange={(values) => handleCollegeSelection(values as string[])}
+                    placeholder="Select colleges..."
+                    searchPlaceholder="Search colleges..."
+                    disabled={userRole === "tpo"}
+                  />
+                  {form.formState.errors.targetColleges && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {form.formState.errors.targetColleges.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Target Branches */}
+                <div>
+                  <label className="label">Target Branches</label>
+                  <MultiSelectDropdown
+                    options={selectedCollegeData.branches.map(branch => ({ value: branch, label: branch }))}
+                    selectedValues={form.watch("targetBranches")}
+                    onChange={(values) => form.setValue("targetBranches", values as string[])}
+                    placeholder="Select branches..."
+                    searchPlaceholder="Search branches..."
+                    disabled={form.watch("targetColleges").length === 0}
+                    emptyMessage={form.watch("targetColleges").length === 0 ? "Please select a college first" : "No branches available"}
+                  />
+                  {form.formState.errors.targetBranches && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {form.formState.errors.targetBranches.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Target Years */}
+              <div className="mt-6">
+                <label className="label">Target Years</label>
+                <MultiSelectDropdown
+                  options={selectedCollegeData.years.map(year => ({ value: year, label: year.toString() }))}
+                  selectedValues={form.watch("targetYears")}
+                  onChange={(values) => form.setValue("targetYears", values as number[])}
+                  placeholder="Select years..."
+                  searchPlaceholder="Search years..."
+                  disabled={form.watch("targetColleges").length === 0}
+                  emptyMessage={form.watch("targetColleges").length === 0 ? "Please select a college first" : "No years available"}
+                />
+                {form.formState.errors.targetYears && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {form.formState.errors.targetYears.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-6">
+                <button 
+                  className="w-full bg-gradient-to-r from-[#b8b3f5] to-[#d4d0fc] hover:from-[#cac5fe] hover:to-[#e0dcff] text-dark-100 font-bold rounded-xl h-12 transition-colors duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" 
+                  type="submit" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Generating Interview..." : "Generate Interview"}
+                </button>
+              </div>
+            </form>
+          </Form>
+        </div>
+      </div>
+
+      {/* Filters Section */}
+      <div className="border-gradient p-0.5 rounded-2xl w-full">
+        <div className="card p-6">
+          <h3 className="text-xl font-bold mb-4">View Generated Interviews</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 form">
+            <div>
+              <label className="label">Filter by College</label>
+              <select
+                value={tableFilters.college}
+                onChange={(e) => setTableFilters(prev => ({ ...prev, college: e.target.value }))}
+                className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+              >
+                <option value="" className="bg-[#27282f] text-white">Select College</option>
+                {colleges.map((college) => (
+                  <option key={college.id} value={college.id} className="bg-[#27282f] text-white">
+                    {college.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="label">Filter by Branch</label>
+              <select
+                value={tableFilters.branch}
+                onChange={(e) => setTableFilters(prev => ({ ...prev, branch: e.target.value }))}
+                className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                disabled={!tableFilters.college}
+              >
+                <option value="" className="bg-[#27282f] text-white">All Branches</option>
+                {tableFilters.college && (() => {
+                  const selectedCollege = colleges.find(c => c.id === tableFilters.college);
+                  return selectedCollege?.branches?.map((branch) => (
+                    <option key={branch} value={branch} className="bg-[#27282f] text-white">
+                      {branch}
+                    </option>
+                  )) || [];
+                })()}
+              </select>
+            </div>
+            
+            <div>
+              <label className="label">Filter by Year</label>
+              <select
+                value={tableFilters.year}
+                onChange={(e) => setTableFilters(prev => ({ ...prev, year: e.target.value }))}
+                className="flex h-12 w-full rounded-xl border border-white/10 bg-[#27282f]/80 px-3 py-2 text-sm text-white ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cac5fe]/20 focus-visible:border-[#cac5fe] disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200"
+                disabled={!tableFilters.college}
+              >
+                <option value="" className="bg-[#27282f] text-white">All Years</option>
+                {tableFilters.college && (() => {
+                  const selectedCollege = colleges.find(c => c.id === tableFilters.college);
+                  return selectedCollege?.years?.map((year) => (
+                    <option key={year} value={year} className="bg-[#27282f] text-white">
+                      {year}
+                    </option>
+                  )) || [];
+                })()}
+              </select>
+            </div>
+            
+            <div className="flex items-end">
+              <button onClick={fetchInterviews} className="w-full px-6 py-2.5 bg-gradient-to-r from-[#b8b3f5] to-[#d4d0fc] hover:from-[#cac5fe] hover:to-[#e0dcff] text-dark-100 font-bold rounded-xl transition-colors duration-200 shadow-lg h-12">
+                Load Interviews
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Interviews Table */}
+      {showTable && (
+        <div className="border-gradient p-0.5 rounded-2xl w-full">
+          <div className="card p-6">
+            <h3 className="text-xl font-bold mb-4">Generated Interviews ({interviews.length})</h3>
+            {interviews.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-border rounded-lg overflow-hidden">
+                  <thead>
+                    <tr className="bg-dark-200">
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Role</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Level</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Type</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Tech Stack</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Questions</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Created</th>
+                      <th className="border border-border px-4 py-3 text-left text-light-100 font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {interviews.map((interview) => (
+                      <tr key={interview.id} className="bg-card hover:bg-accent transition-colors duration-150">
+                        <td className="border border-border px-4 py-3 text-foreground font-medium">{interview.role}</td>
+                        <td className="border border-border px-4 py-3 text-foreground">{interview.level}</td>
+                        <td className="border border-border px-4 py-3 text-foreground">{interview.type}</td>
+                        <td className="border border-border px-4 py-3">
+                          <div className="flex flex-wrap gap-1">
+                            {interview.techstack.slice(0, 3).map((tech, idx) => (
+                              <span key={idx} className="bg-primary-200 text-dark-100 text-xs px-2 py-1 rounded font-medium">
+                                {tech}
+                              </span>
+                            ))}
+                            {interview.techstack.length > 3 && (
+                              <span className="text-muted-foreground text-xs font-medium">+{interview.techstack.length - 3} more</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="border border-border px-4 py-3 text-foreground font-semibold">{interview.questions.length}</td>
+                        <td className="border border-border px-4 py-3 text-foreground">
+                          {new Date(interview.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="border border-border px-4 py-3">
+                          <button
+                            onClick={() => showQuestions(interview.questions)}
+                            className="px-4 py-2 bg-[#27282f]/80 border border-white/10 hover:border-[#cac5fe]/50 text-light-100 hover:text-white font-semibold rounded-xl transition-colors duration-200 hover:bg-[#27282f] text-sm"
+                          >
+                            View Questions
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-muted-foreground text-center py-8 font-medium">No interviews found for the selected filters.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Questions Modal */}
+      {showQuestionsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="border-gradient p-0.5 rounded-2xl">
+            <div className="card p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto m-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Interview Questions</h3>
+                <button
+                  onClick={() => setShowQuestionsModal(false)}
+                  className="text-muted-foreground hover:text-foreground text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="space-y-4">
+                {selectedQuestions.map((question, index) => (
+                  <div key={index} className="border-l-4 border-primary-200 pl-4 py-2">
+                    <p className="font-medium text-foreground">Question {index + 1}</p>
+                    <p className="text-light-100 mt-1">{question}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 text-right">
+                <button
+                  onClick={() => setShowQuestionsModal(false)}
+                  className="px-6 py-2.5 bg-gradient-to-r from-[#b8b3f5] to-[#d4d0fc] hover:from-[#cac5fe] hover:to-[#e0dcff] text-dark-100 font-bold rounded-xl transition-colors duration-200 shadow-lg"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default GeneratePage; 
