@@ -14,9 +14,9 @@ An AI-powered career platform designed to improve job discovery and interview pr
 
 ## Live Links
 
-Demo: Coming Soon
-Report Bug: Open an issue
-Request Feature: Open an issue
+Demo: Coming Soon  
+Report Bug: Open an issue  
+Request Feature: Open an issue  
 
 ---
 
@@ -28,17 +28,36 @@ Instead of traditional keyword matching, the platform understands the meaning of
 
 ---
 
+## Screenshots
+
+### Home Page
+![Home Page](images/homepage.png)
+
+### Login Page
+![Login Page](images/login.png)
+
+### Mock Test Page
+![Mock Test](images/mocktest.png)
+
+### AI Mock Interview
+![Mock Interview](images/interview.png)
+
+### Skill Gap Analysis
+![Skill Gap](images/skillGapAnalysis.png)
+
+---
+
 ## Key Features
 
-• Semantic job matching using vector embeddings
-• Voice-based AI mock interview (Speech-to-Text → LLM → Text-to-Speech)
-• Resume parsing using AI
-• Skill gap analysis with course recommendations
-• GitHub profile integration for automatic project summaries
-• Multilingual support (English, Hindi, Marathi)
-• Company-specific mock tests
-• Real-time interview feedback scoring
-• Employer dashboard for job posting and candidate discovery
+• Semantic job matching using vector embeddings  
+• Voice-based AI mock interview (Speech-to-Text → LLM → Text-to-Speech)  
+• Resume parsing using AI  
+• Skill gap analysis with course recommendations  
+• GitHub profile integration for automatic project summaries  
+• Multilingual support (English, Hindi, Marathi)  
+• Company-specific mock tests  
+• Real-time interview feedback scoring  
+• Employer dashboard for job posting and candidate discovery  
 
 ---
 
@@ -79,11 +98,11 @@ Instead of traditional keyword matching, the platform understands the meaning of
 
 ## System Architecture
 
-User Profile → Embeddings → Vector Search → Ranked Job Matches
+User Profile → Embeddings → Vector Search → Ranked Job Matches  
 
-Audio Input → Speech-to-Text → LLM Processing → Text-to-Speech → Interview Feedback
+Audio Input → Speech-to-Text → LLM Processing → Text-to-Speech → Interview Feedback  
 
-Frontend (React) → Backend (Node.js) → Database (MongoDB) → AI Services
+Frontend (React) → Backend (Node.js) → Database (MongoDB) → AI Services  
 
 ---
 
@@ -103,13 +122,13 @@ npm install
 
 Create a `.env` file in root folder and add:
 
-GEMINI_API_KEY=your_key
-MONGODB_URI=your_mongodb_url
-JWT_SECRET=your_secret
+GEMINI_API_KEY=your_key  
+MONGODB_URI=your_mongodb_url  
+JWT_SECRET=your_secret  
 
 ### 4. Run the development server
 
-npm run dev
+npm run dev  
 
 Open http://localhost:3000 in browser.
 
@@ -117,21 +136,21 @@ Open http://localhost:3000 in browser.
 
 ## Usage
 
-1. Create profile or upload resume
-2. Get AI-powered job recommendations
-3. Practice interviews with AI interviewer
-4. Receive feedback on communication and technical skills
-5. Identify skill gaps and recommended courses
+1. Create profile or upload resume  
+2. Get AI-powered job recommendations  
+3. Practice interviews with AI interviewer  
+4. Receive feedback on communication and technical skills  
+5. Identify skill gaps and recommended courses  
 
 ---
 
 ## Future Improvements
 
-• Mobile app version
-• More language support
-• Advanced interview analytics
-• More job sources integration
-• Improved recommendation accuracy
+• Mobile app version  
+• More language support  
+• Advanced interview analytics  
+• More job sources integration  
+• Improved recommendation accuracy  
 
 ---
 
@@ -139,18 +158,18 @@ Open http://localhost:3000 in browser.
 
 Contributions are welcome.
 
-1. Fork the project
+1. Fork the project  
 
-2. Create feature branch
-   git checkout -b feature/AmazingFeature
+2. Create feature branch  
+git checkout -b feature/AmazingFeature  
 
-3. Commit changes
-   git commit -m "Add AmazingFeature"
+3. Commit changes  
+git commit -m "Add AmazingFeature"  
 
-4. Push branch
-   git push origin feature/AmazingFeature
+4. Push branch  
+git push origin feature/AmazingFeature  
 
-5. Open Pull Request
+5. Open Pull Request  
 
 ---
 
