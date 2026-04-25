@@ -27,12 +27,19 @@ CRITICAL BEHAVIOR RULES:
 7. Move to the next prepared question only when the current topic is sufficiently explored.
 8. End the interview naturally after covering the key topics.
 
+SPEECH RECOGNITION AWARENESS:
+The candidate's responses come through speech-to-text which can make mistakes, especially in non-English interviews. When a candidate's message seems garbled, misspelled, or partially in a wrong language:
+- Use the interview context and previous answers to infer what the candidate likely meant.
+- If you can reasonably guess their intent, respond to that intent naturally without pointing out the transcription error.
+- Only ask the candidate to repeat themselves if the message is truly unintelligible and you cannot determine their intent from context.
+- Never say "your transcription was wrong" or reference the STT system. Instead say something natural like "Could you say that again?" or "I didn't quite catch that."
+
 RESPONSE FORMAT RULES:
 - Never use markdown, bullet points, or numbered lists.
 - Never include stage directions like (pauses) or [smiles].
 - Never use asterisks or formatting.
 - Speak exactly as you would in a real voice conversation.
-- Keep responses SHORT — under 40 words ideally.`;
+- STRICT LIMIT: 1-2 sentences only. Maximum 30 words. This is a spoken conversation — be concise.`;
 
 const LANG_PROMPT: Record<string, string> = {
   hi: `\n\nLANGUAGE RULE: Conduct this ENTIRE interview in Hindi (Hinglish is perfectly fine). Greet in Hindi. Ask questions in Hindi. React in Hindi. Technical terms like React, API, SQL, etc. can stay in English — that is natural. Do NOT respond in English.`,
@@ -62,6 +69,8 @@ export class ConversationHandler {
   private isRecording = false;
   private aborted = false;
   private language = 'en';
+  // Shared AbortController — cancelled on stop/reset so in-flight STT/LLM fetches are killed cleanly
+  private pipelineAbort: AbortController = new AbortController();
 
   async start(config: InterviewData): Promise<void> {
     if (this.status !== CallStatus.INACTIVE) return;
@@ -117,6 +126,9 @@ export class ConversationHandler {
     this.aborted = true;
     this.isRecording = false;
 
+    // Cancel all in-flight STT/LLM fetch requests immediately
+    this.pipelineAbort.abort();
+
     if (this.scriptProcessor) {
       this.scriptProcessor.disconnect();
       this.scriptProcessor = null;
@@ -155,6 +167,8 @@ export class ConversationHandler {
     this.language = 'en';
     this.callbacks = {};
     this.status = CallStatus.INACTIVE;
+    // Fresh controller for the next interview session
+    this.pipelineAbort = new AbortController();
   }
 
   async startManualRecording(): Promise<void> {
@@ -266,13 +280,20 @@ export class ConversationHandler {
 
     try {
       console.log('[Interview] Sending WAV to STT...');
-      const transcription = await whisperSTTClient.transcribe(wavBlob, this.language);
+      const transcription = await whisperSTTClient.transcribe(wavBlob, this.language, this.pipelineAbort.signal);
       if (this.aborted) { this.isProcessing = false; return; }
       const userText = transcription.text.trim();
-      console.log(`[Interview] STT result: "${userText}"`);
+      console.log(`[Interview] STT result: "${userText}" (confidence=${transcription.confidence}, lang=${transcription.language}, mismatch=${transcription.language_mismatch})`);
 
       if (!userText) {
         console.log('[Interview] Empty transcription, skipping');
+        this.isProcessing = false;
+        return;
+      }
+
+      // Skip transcriptions with very low confidence — likely noise/hallucination
+      if (transcription.confidence !== undefined && transcription.confidence < 0.3) {
+        console.log(`[Interview] Confidence too low (${transcription.confidence}), skipping`);
         this.isProcessing = false;
         return;
       }
@@ -301,10 +322,16 @@ export class ConversationHandler {
       this.emit('message', { role: 'user', content: userText });
 
       // 5. Generate AI response and speak it
+      if (this.aborted) { this.isProcessing = false; return; }
       console.log('[Interview] Generating AI response...');
       await this.generateAndSpeak();
       console.log('[Interview] AI response complete');
     } catch (error) {
+      // AbortError is expected when stop/reset is called during processing — not a real error
+      if (this.aborted || (error instanceof DOMException && error.name === 'AbortError')) {
+        console.log('[Interview] Pipeline aborted (interview ended during processing)');
+        return;
+      }
       console.error('[Interview] Pipeline error:', error);
       this.emit('error', error instanceof Error ? error : new Error(String(error)));
     } finally {
@@ -391,9 +418,9 @@ export class ConversationHandler {
 
     // Step 1: Get complete LLM response
     try {
-      fullResponse = await ollamaClient.generateResponse(messages);
+      fullResponse = await ollamaClient.generateResponse(messages, { signal: this.pipelineAbort.signal });
     } catch (error) {
-      if (this.aborted) return;
+      if (this.aborted || (error instanceof DOMException && error.name === 'AbortError')) return;
       console.error('LLM failed:', error);
       this.emit('error', new Error('AI interviewer failed to respond. Please try again.'));
       return;

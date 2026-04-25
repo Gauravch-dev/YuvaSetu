@@ -45,6 +45,7 @@ app.use(cors({
         "http://localhost:5173",
         "http://localhost:8080",
         "http://localhost:8081",
+        "http://localhost:8082",
         process.env.CLIENT_URL,
     ].filter(Boolean) as string[],
     credentials: true,

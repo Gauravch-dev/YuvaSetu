@@ -121,7 +121,7 @@ class FeedbackGenerator {
         { role: 'user', content: `Interview Transcript:\n\n${formattedTranscript}` },
       ];
 
-      const response = await ollamaClient.generateResponse(messages);
+      const response = await ollamaClient.generateResponse(messages, { maxTokens: 800 });
       console.log('[Feedback] Raw LLM response:', response.slice(0, 200));
 
       return this.parseResponse(response);

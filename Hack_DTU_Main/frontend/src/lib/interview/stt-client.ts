@@ -6,16 +6,23 @@ export interface TranscriptionResult {
   text: string;
   confidence?: number;
   duration?: number;
+  language?: string;
+  language_mismatch?: boolean;
 }
 
 class WhisperSTTClient {
   /**
    * Transcribe an audio blob to text using Whisper.
    * Sends the audio as multipart form data.
+   * Accepts an optional external AbortSignal so callers can cancel in-flight requests.
    */
-  async transcribe(audioBlob: Blob, language = 'en'): Promise<TranscriptionResult> {
+  async transcribe(audioBlob: Blob, language = 'en', externalSignal?: AbortSignal): Promise<TranscriptionResult> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
+
+    // If caller passes an abort signal, forward it to our controller
+    const onExternalAbort = () => controller.abort();
+    externalSignal?.addEventListener('abort', onExternalAbort);
 
     try {
       const formData = new FormData();
@@ -37,9 +44,12 @@ class WhisperSTTClient {
         text: data.text || '',
         confidence: data.confidence,
         duration: data.duration,
+        language: data.language,
+        language_mismatch: data.language_mismatch,
       };
     } finally {
       clearTimeout(timeout);
+      externalSignal?.removeEventListener('abort', onExternalAbort);
     }
   }
 

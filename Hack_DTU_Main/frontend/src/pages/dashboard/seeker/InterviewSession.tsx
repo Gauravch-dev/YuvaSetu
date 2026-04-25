@@ -7,8 +7,15 @@ import { Button } from '@/components/ui/button';
 import { InterviewAgent } from '@/components/interview/InterviewAgent';
 import type { FeedbackData, InterviewData } from '@/lib/interview/types';
 import type { ProctoringSummary } from '@/lib/interview/proctor';
+import { auth } from '../../../lib/firebase';
 
 const API_BASE = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api`;
+
+const getAuthToken = async () => {
+  const user = auth.currentUser;
+  if (user) return await user.getIdToken();
+  return localStorage.getItem('authToken');
+};
 
 export const InterviewSession = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +25,6 @@ export const InterviewSession = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const authToken = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName') || 'Candidate';
 
   useEffect(() => {
@@ -26,9 +32,10 @@ export const InterviewSession = () => {
       if (!id) return;
 
       try {
+        const token = await getAuthToken();
         const res = await fetch(`${API_BASE}/interview/${id}`, {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -49,36 +56,65 @@ export const InterviewSession = () => {
     };
 
     fetchInterview();
-  }, [id, authToken, t]);
+  }, [id, t]);
 
   const handleInterviewEnd = async (feedbackData: FeedbackData, conversationHistory?: { role: string; content: string }[], proctoringSummary?: ProctoringSummary) => {
     const wasTerminated = proctoringSummary?.summary?.autoTerminated === true;
+    const hasConversation = (conversationHistory || []).filter(m => m.role === 'user').length > 0;
+    const hasValidScore = typeof feedbackData.totalScore === 'number' && feedbackData.totalScore > 0;
 
+    // DON'T save terminated or empty interviews to DB — cache only for display
+    if (wasTerminated || !hasConversation || !hasValidScore) {
+      const cacheData = {
+        interviewId: id,
+        ...feedbackData,
+        totalScore: wasTerminated ? 0 : feedbackData.totalScore,
+        finalAssessment: wasTerminated
+          ? 'Interview was auto-terminated due to repeated proctoring violations.'
+          : !hasConversation
+          ? 'Interview ended before any responses were given.'
+          : feedbackData.finalAssessment,
+        conversationHistory: conversationHistory || [],
+        proctoringSummary,
+        terminated: wasTerminated,
+        empty: !hasConversation,
+        cachedAt: new Date().toISOString(),
+      };
+      sessionStorage.setItem(`terminated_interview_${id}`, JSON.stringify(cacheData));
+      toast.error(
+        wasTerminated
+          ? 'Interview terminated due to violations. Results are not saved.'
+          : 'Interview ended without responses. Results are not saved.',
+      );
+      navigate(`/dashboard/interview/${id}/feedback`);
+      return;
+    }
+
+    // Only save COMPLETED interviews with valid scores to DB
     try {
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/interview/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           interviewId: id,
-          totalScore: wasTerminated ? 0 : feedbackData.totalScore,
+          totalScore: feedbackData.totalScore,
           categoryScores: feedbackData.categoryScores,
           strengths: feedbackData.strengths,
           areasForImprovement: feedbackData.areasForImprovement,
-          finalAssessment: wasTerminated
-            ? 'Interview was auto-terminated due to repeated proctoring violations.'
-            : feedbackData.finalAssessment,
+          finalAssessment: feedbackData.finalAssessment,
           conversationHistory: conversationHistory || [],
           proctoringSummary: proctoringSummary || null,
-          terminated: wasTerminated,
         }),
       });
 
       if (!res.ok) {
-        console.error('[Feedback] Save failed:', await res.text());
-        throw new Error(t('interview.saveFeedbackError'));
+        const errBody = await res.json().catch(() => ({}));
+        console.error('[Feedback] Save failed:', errBody);
+        throw new Error(errBody.message || t('interview.saveFeedbackError'));
       }
 
       toast.success(t('interview.feedbackSaved'));

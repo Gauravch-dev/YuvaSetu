@@ -111,7 +111,7 @@ export const InterviewAgent = ({
     };
   }, []);
 
-  // Request camera access and initialize proctoring
+  // Request camera access and load proctoring models (but DON'T start monitoring yet)
   useEffect(() => {
     const initCameraAndProctor = async () => {
       try {
@@ -121,21 +121,10 @@ export const InterviewAgent = ({
           videoRef.current.srcObject = stream;
         }
 
-        // Initialize proctoring service
+        // Load proctoring models but DON'T start — wait for interview to become ACTIVE
         const proctor = new ProctoringService();
         proctorRef.current = proctor;
-        const loaded = await proctor.loadModels();
-        if (loaded && videoRef.current) {
-          proctor.start(
-            videoRef.current,
-            (newState) => setProctorState(newState),
-            () => {
-              // Auto-terminate on 3 strikes
-              toast.error('Interview terminated due to repeated violations.');
-              handleEndInterview();
-            },
-          );
-        }
+        await proctor.loadModels();
       } catch {
         // Camera not available, fallback to avatar
       }
@@ -148,6 +137,20 @@ export const InterviewAgent = ({
       }
     };
   }, []);
+
+  // Start proctoring ONLY when interview becomes ACTIVE (not during setup)
+  useEffect(() => {
+    if (state.callStatus === CallStatus.ACTIVE && proctorRef.current && videoRef.current) {
+      proctorRef.current.start(
+        videoRef.current,
+        (newState) => setProctorState(newState),
+        () => {
+          toast.error('Interview terminated due to repeated violations.');
+          handleEndInterview();
+        },
+      );
+    }
+  }, [state.callStatus]);
 
   // Register event listeners
   useEffect(() => {
@@ -266,9 +269,11 @@ export const InterviewAgent = ({
 
   const handleEndInterview = async () => {
     if (!handlerRef.current) return;
+    // Prevent double-triggering (e.g. proctoring + button click at same time)
+    if (state.isGeneratingFeedback) return;
 
     const transcript = handlerRef.current.getConversationHistory();
-    // Full reset: abort all in-flight LLM/TTS/audio, clear conversation history
+    // Full reset: abort all in-flight STT/LLM/TTS/audio, clear conversation history
     handlerRef.current.reset();
 
     // Stop proctoring and get summary

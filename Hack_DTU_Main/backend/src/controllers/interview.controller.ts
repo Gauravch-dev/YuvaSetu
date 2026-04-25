@@ -170,28 +170,8 @@ export const saveFeedback = async (req: Request, res: Response) => {
             return sendError(res, 404, 'Interview not found');
         }
 
-        // Check if feedback already exists for this interview+user
-        const existingFeedback = await InterviewFeedback.findOne({
-            interviewId,
-            userId: userId.toString(),
-        });
-
-        if (existingFeedback) {
-            // Update existing feedback
-            existingFeedback.totalScore = totalScore;
-            existingFeedback.categoryScores = categoryScores;
-            existingFeedback.strengths = strengths;
-            existingFeedback.areasForImprovement = areasForImprovement;
-            existingFeedback.finalAssessment = finalAssessment;
-            existingFeedback.conversationHistory = conversationHistory;
-            if (proctoringSummary) (existingFeedback as any).proctoringSummary = proctoringSummary;
-            if (terminated != null) (existingFeedback as any).terminated = terminated;
-            await existingFeedback.save();
-
-            return sendSuccess(res, existingFeedback, 'Feedback updated successfully');
-        }
-
-        // Create new feedback
+        // Always create a NEW feedback entry for each completed interview attempt
+        // This preserves history — retaking the same interview creates a separate record
         const feedback = await InterviewFeedback.create({
             interviewId,
             userId: userId.toString(),
@@ -219,10 +199,11 @@ export const getFeedback = async (req: Request, res: Response) => {
 
         const { id } = req.params;
 
+        // Return the LATEST feedback for this interview (user may have multiple attempts)
         const feedback = await InterviewFeedback.findOne({
             interviewId: id,
             userId: userId.toString(),
-        });
+        }).sort({ createdAt: -1 });
 
         if (!feedback) return sendError(res, 404, 'Feedback not found');
 

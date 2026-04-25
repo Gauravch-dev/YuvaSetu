@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../../../lib/firebase';
 import {
   Mic,
   Loader2,
@@ -99,14 +100,21 @@ export const MockInterview = () => {
   const [targetRole, setTargetRole] = useState('');
   const [interviewLang, setInterviewLang] = useState('en');
 
-  const authToken = localStorage.getItem('authToken');
+  const getAuthToken = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      return await user.getIdToken();
+    }
+    return localStorage.getItem('authToken');
+  };
 
   const loadInterviews = async () => {
     setIsLoading(true);
     try {
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/interview/list`, {
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -150,9 +158,10 @@ export const MockInterview = () => {
     setIsLoadingProfile(true);
 
     try {
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/job-seeker/profile`, {
         headers: {
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -175,11 +184,12 @@ export const MockInterview = () => {
     setIsGenerating(true);
 
     try {
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/interview/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           profileData: {

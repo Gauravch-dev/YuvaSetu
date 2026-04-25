@@ -564,7 +564,21 @@
     "jobUpdated": "नौकरी अपडेट हो गई!",
     "draftSaved": "ड्राफ्ट सहेजा गया!",
     "failedToPost": "नौकरी पोस्ट करने में विफल",
-    "failedToLoad": "संपादन के लिए नौकरी लोड करने में विफल"
+    "failedToLoad": "संपादन के लिए नौकरी लोड करने में विफल",
+    "contract": "अनुबंध",
+    "descriptionAndRequirements": "विवरण और आवश्यकताएं",
+    "findPerfectCandidate": "सही उम्मीदवार खोजें",
+    "fullTime": "पूर्णकालिक",
+    "internship": "इंटर्नशिप",
+    "jobDescriptionPlaceholder": "भूमिका, जिम्मेदारियों का वर्णन करें...",
+    "keyRequirementsPlaceholder": "मुख्य आवश्यकताएं, प्रति पंक्ति एक...",
+    "location": "स्थान",
+    "noDraftsSaved": "कोई ड्राफ़्ट सहेजा नहीं गया",
+    "partTime": "अंशकालिक",
+    "skills": "कौशल",
+    "deleteDraftConfirm": "यह ड्राफ़्ट हटाएं?",
+    "failedToLoadJob": "नौकरी लोड करने में विफल",
+    "titleRequired": "नौकरी का शीर्षक आवश्यक है"
   },
   "myPostings": {
     "title": "मेरी नौकरी पोस्टिंग",
@@ -576,7 +590,14 @@
     "closed": "बंद",
     "noPostingsFound": "आपके फ़िल्टर से मेल खाती कोई नौकरी पोस्टिंग नहीं मिली।",
     "closingDate": "बंद होने की तिथि: खुला",
-    "viewDetails": "विवरण देखें"
+    "viewDetails": "विवरण देखें",
+    "allTypes": "सभी प्रकार",
+    "closingDateOpen": "खुला",
+    "jobType": "नौकरी का प्रकार",
+    "manageListings": "अपनी नौकरी सूची प्रबंधित करें",
+    "myJobPostings": "मेरी नौकरी पोस्टिंग",
+    "status": "स्थिति",
+    "remote": "रिमोट"
   },
   "applications": {
     "title": "मेरे आवेदन",
@@ -676,7 +697,8 @@
     "ourMission": "हमारा मिशन",
     "missionHighlight": "मिशन",
     "missionText": "युवासेतु में, हम मानते हैं कि हर छात्र को ऐसे अवसरों तक पहुंच का हक है जो वास्तव में उनकी क्षमता से मेल खाते हों। हम explainable AI का उपयोग करके अवसर थकान को समाप्त कर रहे हैं ताकि आपको केवल सबसे प्रासंगिक नौकरियां दिखाई दें।",
-    "buildingFuture": "करियर खोज का भविष्य बना रहे हैं"
+    "buildingFuture": "करियर खोज का भविष्य बना रहे हैं",
+    "ourLabel": "हमारे"
   },
   "onboardingSteps": {
     "needHelp": "Need help?",
@@ -699,7 +721,23 @@
     "failedPdf": "Failed to generate resume PDF",
     "failedSave": "Failed to save profile data",
     "failedDownload": "Failed to download resume",
-    "failedGeneratePdf": "Failed to generate PDF"
+    "failedGeneratePdf": "Failed to generate PDF",
+    "redirecting": "पुनर्निर्देशित हो रहा है...",
+    "save": "सहेजें",
+    "hidePreview": "प्रीव्यू छिपाएं",
+    "showPreview": "प्रीव्यू दिखाएं",
+    "failedResumePdf": "रिज्यूमे PDF बनाने में विफल",
+    "failedSaveProfile": "प्रोफ़ाइल सहेजने में विफल",
+    "profilePreFilled": "आपके रिज्यूमे से प्रोफ़ाइल पहले से भरी गई",
+    "voiceProfileCompleted": "वॉइस प्रोफ़ाइल पूरी हुई",
+    "enterAge": "अपनी उम्र दर्ज करें",
+    "invalidEmail": "अमान्य ईमेल",
+    "invalidGithub": "अमान्य GitHub URL",
+    "invalidLinkedin": "अमान्य LinkedIn URL",
+    "invalidPhone": "अमान्य फ़ोन नंबर",
+    "invalidPortfolio": "अमान्य पोर्टफोलियो URL",
+    "invalidYear": "अमान्य वर्ष",
+    "mustBe18": "आपकी उम्र कम से कम 18 वर्ष होनी चाहिए"
   },
   "resumeUpload": {
     "title": "Upload Your Resume",
@@ -717,7 +755,8 @@
     "highConfidence": "Resume analyzed by OnDemand AI (High Accuracy)",
     "parsedSuccess": "Resume parsed successfully! Please review the data.",
     "needsReview": "Some sections need review. Please check all fields.",
-    "parseFailed": "Could not reliably parse resume. Please fill manually."
+    "parseFailed": "Could not reliably parse resume. Please fill manually.",
+    "analyzedByAI": "AI द्वारा विश्लेषित"
   },
   "personalDetails": {
     "fullName": "Full Name",
@@ -739,7 +778,13 @@
     "githubUrl": "GitHub URL",
     "githubPlaceholder": "https://github.com/...",
     "portfolioUrl": "Portfolio URL",
-    "portfolioPlaceholder": "https://yourwebsite.com"
+    "portfolioPlaceholder": "https://yourwebsite.com",
+    "bio": "बायो",
+    "github": "GitHub",
+    "languagesHint": "अल्पविराम से अलग करें (जैसे English, Hindi)",
+    "linkedin": "LinkedIn",
+    "phone": "फ़ोन नंबर",
+    "portfolio": "पोर्टफोलियो URL"
   },
   "educationStep": {
     "title": "Education Details",
@@ -751,7 +796,10 @@
     "yearPlaceholder": "Ex. 2024",
     "grade": "Grade / CGPA",
     "gradePlaceholder": "Ex. 9.5 CGPA",
-    "addEducation": "Add Education"
+    "addEducation": "Add Education",
+    "completionYear": "पूर्णता वर्ष",
+    "completionYearPlaceholder": "जैसे 2024",
+    "details": "शिक्षा विवरण"
   },
   "experienceStep": {
     "title": "Work Experience",
@@ -763,13 +811,18 @@
     "durationPlaceholder": "Ex. Jan 2023 - Present",
     "description": "Description",
     "descriptionPlaceholder": "Describe your responsibilities and achievements...",
-    "addExperience": "Add Experience"
+    "addExperience": "Add Experience",
+    "company": "कंपनी",
+    "details": "अनुभव विवरण",
+    "role": "भूमिका",
+    "rolePlaceholder": "जैसे Frontend Developer"
   },
   "skillsStep": {
     "title": "Add Skills",
     "placeholder": "Type a skill and press Enter...",
     "emptyState": "No skills added yet. Start typing above or pick from suggestions.",
-    "suggested": "Suggested based on market trends"
+    "suggested": "Suggested based on market trends",
+    "addSkills": "कौशल जोड़ें"
   },
   "projectsStep": {
     "title": "Project Details",
@@ -781,7 +834,10 @@
     "linkPlaceholder": "https://github.com/...",
     "description": "Description *",
     "descriptionPlaceholder": "Describe the project, its impact, and your contributions...",
-    "addProject": "Add Project"
+    "addProject": "Add Project",
+    "details": "प्रोजेक्ट विवरण",
+    "link": "प्रोजेक्ट लिंक",
+    "technologiesPlaceholder": "जैसे React, Node.js, MongoDB"
   },
   "certificationsStep": {
     "title": "Certification / Achievement",
@@ -791,7 +847,9 @@
     "yearPlaceholder": "Ex. 2025",
     "issuer": "Issuing Organization *",
     "issuerPlaceholder": "Ex. Amazon Web Services, Google, Smart India Hackathon",
-    "addCertification": "Add Certification / Achievement"
+    "addCertification": "Add Certification / Achievement",
+    "details": "प्रमाणपत्र विवरण",
+    "titlePlaceholder": "जैसे AWS Certified Developer"
   },
   "seekerSettings": {
     "title": "Settings",
@@ -845,7 +903,25 @@
     "passwordFailed": "Failed to update password. Please try logging in again.",
     "accountUpdated": "Account details updated successfully!",
     "accountUpdateFailed": "Failed to update account details",
-    "actionNotAllowed": "Action Not Allowed"
+    "actionNotAllowed": "Action Not Allowed",
+    "deleteAccountPermanently": "खाता स्थायी रूप से हटाएं",
+    "deleteAccountWarning": "यह आपका खाता और सभी संबंधित डेटा स्थायी रूप से हटा देगा",
+    "googlePasswordMessage": "आपने Google से साइन इन किया है। पासवर्ड बदलने के लिए अपने Google खाते का उपयोग करें।",
+    "loading": "लोड हो रहा है...",
+    "notificationPreferences": "सूचना प्राथमिकताएं",
+    "notificationPreferencesDesc": "चुनें कि आपको कौन सी सूचनाएं मिलें",
+    "savePrivacySettings": "गोपनीयता सेटिंग्स सहेजें",
+    "tabAccount": "खाता",
+    "tabNotifications": "सूचनाएं",
+    "tabPrivacy": "गोपनीयता",
+    "typeDeleteToConfirm": "पुष्टि के लिए DELETE टाइप करें",
+    "accountDeleteFailed": "खाता हटाने में विफल",
+    "accountDeleted": "खाता सफलतापूर्वक हटाया गया",
+    "authSessionMissing": "प्रमाणीकरण सत्र नहीं मिला",
+    "passwordUpdateFailed": "पासवर्ड अपडेट करने में विफल",
+    "passwordsDoNotMatch": "पासवर्ड मेल नहीं खाते",
+    "preferencesSaveFailed": "प्राथमिकताएं सहेजने में विफल",
+    "preferencesSaved": "प्राथमिकताएं सहेजी गईं"
   },
   "upskill": {
     "title": "Company Mock Tests",
@@ -865,7 +941,12 @@
     "backToDashboard": "Back to Dashboard",
     "started": "Started {{company}} Assessment",
     "questionsNotFound": "Questions not found for {{company}}",
-    "emptyData": "Empty data for {{company}}"
+    "emptyData": "Empty data for {{company}}",
+    "next": "अगला",
+    "runScraperFirst": "प्रश्न लोड करने के लिए पहले स्क्रेपर चलाएं",
+    "scraperNoQuestions": "कोई प्रश्न उपलब्ध नहीं",
+    "startTest": "टेस्ट शुरू करें",
+    "startedAssessment": "मूल्यांकन शुरू हुआ"
   },
   "applicationDetails": {
     "backToApplications": "Back to Applications",
@@ -875,7 +956,8 @@
     "inProgress": "In Progress - Awaiting update",
     "recruiterReviewing": "Recruiter is reviewing your profile.",
     "notSelected": "Application not selected for next round.",
-    "appliedOn": "Applied on {{date}}"
+    "appliedOn": "Applied on {{date}}",
+    "notFound": "आवेदन नहीं मिला"
   },
   "jobApplication": {
     "jobNotFound": "Job Not Found",
@@ -912,7 +994,13 @@
     "customUpload": "Custom Upload",
     "submitApplication": "Submit Application",
     "submitting": "Submitting...",
-    "shareConsent": "By clicking Submit, you agree to share your profile with {{company}}."
+    "shareConsent": "By clicking Submit, you agree to share your profile with {{company}}.",
+    "agreeToShare": "मैं नियोक्ता के साथ अपनी प्रोफ़ाइल साझा करने के लिए सहमत हूं",
+    "brainwaveResume": "युवासेतु रिज्यूमे का उपयोग करें",
+    "coverLetterOptional": "कवर लेटर (वैकल्पिक)",
+    "uploadCustomResume": "कस्टम रिज्यूमे अपलोड करें",
+    "couldNotUpload": "फ़ाइल अपलोड नहीं हो सकी",
+    "somethingWentWrong": "कुछ गलत हो गया"
   },
   "companyProfile": {
     "title": "Company Profile",
@@ -934,7 +1022,15 @@
     "headquartersPlaceholder": "City, Country",
     "profileUpdated": "Profile updated successfully!",
     "profileSaved": "Your company details have been saved.",
-    "saveFailed": "Failed to save profile"
+    "saveFailed": "Failed to save profile",
+    "companySizePlaceholder": "जैसे 50-100",
+    "locationPlaceholder": "जैसे मुंबई, भारत",
+    "recommendedSize": "सुझाव: 400x400px",
+    "saveChanges": "परिवर्तन सहेजें",
+    "websiteUrl": "वेबसाइट URL",
+    "detailsSaved": "कंपनी विवरण सहेजे गए",
+    "logoUploaded": "लोगो सफलतापूर्वक अपलोड हुआ",
+    "uploadFailed": "अपलोड विफल"
   },
   "employerSettings": {
     "title": "Settings",
@@ -973,7 +1069,25 @@
     "criticalWarning": "CRITICAL WARNING: This will permanently delete your account, company profile, and all active job postings. This action cannot be undone. Are you absolutely sure?",
     "typeDeleteConfirm": "Type 'DELETE' to confirm account deletion:",
     "accountDeleted": "Account deleted. Goodbye.",
-    "deleteFailed": "Failed to delete account. Please try again."
+    "deleteFailed": "Failed to delete account. Please try again.",
+    "candidateMessagesDesc": "जब उम्मीदवार आपको संदेश भेजें तो सूचना प्राप्त करें",
+    "companyProfile": "कंपनी प्रोफ़ाइल",
+    "deleteAccount": "खाता हटाएं",
+    "deleteAccountDesc": "अपना खाता और सभी डेटा स्थायी रूप से हटाएं",
+    "deleteConfirmWarning": "यह कार्रवाई वापस नहीं हो सकती",
+    "emailNotificationsDesc": "अपनी पोस्टिंग के बारे में ईमेल अपडेट प्राप्त करें",
+    "goToCompanyProfile": "कंपनी प्रोफ़ाइल पर जाएं",
+    "newApplicationsDesc": "नए आवेदन आने पर सूचना प्राप्त करें",
+    "saveChanges": "परिवर्तन सहेजें",
+    "subscriptionPlanDesc": "अपनी सदस्यता और बिलिंग प्रबंधित करें",
+    "tabAccount": "खाता",
+    "tabAlerts": "अलर्ट",
+    "tabBilling": "बिलिंग",
+    "tabCompany": "कंपनी",
+    "typeDeleteToConfirm": "पुष्टि के लिए DELETE टाइप करें",
+    "updateFailed": "सेटिंग्स अपडेट करने में विफल",
+    "visitProfileEditor": "प्रोफ़ाइल संपादक पर जाएं",
+    "visitProfileEditorDesc": "अपनी कंपनी जानकारी और लोगो अपडेट करें"
   },
   "jobPostingDetail": {
     "backToDashboard": "Back to Dashboard",
@@ -1003,7 +1117,23 @@
     "closeConfirm": "Are you sure you want to close this job listing? No new applications will be accepted.",
     "success": "Success",
     "jobClosed": "Job listing closed successfully.",
-    "closeFailed": "Failed to close job listing."
+    "closeFailed": "Failed to close job listing.",
+    "jobNotFound": "नौकरी नहीं मिली",
+    "noApplicants": "अभी तक कोई आवेदक नहीं",
+    "posted": "पोस्ट किया",
+    "resume": "रिज्यूमे",
+    "statusApplied": "आवेदन किया",
+    "statusInterview": "साक्षात्कार",
+    "statusOffer": "ऑफ़र",
+    "statusRejected": "अस्वीकृत",
+    "statusShortlisted": "शॉर्टलिस्ट",
+    "error": "त्रुटि",
+    "loadFailed": "नौकरी विवरण लोड करने में विफल",
+    "confirmCloseJob": "क्या आप इस नौकरी को बंद करना चाहते हैं?",
+    "closeJobFailed": "नौकरी बंद करने में विफल",
+    "statusChangedTo": "स्थिति बदली गई",
+    "updateStatusFailed": "स्थिति अपडेट करने में विफल",
+    "unknownCandidate": "अज्ञात उम्मीदवार"
   },
   "candidateProfile": {
     "back": "Back",
@@ -1021,7 +1151,13 @@
     "downloadResume": "Download Resume",
     "loading": "Loading candidate profile...",
     "notFound": "Candidate not found.",
-    "noBio": "No bio available."
+    "noBio": "No bio available.",
+    "candidate": "उम्मीदवार",
+    "downloadFailed": "डाउनलोड विफल",
+    "generatingPdf": "PDF बन रही है...",
+    "loadFailed": "उम्मीदवार प्रोफ़ाइल लोड करने में विफल",
+    "pdfFailed": "PDF बनाने में विफल",
+    "resumeDownloaded": "रिज्यूमे डाउनलोड हुआ"
   },
   "employerLayout": {
     "completeProfile": "Please complete your company profile first."

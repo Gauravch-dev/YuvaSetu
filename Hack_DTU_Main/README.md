@@ -4,7 +4,7 @@
 
 ### AI-Powered Career Platform for Bharat's Youth
 
-**HackDTU 6.0 | PS 01 - Next-Gen Generative AI | Team Havoc**
+**AlgoZenith 10.0 | PS 01 - Next-Gen Generative AI | Team Idea Igniters**
 
 **SDG 4** (Quality Education) | **SDG 8** (Decent Work) | **SDG 10** (Reduced Inequalities)
 

@@ -11,9 +11,12 @@ class OllamaClient {
   /**
    * Send messages to the LLM and get a complete response.
    */
-  async generateResponse(messages: ChatMessage[]): Promise<string> {
+  async generateResponse(messages: ChatMessage[], opts?: { maxTokens?: number; signal?: AbortSignal }): Promise<string> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 120000);
+
+    const onExternalAbort = () => controller.abort();
+    opts?.signal?.addEventListener('abort', onExternalAbort);
 
     try {
       const response = await fetch(`${URL}/api/chat`, {
@@ -23,6 +26,13 @@ class OllamaClient {
           model: MODEL,
           messages,
           stream: false,
+          options: {
+            num_ctx: 4096,
+            num_predict: opts?.maxTokens ?? 100,
+            temperature: 0.7,
+            top_p: 0.9,
+            repeat_penalty: 1.1,
+          },
         }),
         signal: controller.signal,
       });
@@ -35,6 +45,7 @@ class OllamaClient {
       return data.message?.content || '';
     } finally {
       clearTimeout(timeout);
+      opts?.signal?.removeEventListener('abort', onExternalAbort);
     }
   }
 

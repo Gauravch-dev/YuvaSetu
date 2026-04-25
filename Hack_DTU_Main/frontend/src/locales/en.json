@@ -23,12 +23,16 @@
   "hero": {
     "badge": "AI-Powered Career Platform",
     "title1": "Your Career Journey",
-    "title2Animated": ["Starts Here.", "Reimagined.", "Amplified."],
+    "title2Animated": [
+      "Starts Here.",
+      "Reimagined.",
+      "Amplified."
+    ],
     "subtitle": "YuvaSetu eliminates opportunity fatigue with transparent AI matching, showing you only the most relevant opportunities.",
     "ctaSeeker": "I'm a Job Seeker",
     "ctaEmployer": "I'm an Employer",
     "stat1": "Faster Matching",
-"stat2": "Curated Jobs",
+    "stat2": "Curated Jobs",
     "stat3": "Explainable AI"
   },
   "navbar": {
@@ -113,9 +117,7 @@
     "lookingToHire": "Looking to hire talent?",
     "lookingForJob": "Looking for a job?",
     "switchToEmployer": "Switch to Employer Portal",
-   
-
- "switchToSeeker": "Switch to Job Seeker Portal",
+    "switchToSeeker": "Switch to Job Seeker Portal",
     "backToHome": "Back to home",
     "passwordStrength": {
       "label": "Password strength:",
@@ -562,7 +564,21 @@
     "jobUpdated": "Job Updated!",
     "draftSaved": "Draft Saved!",
     "failedToPost": "Failed to post job",
-    "failedToLoad": "Failed to load job for editing"
+    "failedToLoad": "Failed to load job for editing",
+    "contract": "Contract",
+    "descriptionAndRequirements": "Description & Requirements",
+    "findPerfectCandidate": "Find the perfect candidate",
+    "fullTime": "Full-time",
+    "internship": "Internship",
+    "jobDescriptionPlaceholder": "Describe the role, responsibilities, and what makes this opportunity unique...",
+    "keyRequirementsPlaceholder": "List key requirements, one per line...",
+    "location": "Location",
+    "noDraftsSaved": "No drafts saved",
+    "partTime": "Part-time",
+    "skills": "Skills",
+    "deleteDraftConfirm": "Delete this draft?",
+    "failedToLoadJob": "Failed to load job",
+    "titleRequired": "Job title is required"
   },
   "myPostings": {
     "title": "My Job Postings",
@@ -574,7 +590,14 @@
     "closed": "Closed",
     "noPostingsFound": "No job postings found matching your filters.",
     "closingDate": "Closing date: Open",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "allTypes": "All Types",
+    "closingDateOpen": "Open",
+    "jobType": "Job Type",
+    "manageListings": "Manage your job listings",
+    "myJobPostings": "My Job Postings",
+    "status": "Status",
+    "remote": "Remote"
   },
   "applications": {
     "title": "My Applications",
@@ -674,7 +697,8 @@
     "ourMission": "Our Mission",
     "missionHighlight": "Mission",
     "missionText": "At YuvaSetu, we believe that every student deserves access to opportunities that truly match their potential. We're eliminating opportunity fatigue by using explainable AI to show you only the most relevant jobs - with complete transparency on why each match matters.",
-    "buildingFuture": "Building the future of career discovery"
+    "buildingFuture": "Building the future of career discovery",
+    "ourLabel": "Our"
   },
   "onboardingSteps": {
     "needHelp": "Need help?",
@@ -697,7 +721,23 @@
     "failedPdf": "Failed to generate resume PDF",
     "failedSave": "Failed to save profile data",
     "failedDownload": "Failed to download resume",
-    "failedGeneratePdf": "Failed to generate PDF"
+    "failedGeneratePdf": "Failed to generate PDF",
+    "redirecting": "Redirecting...",
+    "save": "Save",
+    "hidePreview": "Hide Preview",
+    "showPreview": "Show Preview",
+    "failedResumePdf": "Failed to generate resume PDF",
+    "failedSaveProfile": "Failed to save profile",
+    "profilePreFilled": "Profile pre-filled from your resume",
+    "voiceProfileCompleted": "Voice profile completed",
+    "enterAge": "Enter your age",
+    "invalidEmail": "Invalid email format",
+    "invalidGithub": "Invalid GitHub URL",
+    "invalidLinkedin": "Invalid LinkedIn URL",
+    "invalidPhone": "Invalid phone number",
+    "invalidPortfolio": "Invalid portfolio URL",
+    "invalidYear": "Invalid year",
+    "mustBe18": "You must be at least 18 years old"
   },
   "resumeUpload": {
     "title": "Upload Your Resume",
@@ -715,7 +755,8 @@
     "highConfidence": "Resume analyzed by OnDemand AI (High Accuracy)",
     "parsedSuccess": "Resume parsed successfully! Please review the data.",
     "needsReview": "Some sections need review. Please check all fields.",
-    "parseFailed": "Could not reliably parse resume. Please fill manually."
+    "parseFailed": "Could not reliably parse resume. Please fill manually.",
+    "analyzedByAI": "Analyzed by AI"
   },
   "personalDetails": {
     "fullName": "Full Name",
@@ -737,7 +778,13 @@
     "githubUrl": "GitHub URL",
     "githubPlaceholder": "https://github.com/...",
     "portfolioUrl": "Portfolio URL",
-    "portfolioPlaceholder": "https://yourwebsite.com"
+    "portfolioPlaceholder": "https://yourwebsite.com",
+    "bio": "Bio",
+    "github": "GitHub",
+    "languagesHint": "Separate with commas (e.g. English, Hindi)",
+    "linkedin": "LinkedIn",
+    "phone": "Phone Number",
+    "portfolio": "Portfolio URL"
   },
   "educationStep": {
     "title": "Education Details",
@@ -749,7 +796,10 @@
     "yearPlaceholder": "Ex. 2024",
     "grade": "Grade / CGPA",
     "gradePlaceholder": "Ex. 9.5 CGPA",
-    "addEducation": "Add Education"
+    "addEducation": "Add Education",
+    "completionYear": "Completion Year",
+    "completionYearPlaceholder": "e.g. 2024",
+    "details": "Education Details"
   },
   "experienceStep": {
     "title": "Work Experience",
@@ -761,13 +811,18 @@
     "durationPlaceholder": "Ex. Jan 2023 - Present",
     "description": "Description",
     "descriptionPlaceholder": "Describe your responsibilities and achievements...",
-    "addExperience": "Add Experience"
+    "addExperience": "Add Experience",
+    "company": "Company",
+    "details": "Experience Details",
+    "role": "Role",
+    "rolePlaceholder": "e.g. Frontend Developer"
   },
   "skillsStep": {
     "title": "Add Skills",
     "placeholder": "Type a skill and press Enter...",
     "emptyState": "No skills added yet. Start typing above or pick from suggestions.",
-    "suggested": "Suggested based on market trends"
+    "suggested": "Suggested based on market trends",
+    "addSkills": "Add Skills"
   },
   "projectsStep": {
     "title": "Project Details",
@@ -779,7 +834,10 @@
     "linkPlaceholder": "https://github.com/...",
     "description": "Description *",
     "descriptionPlaceholder": "Describe the project, its impact, and your contributions...",
-    "addProject": "Add Project"
+    "addProject": "Add Project",
+    "details": "Project Details",
+    "link": "Project Link",
+    "technologiesPlaceholder": "e.g. React, Node.js, MongoDB"
   },
   "certificationsStep": {
     "title": "Certification / Achievement",
@@ -789,7 +847,9 @@
     "yearPlaceholder": "Ex. 2025",
     "issuer": "Issuing Organization *",
     "issuerPlaceholder": "Ex. Amazon Web Services, Google, Smart India Hackathon",
-    "addCertification": "Add Certification / Achievement"
+    "addCertification": "Add Certification / Achievement",
+    "details": "Certification Details",
+    "titlePlaceholder": "e.g. AWS Certified Developer"
   },
   "seekerSettings": {
     "title": "Settings",
@@ -843,7 +903,25 @@
     "passwordFailed": "Failed to update password. Please try logging in again.",
     "accountUpdated": "Account details updated successfully!",
     "accountUpdateFailed": "Failed to update account details",
-    "actionNotAllowed": "Action Not Allowed"
+    "actionNotAllowed": "Action Not Allowed",
+    "deleteAccountPermanently": "Delete Account Permanently",
+    "deleteAccountWarning": "This will permanently delete your account and all associated data",
+    "googlePasswordMessage": "You signed in with Google. Password changes are managed through your Google account.",
+    "loading": "Loading...",
+    "notificationPreferences": "Notification Preferences",
+    "notificationPreferencesDesc": "Choose what notifications you receive",
+    "savePrivacySettings": "Save Privacy Settings",
+    "tabAccount": "Account",
+    "tabNotifications": "Notifications",
+    "tabPrivacy": "Privacy",
+    "typeDeleteToConfirm": "Type DELETE to confirm",
+    "accountDeleteFailed": "Failed to delete account",
+    "accountDeleted": "Account deleted successfully",
+    "authSessionMissing": "Authentication session missing",
+    "passwordUpdateFailed": "Failed to update password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "preferencesSaveFailed": "Failed to save preferences",
+    "preferencesSaved": "Preferences saved"
   },
   "upskill": {
     "title": "Company Mock Tests",
@@ -863,7 +941,12 @@
     "backToDashboard": "Back to Dashboard",
     "started": "Started {{company}} Assessment",
     "questionsNotFound": "Questions not found for {{company}}",
-    "emptyData": "Empty data for {{company}}"
+    "emptyData": "Empty data for {{company}}",
+    "next": "Next",
+    "runScraperFirst": "Run the scraper first to load questions",
+    "scraperNoQuestions": "No questions available",
+    "startTest": "Start Test",
+    "startedAssessment": "Assessment started"
   },
   "applicationDetails": {
     "backToApplications": "Back to Applications",
@@ -873,7 +956,8 @@
     "inProgress": "In Progress - Awaiting update",
     "recruiterReviewing": "Recruiter is reviewing your profile.",
     "notSelected": "Application not selected for next round.",
-    "appliedOn": "Applied on {{date}}"
+    "appliedOn": "Applied on {{date}}",
+    "notFound": "Application not found"
   },
   "jobApplication": {
     "jobNotFound": "Job Not Found",
@@ -910,7 +994,13 @@
     "customUpload": "Custom Upload",
     "submitApplication": "Submit Application",
     "submitting": "Submitting...",
-    "shareConsent": "By clicking Submit, you agree to share your profile with {{company}}."
+    "shareConsent": "By clicking Submit, you agree to share your profile with {{company}}.",
+    "agreeToShare": "I agree to share my profile with the employer",
+    "brainwaveResume": "Use YuvaSetu Resume",
+    "coverLetterOptional": "Cover Letter (Optional)",
+    "uploadCustomResume": "Upload Custom Resume",
+    "couldNotUpload": "Could not upload file",
+    "somethingWentWrong": "Something went wrong"
   },
   "companyProfile": {
     "title": "Company Profile",
@@ -932,7 +1022,15 @@
     "headquartersPlaceholder": "City, Country",
     "profileUpdated": "Profile updated successfully!",
     "profileSaved": "Your company details have been saved.",
-    "saveFailed": "Failed to save profile"
+    "saveFailed": "Failed to save profile",
+    "companySizePlaceholder": "e.g. 50-100",
+    "locationPlaceholder": "e.g. Mumbai, India",
+    "recommendedSize": "Recommended: 400x400px",
+    "saveChanges": "Save Changes",
+    "websiteUrl": "Website URL",
+    "detailsSaved": "Company details saved",
+    "logoUploaded": "Logo uploaded successfully",
+    "uploadFailed": "Upload failed"
   },
   "employerSettings": {
     "title": "Settings",
@@ -971,7 +1069,25 @@
     "criticalWarning": "CRITICAL WARNING: This will permanently delete your account, company profile, and all active job postings. This action cannot be undone. Are you absolutely sure?",
     "typeDeleteConfirm": "Type 'DELETE' to confirm account deletion:",
     "accountDeleted": "Account deleted. Goodbye.",
-    "deleteFailed": "Failed to delete account. Please try again."
+    "deleteFailed": "Failed to delete account. Please try again.",
+    "candidateMessagesDesc": "Get notified when candidates message you",
+    "companyProfile": "Company Profile",
+    "deleteAccount": "Delete Account",
+    "deleteAccountDesc": "Permanently delete your account and all data",
+    "deleteConfirmWarning": "This action cannot be undone",
+    "emailNotificationsDesc": "Receive email updates about your postings",
+    "goToCompanyProfile": "Go to Company Profile",
+    "newApplicationsDesc": "Get notified when new applications are received",
+    "saveChanges": "Save Changes",
+    "subscriptionPlanDesc": "Manage your subscription and billing",
+    "tabAccount": "Account",
+    "tabAlerts": "Alerts",
+    "tabBilling": "Billing",
+    "tabCompany": "Company",
+    "typeDeleteToConfirm": "Type DELETE to confirm",
+    "updateFailed": "Failed to update settings",
+    "visitProfileEditor": "Visit Profile Editor",
+    "visitProfileEditorDesc": "Update your company information and logo"
   },
   "jobPostingDetail": {
     "backToDashboard": "Back to Dashboard",
@@ -1001,7 +1117,23 @@
     "closeConfirm": "Are you sure you want to close this job listing? No new applications will be accepted.",
     "success": "Success",
     "jobClosed": "Job listing closed successfully.",
-    "closeFailed": "Failed to close job listing."
+    "closeFailed": "Failed to close job listing.",
+    "jobNotFound": "Job not found",
+    "noApplicants": "No applicants yet",
+    "posted": "Posted",
+    "resume": "Resume",
+    "statusApplied": "Applied",
+    "statusInterview": "Interview",
+    "statusOffer": "Offer",
+    "statusRejected": "Rejected",
+    "statusShortlisted": "Shortlisted",
+    "error": "Error",
+    "loadFailed": "Failed to load job details",
+    "confirmCloseJob": "Are you sure you want to close this job?",
+    "closeJobFailed": "Failed to close job",
+    "statusChangedTo": "Status changed to",
+    "updateStatusFailed": "Failed to update status",
+    "unknownCandidate": "Unknown Candidate"
   },
   "candidateProfile": {
     "back": "Back",
@@ -1019,7 +1151,13 @@
     "downloadResume": "Download Resume",
     "loading": "Loading candidate profile...",
     "notFound": "Candidate not found.",
-    "noBio": "No bio available."
+    "noBio": "No bio available.",
+    "candidate": "Candidate",
+    "downloadFailed": "Download failed",
+    "generatingPdf": "Generating PDF...",
+    "loadFailed": "Failed to load candidate profile",
+    "pdfFailed": "PDF generation failed",
+    "resumeDownloaded": "Resume downloaded"
   },
   "employerLayout": {
     "completeProfile": "Please complete your company profile first."
